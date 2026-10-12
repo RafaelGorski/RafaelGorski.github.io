@@ -16,8 +16,8 @@ content/
   log.json                     the register: positions and titles in preparation
   log/<id>.html                full note behind each position (trusted HTML)
   library.json                 curated sources (owned by the content workstream)
-  library.sample.json          illustrative stand-in, used only while library.json is absent
-  stages.json                  the six stages (optional; the fixed contract is built in)
+  stages.json                  the six stages (the fixed contract is also built in)
+  editorial-plan.md            proposed notes; their working titles appear as "in preparation"
 static/                        copied as-is: assets/site.css, fonts, favicon (and CNAME later)
 scripts/build.mjs              content/ + static/ → _site/
 scripts/check-links.mjs        fails if any internal link or #fragment does not resolve

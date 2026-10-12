@@ -1,5 +1,5 @@
 {
-  "about": "The register of positions. Text fields are trusted, hand-authored HTML. Numbers are assigned only when a position is logged; titles in 'preparing' carry no position.",
+  "about": "The register of positions. Text fields are trusted, hand-authored HTML. Numbers are assigned only when a position is logged. 'preparing' lists working titles from content/editorial-plan.md (field 'plan' is the plan's note number); they carry no position. Remove an item when its entry is logged.",
   "entries": [
     {
       "id": "GN-0001",
@@ -45,8 +45,13 @@
     }
   ],
   "preparing": [
-    { "title": "Pilot evaluation on real data", "stage": "pilot" },
-    { "title": "Cost attribution across agents and workflows", "stage": "scale" },
-    { "title": "Accountability for actions agents take", "stage": "govern" }
+    { "title": "What must the pilot beat?", "stage": "frame", "plan": 1 },
+    { "title": "Once is a demo: measuring reliability before launch", "stage": "pilot", "plan": 2 },
+    { "title": "Who can stop a release?", "stage": "launch", "plan": 3 },
+    { "title": "Prompt injection as an architecture decision", "stage": "launch", "plan": 4 },
+    { "title": "Agents need their own identities", "stage": "scale", "plan": 5 },
+    { "title": "Cost is a reliability property", "stage": "scale", "plan": 6 },
+    { "title": "When quality drops and nothing crashes", "stage": "operate", "plan": 7 },
+    { "title": "Who answers for the agent?", "stage": "govern", "plan": 8 }
   ]
 }

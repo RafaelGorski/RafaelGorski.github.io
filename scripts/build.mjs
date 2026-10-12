@@ -103,6 +103,10 @@ function loadLibrary(stageIds) {
   const real = path.join(CONTENT, "library.json");
   const sample = path.join(CONTENT, "library.sample.json");
   const usingSample = !fs.existsSync(real);
+  if (usingSample && !fs.existsSync(sample)) {
+    fail("content/library.json is missing");
+    return { updated: null, entries: [], illustrative: false };
+  }
   const raw = readJSON(usingSample ? sample : real);
   const entries = (raw.entries || []).filter((e, i) => {
     const where = `library entry ${e.id || i}`;
@@ -349,7 +353,7 @@ ${rows}
     <section class="sec prep" aria-labelledby="prep-h">
       <div class="sec-head">
         <h2 id="prep-h">In preparation</h2>
-        <p>No number is assigned and no position is taken until an entry is logged. Titles are provisional.</p>
+        <p>Working titles from the editorial plan. No number is assigned and no position is taken until an entry is logged.</p>
       </div>
       <ul class="prep-list">
 ${prep}
@@ -570,7 +574,7 @@ function citedBy(entries) {
 function sourceRow(l, ctx, depth, level, cites) {
   const { stages } = ctx;
   const u = (p) => linkTo(depth, p);
-  const year = l.year ? `, ${l.year}` : "";
+  const year = l.year ? `, ${l.year}` : ", living document";
   const ver = l.verified === true ? "Verified" : typeof l.verified === "string" && parseDay(l.verified) ? dayShort(parseDay(l.verified)) : l.verified === false ? "Not yet verified" : "";
   const tabs = l.stages.map((id, i) => stageTab(stages.get(id), depth, i === 0 ? ' data-primary=""' : "")).join(" ");
   const cited = cites && cites.length
