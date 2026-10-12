@@ -1,0 +1,14 @@
+{
+  "title": "Launching and scaling AI systems",
+  "caption": "Six stages from the first decision to accountable operation: the question each stage must answer, and the sources worth reading there. Read across for the route, down for the evidence.",
+  "edition": "October 2026",
+  "loop": "What production teaches goes back to Frame.",
+  "tests": {
+    "frame": { "label": "Move on when", "text": "there is a named owner, a decision this will change, and a measure of success agreed before building." },
+    "pilot": { "label": "Move on when", "text": "results on real data beat a simple baseline, and the failures are written down, not only the average." },
+    "launch": { "label": "Move on when", "text": "a staged rollout, a tested rollback and a human escalation path are live before the first user." },
+    "scale": { "label": "Move on when", "text": "the cost of a completed task is known, and the platform enforces limits on spend and agent loops." },
+    "operate": { "label": "In control when", "text": "every request leaves one connected trace, incidents are reviewed, and each lesson becomes an evaluation." },
+    "govern": { "label": "In control when", "text": "every system has an accountable owner and a record of what it did, on whose authority and why." }
+  }
+}
