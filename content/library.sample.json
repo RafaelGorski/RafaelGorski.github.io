@@ -1,0 +1,85 @@
+{
+  "updated": "2026-10-12",
+  "illustrative": true,
+  "note": "ILLUSTRATIVE SAMPLE ONLY. Six real, well-known sources in the library schema, used to build the design until the curated content/library.json lands on main. The build uses content/library.json whenever it exists; delete this file then.",
+  "entries": [
+    {
+      "id": "otel-genai-semconv",
+      "title": "Semantic conventions for generative AI systems",
+      "publisher": "OpenTelemetry",
+      "year": null,
+      "url": "https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai",
+      "kind": "specification",
+      "stages": ["operate", "scale"],
+      "why": "Gives agent platforms, frameworks and model vendors one vocabulary for traces, token usage and evaluations, so cost and failure can be attributed across the program instead of per vendor console.",
+      "check": "Agent, tool and inference spans carry gen_ai.* attributes, and one request yields one connected trace.",
+      "maturity": "evolving",
+      "verified": "2026-10-12"
+    },
+    {
+      "id": "nist-ai-rmf",
+      "title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0)",
+      "publisher": "NIST",
+      "year": 2023,
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "kind": "framework",
+      "stages": ["govern", "frame"],
+      "why": "A widely referenced voluntary structure (Govern, Map, Measure, Manage) for deciding who owns AI risk and how it is reviewed before money is committed.",
+      "check": "Each AI system has a mapped context, a named risk owner and documented, measured risk treatments.",
+      "maturity": "stable",
+      "verified": "2026-10-12"
+    },
+    {
+      "id": "eu-ai-act",
+      "title": "Regulation (EU) 2024/1689 (Artificial Intelligence Act)",
+      "publisher": "European Union",
+      "year": 2024,
+      "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+      "kind": "regulation",
+      "stages": ["govern", "launch"],
+      "why": "Sets risk-based legal obligations for AI placed on the EU market, applied in phases. The risk classification decides the documentation, oversight and conformity work needed before launch.",
+      "check": "Each system has a recorded risk classification, and the obligations it triggers are tracked to named owners.",
+      "maturity": "evolving",
+      "verified": "2026-10-12"
+    },
+    {
+      "id": "owasp-llm-top-10",
+      "title": "OWASP Top 10 for LLM Applications 2025",
+      "publisher": "OWASP GenAI Security Project",
+      "year": 2024,
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "kind": "guide",
+      "stages": ["launch"],
+      "why": "A shared list of the most common security failures in LLM applications, such as prompt injection and excessive agency, to review before real users arrive.",
+      "check": "The threat model covers each listed risk, with a test or control recorded against it.",
+      "maturity": "evolving",
+      "verified": "2026-10-12"
+    },
+    {
+      "id": "datasheets-for-datasets",
+      "title": "Datasheets for Datasets",
+      "publisher": "Gebru et al.",
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1803.09010",
+      "kind": "paper",
+      "stages": ["pilot", "frame"],
+      "why": "Asks for a written answer to where pilot data came from, what it leaves out and what it should not be used for, before anyone trusts the results.",
+      "check": "Every pilot dataset has a datasheet covering motivation, composition, collection process and recommended uses.",
+      "maturity": "stable",
+      "verified": "2026-10-12"
+    },
+    {
+      "id": "hidden-technical-debt-ml",
+      "title": "Hidden Technical Debt in Machine Learning Systems",
+      "publisher": "Sculley et al., NeurIPS",
+      "year": 2015,
+      "url": "https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+      "kind": "paper",
+      "stages": ["scale", "operate"],
+      "why": "Shows that the model is a small part of a production ML system, and that the surrounding glue code, data dependencies and configuration carry most of the long-term cost.",
+      "check": "Data dependencies, feedback loops and configuration are inventoried and owned, not only the model code.",
+      "maturity": "stable",
+      "verified": "2026-10-12"
+    }
+  ]
+}

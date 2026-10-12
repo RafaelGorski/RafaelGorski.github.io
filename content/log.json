@@ -1,0 +1,52 @@
+{
+  "about": "The register of positions. Text fields are trusted, hand-authored HTML. Numbers are assigned only when a position is logged; titles in 'preparing' carry no position.",
+  "entries": [
+    {
+      "id": "GN-0001",
+      "slug": "agentic-observability",
+      "topic": "Agentic observability",
+      "title": "Agentic observability: what leaders should require before agents reach production",
+      "description": "Position GN-0001: require agent and model telemetry in the OpenTelemetry GenAI semantic conventions before agents reach production. Stakes, evidence, what would change it, and a revisit date of April 2027.",
+      "status": "open",
+      "logged": "2026-10",
+      "revisit": "2027-04",
+      "stages": ["operate", "govern"],
+      "library": ["otel-genai-semconv"],
+      "position": "Require agent and model telemetry in the OpenTelemetry GenAI semantic conventions before agents reach production, and do not accept telemetry that is available only in a vendor’s own console.",
+      "derivation": "Stated from requirement <a href=\"#r1\">R1</a> and the scope of the note below.",
+      "stakes": {
+        "lead": "Without a shared trace, you find out what agents did only after a customer, an auditor or an invoice tells you (<a href=\"#s8\">§8</a>).",
+        "items": [
+          ["Cost cannot be attributed.", "It depends on how many model and tool calls each run chooses to make, so it has to be added up span by span and charged to the agent and workflow responsible (<a href=\"#s1\">§1</a>, <a href=\"#s3\">§3</a>)."],
+          ["Failure stays silent.", "An agent can return a confident answer after a tool call silently failed. Nothing errors and nothing alerts, yet the output is wrong (<a href=\"#s1\">§1</a>)."],
+          ["Actions cannot be accounted for.", "When an agent acts on a customer’s behalf, someone will ask what it saw, what it decided and which systems it touched (<a href=\"#s1\">§1</a>)."],
+          ["Visibility is locked in to one vendor.", "Without the shared conventions, telemetry from the framework, the model vendor, MCP servers and your own platform cannot land in one backend and join into one tree (<a href=\"#s2\">§2</a>)."]
+        ]
+      },
+      "evidence": {
+        "items": [
+          "The OpenTelemetry GenAI semantic conventions name spans, metrics and events for model and agent operations, carry trace context across MCP calls, and map Anthropic, AWS Bedrock, Azure AI Inference and OpenAI (<a href=\"#s2\">§2</a>).",
+          "One agent run drawn as a trace shows where the time, the tokens and the failure sit (<a href=\"#s3\">§3</a>, Exhibit 1, synthetic data).",
+          "Seven recurring executive questions each map to a named, standard signal (<a href=\"#s4\">§4</a>)."
+        ],
+        "sources": "Eight documents from the conventions are cited in <a href=\"#refs\">§9</a>."
+      },
+      "change": {
+        "lead": "This position is revised if, by the revisit date, the open issues in <a href=\"#s8\">§8</a> turn out to be structural rather than temporary:",
+        "items": [
+          "The conventions change names, requirement levels or span structure often enough that tracking them stops being planned upgrade work and becomes recurring breakage.",
+          "Events, which carry evaluation results and exceptions, are still missing from the OpenTelemetry language SDKs that agent programs depend on.",
+          "Framework instrumentation still cannot produce the connected trace in practice, for example because planning cannot be told apart from an ordinary model call."
+        ]
+      },
+      "revisitCheck": "At the revisit: the status of the GenAI conventions, event support across the language SDKs, and how much of the conventions the main agent frameworks actually emit.",
+      "verdicts": [],
+      "body": "log/gn-0001.html"
+    }
+  ],
+  "preparing": [
+    { "title": "Pilot evaluation on real data", "stage": "pilot" },
+    { "title": "Cost attribution across agents and workflows", "stage": "scale" },
+    { "title": "Accountability for actions agents take", "stage": "govern" }
+  ]
+}

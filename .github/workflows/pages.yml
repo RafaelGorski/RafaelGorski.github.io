@@ -4,8 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - "site/**"
+      - "content/**"
+      - "static/**"
+      - "scripts/**"
       - ".github/workflows/pages.yml"
+  schedule:
+    # Weekly rebuild: advances the register's "as of" date and marks
+    # positions whose revisit date has passed without a verdict as overdue.
+    - cron: "17 6 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -25,9 +31,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build static HTML from content/
+        run: node scripts/build.mjs
+      - name: Check internal links
+        run: node scripts/check-links.mjs _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

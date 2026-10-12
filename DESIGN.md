@@ -1,45 +1,280 @@
-# DESIGN.md
+---
+name: rafaelgorski.com — the signed register
+description: A public register of positions on launching and scaling AI, with a held/revised track record and a curated evidence library.
+colors:
+  paper: "#ffffff"
+  stock: "#f1f3f6"
+  print: "#121316"
+  print-2: "#4a4f5b"
+  rule: "#cfd5de"
+  rule-faint: "#e5e8ed"
+  signing-blue: "#2235c9"
+  signing-blue-deep: "#17238f"
+  ink-wash: "#eceffd"
+  error: "#b3261e"
+  span-model: "#8792c4"
+  span-tool: "#5d6372"
+typography:
+  statement:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "clamp(2.125rem, 1.25rem + 2.9vw, 3.75rem)"
+    fontWeight: 700
+    lineHeight: 1.03
+    letterSpacing: "-0.03em"
+  position:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "clamp(1.45rem, 1.1rem + 1.15vw, 2.0625rem)"
+    fontWeight: 620
+    lineHeight: 1.17
+    letterSpacing: "-0.016em"
+  heading:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem)"
+    fontWeight: 680
+    lineHeight: 1.22
+    letterSpacing: "-0.014em"
+  body:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "normal"
+  register-number:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 760
+    lineHeight: 1.2
+    letterSpacing: "normal"
+  form-label:
+    fontFamily: "Archivo, Helvetica Neue, Arial, system-ui, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: "normal"
+  code:
+    fontFamily: "ui-monospace, SF Mono, Cascadia Mono, Menlo, Consolas, monospace"
+    fontSize: "0.82em"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "normal"
+rounded:
+  none: "0"
+  tab: "0.4rem 0.4rem 0 0"
+  index-tab: "0.5rem 0.5rem 0 0"
+  mark: "50%"
+spacing:
+  cell: "1rem"
+  row: "1.4rem"
+  section: "clamp(3.75rem, 7vw, 6rem)"
+  gutter: "clamp(1.25rem, 3.5vw, 3rem)"
+components:
+  tab:
+    backgroundColor: "{colors.stock}"
+    textColor: "{colors.print}"
+    typography: "{typography.form-label}"
+    rounded: "{rounded.tab}"
+    padding: "0.32rem 0.7rem 0.3rem"
+  tab-hover:
+    backgroundColor: "{colors.paper}"
+  index-tab:
+    backgroundColor: "{colors.stock}"
+    textColor: "{colors.print}"
+    rounded: "{rounded.index-tab}"
+    padding: "0.65rem 0.85rem 0.55rem"
+  index-tab-current:
+    backgroundColor: "{colors.paper}"
+  status-mark:
+    textColor: "{colors.signing-blue}"
+    rounded: "{rounded.mark}"
+    size: "0.875rem"
+  placeholder-tag:
+    backgroundColor: "{colors.print}"
+    textColor: "{colors.paper}"
+    typography: "{typography.form-label}"
+    padding: "0.2rem 0.5rem"
+---
 
-## World: "the specification"
+# Design System: rafaelgorski.com — the signed register
 
-The site reads like a well-made engineering standard (an RFC or an ISO draft): a
-document control block, numbered sections, normative requirements with source
-traces, and exhibits. That matches the promise: guidance an executive can adopt
-and an engineer can check. It stays low-profile on purpose, with no hero
-imagery, no marketing sections and no calls to action.
+## Overview
 
-## Tokens (`site/assets/site.css`, `:root`)
+The site is a public register of positions, not a personal publication. Each
+position is one sentence that could turn out wrong, logged with what is at stake,
+the evidence, what would change it and a revisit date; on that date it is marked
+held or revised and the original stays on the record. The register's track record
+is the credential. Nothing on the site describes the author; the structure does.
 
-| Token | Value | Use |
-|---|---|---|
-| `--paper` | `#ffffff` | the only background |
-| `--ink` | `#15171c` | text, strong rules |
-| `--ink-2` | `#474b55` | secondary text, metadata labels |
-| `--rule` | `#d9dbe0` | hairlines between rows and sections |
-| `--link` / `--link-visited` | `#1c3f9e` / `#4b3593` | the only accent colour |
-| `--mark` | `#eef1fa` | ground for exhibits and requirements |
-| `--span-*` | blue ramp, ink, `#b3261e` | trace exhibit categories; red is reserved for error |
+The physical reference is a bound register or minute book: numbered entries on
+white stock, ledger ruling with column rules, a double-ruled totals line, and
+corrections struck through rather than erased. Two layers share the page:
 
-Type:
-- **Prose:** a book face, using the system Charter / Sitka / Cambria / Georgia stack.
-- **Fixed-pitch:** a system monospace stack, used only for metadata, identifiers, attribute names and data. Never for headings or body copy.
-- **Webfonts:** none.
-- **Scale:** `--step--1` to `--step-3`. Measure 68ch, sheet 46rem.
+- **Print** (black on white): the record itself.
+- **Ink** (one signing blue): the author's accountable acts. Status, revisit
+  dates, verdict lines, "what would change it", and citations of positions.
+
+It replaces the earlier "specification / RFC" world; monospace metadata, serif
+body copy and RFC header blocks are no longer part of the system.
+
+Pages: `/` (the register), `/log/<slug>/` (one per position), `/library/` and
+`/library/<stage>/` (index tabs; one static page per stage so filtering works
+without JavaScript), `/about/`, `/404.html`. All generated by
+`scripts/build.mjs` from `content/`.
+
+## Colors
+
+Restrained: neutrals plus one ink. Light only; the use scene is a shared link
+opened on a laptop or phone in daylight, between meetings.
+
+### Primary
+- **Signing blue** (#2235c9): the ink layer only. Status words and marks,
+  revisit dates, the revisit ring on each lane, verdict lines once signed,
+  "What would change it" and "Revisit by" field labels, and "Cited in" links.
+  8.7:1 on paper. **Signing blue deep** (#17238f) is reserved for pressed states.
+- **Ink wash** (#eceffd): ground for `<ins>` text and `:target` rows. Never a panel.
+
+### Neutral
+- **Paper** (#ffffff): the only page ground.
+- **Stock** (#f1f3f6): tab stock, placeholder boxes, inline code, the note callout.
+- **Print** (#121316): text, strong rules (2px under headers, double totals rule), elapsed time on lanes.
+- **Print 2** (#4a4f5b): secondary text and form labels, 8.2:1 on paper.
+- **Rule** (#cfd5de): ledger ruling between rows. **Rule faint** (#e5e8ed): column rules.
+
+### Data (trace exhibit only)
+- Workflow `print`, agent/plan `signing-blue`, model #8792c4, tool #5d6372,
+  error #b3261e. Red appears nowhere else.
+
+### Named Rules
+**The Ink Rule.** Blue means the author committed to something. If an element
+is not a status, a revisit date, a verdict, a revision condition or a citation of
+a position, it is print, not ink. Links are print with an underline.
+
+**The No-Traffic-Light Rule.** Status is never colour-coded right/wrong. Held and
+revised are both honourable outcomes; they differ by shape (filled disc, struck
+ring), never by green/red.
+
+## Typography
+
+**Face:** Archivo (Omnibus-Type, SIL OFL), self-hosted as two subset variable
+woff2 files in `static/assets/fonts/`: roman with weight 400–800 and width
+100–125%, italic with weight 400–600 at 100%. No webfont CDN.
+
+Width is a role, not decoration:
+- **100%** for statements, positions and reading text.
+- **112–118%** for form labels, nav, tab names and table headers: the printed
+  field labels of a register form. Sentence case, never tracked capitals.
+- **125%** for register numbers (`GN-0001`), totals and requirement IDs.
+
+### Hierarchy
+- **Statement** (700, `--step-4`, 1.03, -0.03em): one per page; home H1, library H1, single-stage question.
+- **Position** (620, `--step-3`, 1.17): the position sentence in the register; entry H1 is the same voice at up to 2.75rem.
+- **Heading** (680–700, `--step-2`): section heads and note sections (`§` numbers stay because requirements cite them).
+- **Body** (400, 1.0625rem, 1.6, max 68ch).
+- **Form label** (600, 0.8125rem, 112–118% width, `print-2`).
+- **Code** (system mono, 0.82em on stock): attribute names, span names, identifiers only.
+
+### Named Rules
+**The No-Costume-Mono Rule.** Monospace is for code and the trace exhibit's span
+names. Dates, IDs and metadata use Archivo with tabular figures.
+
+## Layout
+
+- Page max 86rem, gutter `clamp(1.25rem, 3.5vw, 3rem)`, reading measure 68ch.
+- The register is a real `<table>` with fixed columns: number 7.25rem, position
+  (fluid), window 19rem, status 11.5rem. Below 52rem each row becomes a ruled
+  block: number and status, sentence, lane, verdict line.
+- The **window** column shares one month axis across all rows; quarter months
+  are labelled. A dashed **as-of rule** at the build date runs from the header
+  through each lane only, never through labels.
+- Entry pages: a 16.25rem sticky record slip on the left (`grid-row: 1 / span 3`),
+  position, record fields and full note on the right. Below 56rem the slip
+  stacks under the H1 and its contents list is hidden.
+- Record fields are a two-column form: 10.5rem label, content up to 66ch.
+- Section rhythm: `clamp(3.75rem, 7vw, 6rem)` between home sections; more space
+  above a heading than below.
+
+## Elevation & Depth
+
+Flat. No shadows anywhere. Depth comes from rule weight: 1px ruling between
+rows, 2px print under headers and above record blocks, a 3px double rule above
+totals (the bookkeeping convention for a final sum).
+
+## Shapes
+
+Square by default. Only three shapes are rounded:
+- **Tabs** (0.4rem top corners, flat bottom on a print edge): stage labels that
+  open the library. The library's index tabs use 0.5rem and join the page rule
+  when current.
+- **Status marks** (circles): open ring, held disc, revised ring with a
+  diagonal strike, overdue dashed ring. Always followed by the status word.
+- **Revisit ring** at the end of each lane.
 
 ## Components
 
-- **Document control block** (`.docblock`): author, series, note ID, status, date and source. It replaces a hero.
-- **Notes index** (`.notes`): ID, title, status and date, with an abstract under the title.
-- **Numbered sections:** the numbers exist because requirements cite them (`§4`).
-- **Requirements** (`.reqs`): `R1`–`Rn`. RFC 2119 keywords are set as bold, slightly tracked capitals (`.kw`), and each requirement ends with links to its sections and references.
-- **Signals table** (`.signals`): question → plain explanation → attribute names. It stacks below 40rem.
-- **Trace exhibit** (`.trace`): a waterfall drawn in CSS grid. Rows set `--depth`, `--s` (start %) and `--w` (width %). The data is synthetic and labelled as such.
-- **Placeholder** (`.placeholder` + `.tag`): a dashed box marking copy the author must replace.
+### The register row
+Number (125% width) · position sentence as the link to the entry (print, 1px
+rule-coloured underline that darkens on hover) · topic and stage tabs · window
+lane (outlined window from logged to revisit, elapsed portion filled in print,
+blue revisit ring) with "Logged" under the start and "Revisit by" centred under
+the ring · status word with mark over a blank **verdict line** captioned
+"Verdict due by …". A signed verdict thickens the line to 2px blue.
 
-## Rules
+### Totals line
+`tfoot` under a 3px double rule: "Totals as of <date>" and Open / Held /
+Revised / Overdue counts in 125% tabular numerals. The as-of date is the build
+date; the workflow rebuilds weekly so overdue entries surface on their own.
 
-- Light mode only; the use scene is daylight office reading.
-- No eyebrow or kicker labels, cards, gradients, icons, tracking or JavaScript. The 404 page carries a single inline base-path fix.
-- One authored motion: trace bars scale in on scroll, using `animation-timeline: view()` behind `@supports` and `prefers-reduced-motion`. Bars are fully drawn by default.
-- All internal links are relative, so the site works under a project path and at a domain root.
-- Every page starts with a direction-contract comment (THESIS / OWN-WORLD / STORY / FIRST VIEWPORT / FORM). Keep it updated when a page's purpose changes.
+### Record slip (entry)
+Number at 2.25rem/125%; a ruled `dl` of status, logged, revisit by, stages; a
+history rail (print dots for events, a blue ring for the revisit due); contents.
+
+### Record fields (entry)
+At stake · Evidence · What would change it (ink label, numbered blue rings) ·
+Revisit by (large blue month, what will be checked, and a blank signature line).
+
+### Revision grammar
+A revised position shows `<del>` (print-2, struck in 2px blue) followed by
+`<ins>` (ink-wash ground). Never edit a position in place.
+
+### Index tabs (library)
+One link per stage plus "All stages", each with name and count. Current tab is
+white with a 2px print border joined to the page rule. Below 52rem they become a
+grid of bordered tiles; current is reversed (print ground, paper text).
+
+### Source row (library)
+Kind and publisher/year · title (link to the source) with "Why it matters"
+(executive) and "What to check" (engineer) · maturity, stage tabs (primary
+outlined in print), checked date and "Cited in" back-links in ink.
+
+### Placeholder
+Dashed `print-2` border on stock with a reversed "tag" label. Used for copy the
+owner must replace (bio) and for the illustrative library sample.
+
+### Navigation
+Name left (720, 118% width), three links right. Current page: 2px print
+underline (`aria-current="page"`); section pages use `aria-current="true"`.
+
+### Motion
+One authored moment on the home page: each window draws from logged to revisit
+(clip-path, 1.1s exponential ease-out) and the revisit ring settles in. On
+entries, trace bars grow on scroll via `animation-timeline: view()` behind
+`@supports`. Both sit behind `prefers-reduced-motion: no-preference`; content is
+fully drawn by default.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** derive every position strictly from its note, and say what would change it.
+- **Do** keep the original wording of a revised position on the page, struck through.
+- **Do** keep blue for the author's commitments; keep links print.
+- **Do** keep every internal link relative and run `node scripts/check-links.mjs`.
+- **Do** label any illustrative data as illustrative, in the placeholder style.
+- **Do** start generated pages with the direction-contract comment (THESIS / OWN-WORLD / STORY / FIRST VIEWPORT / FORM) in `scripts/build.mjs`.
+
+### Don't:
+- **Don't** use self-descriptors (executive, leader, expert, visionary) for the author.
+- **Don't** colour status green/red, or encode it by colour alone.
+- **Don't** add hero imagery, portraits, card grids, logo walls, testimonials or gradients.
+- **Don't** put a kicker or eyebrow label above a heading.
+- **Don't** set metadata in monospace or tracked capitals.
+- **Don't** add shadows, dark mode, tracking or third-party scripts and fonts.
+- **Don't** assign a register number before a position is logged, or reuse one.
