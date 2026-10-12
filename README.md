@@ -1,35 +1,54 @@
 # rafaelgorski.com
 
-Notes for leaders running AI at scale. A static site with no build step, served by GitHub Pages.
+A map of launching and scaling AI systems, from Frame to Govern, with original notes and curated
+sources pinned to the stage where each matters. The site is static HTML served by GitHub Pages.
+A zero-dependency Node script generates the map and the library from JSON.
 
 ## Layout
 
 ```
-site/                          published root (deployed as-is)
-  index.html                   index of notes
+content/                       curated data (owned by curation; do not edit from design work)
+  stages.json                  the six stages and their questions
+  library.json                 curated sources
+site-data/                     site copy
+  plate.json                   map title, caption, per-stage tests, short titles
+  notes.json                   notes registry: id, stage, title, status
+scripts/
+  build.mjs                    renders site/index.html and site/library/index.html
+  check-links.mjs              fails if any internal link or #fragment does not resolve
+site/                          published root
+  index.html                   the map (generated)
+  library/index.html           the library (generated)
+  notes/<slug>/index.html      one folder per note (hand-written)
   about/index.html             about page (bio is a placeholder)
-  notes/<slug>/index.html      one folder per note
   assets/site.css              the whole design system
+  assets/fonts/                self-hosted Jost (OFL)
   404.html
-.github/workflows/pages.yml    deploys site/ on every push to main
+.github/workflows/pages.yml    builds, checks links and deploys site/ on every push to main
 PRODUCT.md / DESIGN.md         product and design records
 ```
 
 All internal links are relative, so the site works both at
 `https://rafaelgorski.github.io/rafaelgorski.com/` and at the root of a custom domain.
 
-## Preview locally
+## Build and preview locally
+
+Node 18 or later, with no packages to install:
 
 ```
+node scripts/build.mjs
+node scripts/check-links.mjs
 python -m http.server 8000 --directory site
 ```
 
-Then open <http://localhost:8000>.
+Then open <http://localhost:8000>. The generated pages are committed, so the site also previews
+without running the build.
 
 ## Publish
 
 1. In **Settings → Pages**, set **Source** to **GitHub Actions** (one time).
-2. Push to `main`. The workflow uploads `site/` and deploys it.
+2. Push to `main`. The workflow runs the build and the link check, then uploads `site/` and
+   deploys it.
 
 ## Moving the domain
 
@@ -43,6 +62,8 @@ When ready to serve from `rafaelgorski.com`:
 
 ## Adding a note
 
-Copy `site/notes/agentic-observability/` to a new folder, keep the header block and
-section/requirement structure, give it the next ID (`GN-0002`), and add it to the
-index in `site/index.html`.
+1. Copy `site/notes/agentic-observability/` to a new folder.
+2. Give the note the next ID (`GN-0002`), and set its stage in the locator band (the
+   `aria-current="location"` segment) and in the "Charted at" aside.
+3. Add it to `site-data/notes.json` with the same stage, then run `node scripts/build.mjs`. The
+   note appears as a vermilion block on the map and in that stage's library section.

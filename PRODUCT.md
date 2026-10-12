@@ -26,7 +26,7 @@ Executive guidance that is derived from the actual engineering standards and spe
 - First article: agentic observability, sourced from `open-telemetry/semantic-conventions-genai/docs/gen-ai`.
 
 ## Capabilities and Constraints
-- Static site, no build step, no tracking, no third-party scripts. *(decision, inferred from "low profile")*
+- Static output, no tracking, no third-party scripts or fonts. A zero-dependency Node build (`scripts/build.mjs`) renders the map and library from `content/*.json`; the published pages are plain HTML that read without JavaScript. *(decision, inferred from "low profile")*
 - Must work under both a project path (`/rafaelgorski.com/`) and the root domain: all internal links are relative.
 - Undecided: contact channel, newsletter, speaking/advisory offer.
 

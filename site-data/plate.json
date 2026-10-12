@@ -3,6 +3,16 @@
   "caption": "Six stages from the first decision to accountable operation: the question each stage must answer, and the sources worth reading there. Read across for the route, down for the evidence.",
   "edition": "October 2026",
   "loop": "What production teaches goes back to Frame.",
+  "short": {
+    "data-cascades": "Data Cascades in High-Stakes AI",
+    "tau-bench": "τ-bench",
+    "who-validates-the-validators": "Who Validates the Validators?",
+    "mcp-specification": "Model Context Protocol Specification",
+    "eu-ai-act": "EU Artificial Intelligence Act",
+    "iso-iec-42001": "ISO/IEC 42001 AI management system",
+    "iso-iec-42005": "ISO/IEC 42005 AI system impact assessment",
+    "nist-genai-profile": "AI RMF Generative AI Profile"
+  },
   "tests": {
     "frame": { "label": "Move on when", "text": "there is a named owner, a decision this will change, and a measure of success agreed before building." },
     "pilot": { "label": "Move on when", "text": "results on real data beat a simple baseline, and the failures are written down, not only the average." },

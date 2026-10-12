@@ -8,12 +8,12 @@ import path from "node:path";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const content = (f) => path.join(root, "content", f);
+const siteData = (f) => path.join(root, "site-data", f);
 const site = (f) => path.join(root, "site", f);
 
-async function loadJson(primary, fallback) {
-  const file = existsSync(content(primary)) ? primary : fallback;
-  if (!file || !existsSync(content(file))) throw new Error(`Missing content/${primary}`);
-  return { file, data: JSON.parse(await readFile(content(file), "utf8")) };
+async function loadJson(file) {
+  if (!existsSync(file)) throw new Error(`Missing ${path.relative(root, file)}`);
+  return { file: path.relative(root, file), data: JSON.parse(await readFile(file, "utf8")) };
 }
 
 const KINDS = {
@@ -45,16 +45,29 @@ const esc = (s) =>
     .replace(/"/g, "&quot;");
 const words = (s) => String(s || "").trim().split(/\s+/).filter(Boolean).length;
 
-function shortTitle(title) {
-  const t = String(title).trim();
-  const paren = t.match(/\(([^)]{2,18})\)\s*$/);
-  if (paren && /[A-Z]{2}/.test(paren[1])) return paren[1];
+function shortTitle(e) {
+  if (plate.short?.[e.id]) return plate.short[e.id];
+  const t = String(e.title).trim();
+  const paren = t.match(/\(([^)]{2,32})\)\s*$/);
+  if (paren && /[A-Za-z]{2}/.test(paren[1]) && !/^\d/.test(paren[1])) return paren[1];
   let s = t;
   const colon = s.indexOf(":");
-  if (colon >= 12) s = s.slice(0, colon);
-  if (s.length > 64) s = s.slice(0, s.lastIndexOf(" ", 61)) + "…";
+  if (colon >= 3) {
+    const pre = s.slice(0, colon).trim();
+    const post = s.slice(colon + 1).trim();
+    s = /^["“]/.test(pre) || (pre.length > 40 && post.length <= 48) ? post : pre;
+  } else if (/\?\s/.test(s) && s.length > 48) {
+    s = s.slice(0, s.indexOf("?") + 1);
+  }
+  if (s.length > 72) s = s.slice(0, s.lastIndexOf(" ", 69)) + "…";
   return s;
 }
+// Map bylines keep the first credit; an author list becomes "et al." (the library shows it in full).
+const shortPublisher = (p) => {
+  const [first, ...rest] = String(p).split(",");
+  const tail = rest.join(",");
+  return / and /.test(tail) && !/et al\./.test(first) ? `${first.trim()} et al.` : first.trim();
+};
 
 function formatDate(iso) {
   const m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(iso || "");
@@ -64,13 +77,11 @@ function formatDate(iso) {
 }
 
 // ---------- Load and validate ----------
-const stagesSrc = await loadJson("stages.json", "stages.sample.json");
+const stagesSrc = await loadJson(content("stages.json"));
 // LIBRARY_FILE lets a preview render a different library (for example a stress test) without touching content/.
-const librarySrc = process.env.LIBRARY_FILE
-  ? { file: path.basename(process.env.LIBRARY_FILE), data: JSON.parse(await readFile(process.env.LIBRARY_FILE, "utf8")) }
-  : await loadJson("library.json", "library.sample.json");
-const notesSrc = await loadJson("notes.json");
-const plateSrc = await loadJson("plate.json");
+const librarySrc = await loadJson(process.env.LIBRARY_FILE || content("library.json"));
+const notesSrc = await loadJson(siteData("notes.json"));
+const plateSrc = await loadJson(siteData("plate.json"));
 
 const rawStages = Array.isArray(stagesSrc.data) ? stagesSrc.data : stagesSrc.data.stages;
 const stages = rawStages.map((s, i) => ({
@@ -84,7 +95,7 @@ const library = librarySrc.data;
 const entries = library.entries || [];
 const notes = notesSrc.data.notes || [];
 const plate = plateSrc.data;
-const illustrative = Boolean(library.illustrative) || librarySrc.file.includes("sample");
+const illustrative = Boolean(library.illustrative);
 
 const errors = [];
 const warnings = [];
@@ -151,7 +162,10 @@ const glyph = (family, maturity, extra = "") =>
   `<svg class="g${extra}" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-${family}-${maturity}"/></svg>`;
 const glyphFor = (e, extra) => glyph(KINDS[e.kind].family, e.maturity, extra);
 const describe = (e) => `${KINDS[e.kind].label}, ${MATURITY[e.maturity].toLowerCase()}`;
-const byline = (e) => `${esc(e.publisher)}${e.year ? ` · ${e.year}` : ""}`;
+// year is null for living documents maintained in place.
+const yearLabel = (e) => (e.year == null ? "living" : String(e.year));
+const byline = (e) => `${esc(shortPublisher(e.publisher))} · ${yearLabel(e)}`;
+const isVerified = (e) => Boolean(e.verified) && e.verified !== "false";
 
 function page({ rel, current, title, description, bodyClass, main, foot = "" }) {
   const cur = (k) => (k === current ? ' aria-current="page"' : "");
@@ -233,7 +247,7 @@ function renderMap() {
         ? `<ul class="units" aria-label="Sources charted at ${esc(s.name)}">
 ${prim
   .map(
-    (e, i) => `            <li style="--i:${i}"><a class="unit" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e)}<span class="u-t">${esc(shortTitle(e.title))}</span><span class="u-m">${byline(e)}<span class="vh">. ${describe(e)}.</span></span></a></li>`
+    (e, i) => `            <li style="--i:${i}"><a class="unit" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e)}<span class="u-t">${esc(shortTitle(e))}</span><span class="u-m">${byline(e)}<span class="vh">. ${describe(e)}.</span></span></a></li>`
   )
   .join("\n")}
           </ul>`
@@ -244,7 +258,7 @@ ${prim
 ${sec
   .slice(0, GHOST_MAX)
   .map(
-    (e) => `            <li><a class="ghost" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e, " g-ghost")}<span class="u-t">${esc(shortTitle(e.title))}</span><span class="vh">, charted at ${esc(stageById[e.stages[0]].name)}. ${describe(e)}.</span></a></li>`
+    (e) => `            <li><a class="ghost" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e, " g-ghost")}<span class="u-t">${esc(shortTitle(e))}</span><span class="vh">, charted at ${esc(stageById[e.stages[0]].name)}. ${describe(e)}.</span></a></li>`
   )
   .join("\n")}${
             sec.length > GHOST_MAX
@@ -321,8 +335,8 @@ ${prim
         ${glyphFor(e)}
         <div class="e-id">
           <h3 class="e-t"><a href="${esc(e.url)}">${esc(e.title)}</a></h3>
-          <p class="e-m">${byline(e)}</p>
-          <p class="e-k">${KINDS[e.kind].label} · ${MATURITY[e.maturity]}${other ? ` · also <a href="#${esc(other.id)}">${esc(other.name)}</a>` : ""}${e.verified === false ? ` · <span class="unverified">not yet verified</span>` : ""}</p>
+          <p class="e-m">${esc(e.publisher)} · ${e.year == null ? "living document" : e.year}</p>
+          <p class="e-k">${KINDS[e.kind].label} · ${MATURITY[e.maturity]}${other ? ` · also <a href="#${esc(other.id)}">${esc(other.name)}</a>` : ""}${isVerified(e) ? "" : ` · <span class="unverified">not yet verified</span>`}</p>
         </div>
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>${esc(e.why)}</dd></div>
@@ -335,7 +349,7 @@ ${prim
         : `<p class="empty">No sources charted at ${esc(s.name)} yet.</p>`;
       const also = sec.length
         ? `<p class="also-here" id="${esc(s.id)}-also"><b>Also read here:</b> ${sec
-            .map((e) => `<a href="#src-${esc(e.id)}">${esc(shortTitle(e.title))}</a> <span class="ah-at">(${esc(stageById[e.stages[0]].name)})</span>`)
+            .map((e) => `<a href="#src-${esc(e.id)}">${esc(shortTitle(e))}</a> <span class="ah-at">(${esc(stageById[e.stages[0]].name)})</span>`)
             .join(", ")}</p>`
         : "";
       const noteList = ns.length
@@ -363,7 +377,7 @@ ${prim
   </div>
   <div class="ph-key">
     ${key({ withNotes: false })}
-    ${updatedLabel ? `<p class="edition">Updated ${esc(updatedLabel)}</p>` : ""}
+    ${updatedLabel ? `<p class="edition">Updated ${esc(updatedLabel)}${entries.every(isVerified) ? ". Every link, title, publisher and year checked against its source." : ""}</p>` : ""}
     ${sampleNotice(rel)}
   </div>
 </div>

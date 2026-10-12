@@ -57,7 +57,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
 <div class="page-head lib-head">
   <div class="ph-title">
     <h1>Library</h1>
-    <p class="caption">6 sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <p class="caption">45 sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
   </div>
   <div class="ph-key">
     <dl class="key">
@@ -65,18 +65,18 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
       <div><dt>Fill</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Stable</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span><b>Evolving</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-draft"/></svg><span><b>Draft</b></span></li></ul></dd></div>
       
     </dl>
-    <p class="edition">Updated 12 October 2026</p>
-    <p class="sample"><b>Illustrative sample.</b> 6 real, well-known sources stand in until the curated library is published.</p>
+    <p class="edition">Updated 12 October 2026. Every link, title, publisher and year checked against its source.</p>
+    
   </div>
 </div>
 <nav class="stage-index" aria-label="Stages">
   <ol>
-      <li><a href="#frame"><span class="band-n">1</span><span class="si-name">Frame</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
-      <li><a href="#pilot"><span class="band-n">2</span><span class="si-name">Pilot</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
-      <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
-      <li><a href="#scale"><span class="band-n">4</span><span class="si-name">Scale</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
-      <li><a href="#operate"><span class="band-n">5</span><span class="si-name">Operate</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
-      <li class="is-govern"><a href="#govern"><span class="band-n">6</span><span class="si-name">Govern</span><span class="si-c">1<span class="vh"> sources</span></span></a></li>
+      <li><a href="#frame"><span class="band-n">1</span><span class="si-name">Frame</span><span class="si-c">5<span class="vh"> sources</span></span></a></li>
+      <li><a href="#pilot"><span class="band-n">2</span><span class="si-name">Pilot</span><span class="si-c">7<span class="vh"> sources</span></span></a></li>
+      <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
+      <li><a href="#scale"><span class="band-n">4</span><span class="si-name">Scale</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
+      <li><a href="#operate"><span class="band-n">5</span><span class="si-name">Operate</span><span class="si-c">6<span class="vh"> sources</span></span></a></li>
+      <li class="is-govern"><a href="#govern"><span class="band-n">6</span><span class="si-name">Govern</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
   </ol>
 </nav>
 <div class="lib">
@@ -89,20 +89,68 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
     </div>
     <div class="ls-body">
     <ol class="entries">
-      <li class="entry" id="src-google-rules-of-ml">
+      <li class="entry" id="src-rules-of-ml">
         <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
         <div class="e-id">
           <h3 class="e-t"><a href="https://developers.google.com/machine-learning/guides/rules-of-ml">Rules of Machine Learning: Best Practices for ML Engineering</a></h3>
-          <p class="e-m">Google</p>
+          <p class="e-m">Martin Zinkevich, Google · living document</p>
           <p class="e-k">Guide · Stable · also <a href="#pilot">Pilot</a></p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>Its first rule is not to be afraid to launch without machine learning. A fair test for any AI proposal before money is committed: does the simple version already prove the need?</dd></div>
-          <div class="check"><dt>What to check</dt><dd>Is there a heuristic baseline, and is the success metric observable and attributable before any model is trained?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>Its first rule is not to be afraid to launch without machine learning. That sets the right opening question for any sponsor: what simple baseline must the AI beat to justify its cost?</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Ship a heuristic or non-ML baseline first, instrument it, and require every model to beat it on the same metric.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-hidden-technical-debt">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://papers.nips.cc/paper_files/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html">Hidden Technical Debt in Machine Learning Systems</a></h3>
+          <p class="e-m">D. Sculley et al., NeurIPS · 2015</p>
+          <p class="e-k">Paper · Stable · also <a href="#operate">Operate</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>The ML code is a small fraction of a production ML system; the surrounding data, configuration and serving code carry most of the long-term cost. Budget for that, not for the demo.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Inventory undeclared consumers, data dependencies and feedback loops around each model before committing to scale it.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-building-effective-agents">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a></h3>
+          <p class="e-m">Anthropic · 2024</p>
+          <p class="e-k">Guide · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Separates predefined workflows from autonomous agents and argues for the simplest design that works. The publisher flags that the tooling described has since changed; read it for the design reasoning.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>For each proposed agent, document why a fixed workflow would not meet the requirement before granting it open-ended control.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-metr-time-horizons">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2503.14499">Measuring AI Ability to Complete Long Software Tasks</a></h3>
+          <p class="e-m">Thomas Kwa et al., METR · 2025</p>
+          <p class="e-k">Paper · Evolving · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Measures capability as the length of task, in skilled human time, that a model completes half the time. A sober way to set scope: delegate work inside that horizon, not beyond it.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Estimate how long your target tasks take a skilled person and compare that with the published time horizon of the model you plan to use.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-data-cascades">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://research.google/pubs/everyone-wants-to-do-the-model-work-not-the-data-work-data-cascades-in-high-stakes-ai/">&quot;Everyone wants to do the model work, not the data work&quot;: Data Cascades in High-Stakes AI</a></h3>
+          <p class="e-m">Nithya Sambasivan et al., ACM CHI · 2021</p>
+          <p class="e-k">Paper · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>In interviews with 53 practitioners, 92% had met compounding data failures that surfaced late. The study ties them to practices that undervalue data work, which leaders can change.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Log when each data issue was introduced and when it was detected; the gap is your cascade exposure.</dd></div>
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="frame-also"><b>Also read here:</b> <a href="#src-nist-ai-rmf">AI RMF 1.0</a> <span class="ah-at">(Govern)</span></p>
+    <p class="also-here" id="frame-also"><b>Also read here:</b> <a href="#src-ai-agents-that-matter">AI Agents That Matter</a> <span class="ah-at">(Pilot)</span>, <a href="#src-iso-iec-42005">ISO/IEC 42005 AI system impact assessment</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-ai-rmf">AI RMF 1.0</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="pilot" aria-labelledby="pilot-h">
@@ -114,20 +162,92 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
     </div>
     <div class="ls-body">
     <ol class="entries">
-      <li class="entry" id="src-helm">
+      <li class="entry" id="src-tau-bench">
         <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
         <div class="e-id">
-          <h3 class="e-t"><a href="https://arxiv.org/abs/2211.09110">Holistic Evaluation of Language Models</a></h3>
-          <p class="e-m">Stanford CRFM · 2022</p>
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2406.12045">τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains</a></h3>
+          <p class="e-m">Shunyu Yao et al. · 2024</p>
           <p class="e-k">Paper · Stable</p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>Shows how a single accuracy figure hides the trade-offs that matter, such as calibration, robustness and efficiency. Ask for that breadth before a pilot is called a success.</dd></div>
-          <div class="check"><dt>What to check</dt><dd>Are results reported per scenario and across several metrics, on an evaluation set fixed before testing began?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>Introduces pass^k: the chance an agent succeeds on every one of k repeated attempts at the same task. A pilot that passes once is a demo; consistency is what customers experience.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Run each evaluation task several times and report pass^k alongside the single-run success rate.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-ai-agents-that-matter">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2407.01502">AI Agents That Matter</a></h3>
+          <p class="e-m">Sayash Kapoor et al. · 2024</p>
+          <p class="e-k">Paper · Stable · also <a href="#frame">Frame</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Shows that agent evaluations often ignore cost and lack proper holdout sets, so headline accuracy can mislead. Ask for accuracy and cost together, measured on tasks the agent has not seen.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Plot every candidate agent on cost versus accuracy, including simple baselines, and require results on a held-out task set.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-llm-as-a-judge">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2306.05685">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</a></h3>
+          <p class="e-m">Lianmin Zheng et al., NeurIPS · 2023</p>
+          <p class="e-k">Paper · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Strong models can approximate human preference ratings, which makes evaluation at scale affordable. The paper also documents position, verbosity and self-enhancement biases that must be controlled before trusting the scores.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Swap answer order, vary length and use a different model family as judge; report agreement with a human-labelled sample.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-who-validates-the-validators">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2404.12272">Who Validates the Validators? Aligning LLM-Assisted Evaluation of LLM Outputs with Human Preferences</a></h3>
+          <p class="e-m">Shreya Shankar et al. · 2024</p>
+          <p class="e-k">Paper · Stable · also <a href="#operate">Operate</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Finds that people refine their evaluation criteria while grading outputs, so automated graders must be revisited as understanding grows. Evaluation is a managed asset, not a one-time setup.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Version your grading criteria and LLM-judge prompts, and re-measure their agreement with human grades whenever criteria change.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-underspecification">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://jmlr.org/papers/v23/20-1335.html">Underspecification Presents Challenges for Credibility in Modern Machine Learning</a></h3>
+          <p class="e-m">Alexander D'Amour et al., JMLR · 2022</p>
+          <p class="e-k">Paper · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Models with equally strong test scores can behave very differently in deployment. A strong pilot result does not, on its own, predict production behaviour.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Evaluate candidate models on shifted and subgroup data that the pilot test set does not represent.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-inspect-evals">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://inspect.aisi.org.uk/">Inspect</a></h3>
+          <p class="e-m">UK AI Security Institute and Meridian Labs · living document</p>
+          <p class="e-k">Framework · Evolving · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>An open-source evaluation framework co-developed by the UK AI Security Institute, covering coding, agentic and reasoning tasks. A shared, inspectable harness makes results reproducible and comparable across model vendors.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Express pilot evaluations as versioned Inspect tasks so the same suite reruns unchanged on every model or prompt change.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-datasheets-for-datasets">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/1803.09010">Datasheets for Datasets</a></h3>
+          <p class="e-m">Timnit Gebru et al., Communications of the ACM · 2021</p>
+          <p class="e-k">Paper · Stable · also <a href="#govern">Govern</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A standard set of questions about how a dataset was collected, labelled and intended to be used. Without those answers, no one can say whether pilot data represents production.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Require a datasheet for every evaluation and fine-tuning dataset, including its collection process, known gaps and permitted uses.</dd></div>
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="pilot-also"><b>Also read here:</b> <a href="#src-google-rules-of-ml">Rules of Machine Learning</a> <span class="ah-at">(Frame)</span></p>
+    <p class="also-here" id="pilot-also"><b>Also read here:</b> <a href="#src-rules-of-ml">Rules of Machine Learning</a> <span class="ah-at">(Frame)</span>, <a href="#src-building-effective-agents">Building effective agents</a> <span class="ah-at">(Frame)</span>, <a href="#src-metr-time-horizons">Measuring AI Ability to Complete Long Software Tasks</a> <span class="ah-at">(Frame)</span>, <a href="#src-data-cascades">Data Cascades in High-Stakes AI</a> <span class="ah-at">(Frame)</span>, <a href="#src-ml-test-score">The ML Test Score</a> <span class="ah-at">(Launch)</span>, <a href="#src-openai-sycophancy-postmortem">Expanding on what we missed with sycophancy</a> <span class="ah-at">(Launch)</span>, <a href="#src-multi-agent-failures">Why Do Multi-Agent LLM Systems Fail?</a> <span class="ah-at">(Scale)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="launch" aria-labelledby="launch-h">
@@ -139,20 +259,116 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
     </div>
     <div class="ls-body">
     <ol class="entries">
-      <li class="entry" id="src-owasp-llm-top-10">
-        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg>
+      <li class="entry" id="src-sre-reliable-launches">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
         <div class="e-id">
-          <h3 class="e-t"><a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM Applications 2025</a></h3>
-          <p class="e-m">OWASP Gen AI Security Project · 2024</p>
-          <p class="e-k">Guide · Evolving · also <a href="#operate">Operate</a></p>
+          <h3 class="e-t"><a href="https://sre.google/sre-book/reliable-product-launches/">Reliable Product Launches at Scale</a></h3>
+          <p class="e-m">Google, Site Reliability Engineering (O'Reilly) · 2016</p>
+          <p class="e-k">Book · Stable</p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>The shared list of ways LLM applications are attacked, from prompt injection to excessive agency. A launch review that cannot answer every item is not finished.</dd></div>
-          <div class="check"><dt>What to check</dt><dd>For each risk on the list, which control, test or monitor exists today, and who owns it?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>Describes how Google turned launches into a repeatable discipline with a dedicated coordination role and a checklist. AI launches need the same rigour, plus questions specific to model behaviour.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Extend the launch checklist with rows for evaluation results, abuse testing, rollback of model and prompt versions, and cost limits.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-sre-canarying-releases">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://sre.google/workbook/canarying-releases/">Canarying Releases</a></h3>
+          <p class="e-m">Google, The Site Reliability Workbook (O'Reilly) · 2018</p>
+          <p class="e-k">Book · Stable · also <a href="#operate">Operate</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Expose a change to a small share of traffic, compare it against a control, then widen. For models and prompts, whose failures are statistical rather than crashes, this comparison is an essential safety net.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Route model and prompt changes through a canary with a control group and predefined quality, latency and cost thresholds.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-ml-test-score">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/">The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction</a></h3>
+          <p class="e-m">Eric Breck et al., IEEE Big Data · 2017</p>
+          <p class="e-k">Paper · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Twenty-eight specific tests and monitoring needs drawn from a wide range of production ML systems. It turns 'is this ready for production?' into a score a review board can track.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Score each system against the rubric at launch review and treat untested sections as open risks with named owners.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-owasp-llm-top-10-2025">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/">OWASP Top 10 for LLM Applications 2025</a></h3>
+          <p class="e-m">OWASP Gen AI Security Project · 2024</p>
+          <p class="e-k">Guide · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>The shared vocabulary security teams use for LLM application risk, from prompt injection to unbounded consumption. Asking which items a launch has mitigated is a fast, credible review question.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Map each of the ten risks to a named control or an accepted-risk decision in the launch review record.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-owasp-agentic-top-10-2026">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Top 10 for Agentic Applications for 2026</a></h3>
+          <p class="e-m">OWASP Gen AI Security Project · 2025</p>
+          <p class="e-k">Guide · Evolving · also <a href="#scale">Scale</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A peer-reviewed list of the most critical security risks for autonomous and agentic AI systems. Use it alongside the LLM Top 10 once a system can act, not just answer.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Verify each agent runs with its own scoped identity and least-privilege tool permissions, never a shared human or service account.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-secure-ai-development-guidelines">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.ncsc.gov.uk/collection/guidelines-secure-ai-system-development">Guidelines for secure AI system development</a></h3>
+          <p class="e-m">UK NCSC, US CISA and international partners · 2023</p>
+          <p class="e-k">Guide · Stable · also <a href="#govern">Govern</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Joint guidance from national cyber security agencies, organised by lifecycle: secure design, development, deployment, and operation and maintenance. A security baseline a board can point to.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Confirm model weights, prompts and tool credentials are covered by the same asset inventory, access control and incident process as code.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-openai-sycophancy-postmortem">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://openai.com/index/expanding-on-sycophancy/">Expanding on what we missed with sycophancy</a></h3>
+          <p class="e-m">OpenAI · 2025</p>
+          <p class="e-k">Postmortem · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A model update shipped on positive evaluations and A/B results despite expert testers saying it felt off, then was rolled back. OpenAI committed to treating behaviour issues as launch-blocking.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Give named expert reviewers authority to block a model release on qualitative findings, even when quantitative evaluations pass.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-human-ai-interaction-guidelines">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.microsoft.com/en-us/research/publication/guidelines-for-human-ai-interaction/">Guidelines for Human-AI Interaction</a></h3>
+          <p class="e-m">Saleema Amershi et al., Microsoft Research (ACM CHI) · 2019</p>
+          <p class="e-k">Paper · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Eighteen guidelines, validated with 49 design practitioners, for how AI features set expectations, handle mistakes and support correction. They shape how users experience the system on the days it is wrong.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Review the launch UI against the guidelines on efficient correction, efficient dismissal and explaining why the system did what it did.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-nist-adversarial-ml-taxonomy">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://csrc.nist.gov/pubs/ai/100/2/e2025/final">Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations</a></h3>
+          <p class="e-m">NIST (NIST AI 100-2 E2025) · 2025</p>
+          <p class="e-k">Guide · Stable · also <a href="#scale">Scale</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>NIST's reference taxonomy of attacks on predictive and generative AI, including direct and indirect prompt injection and the security of agents. One vocabulary for security, engineering and risk teams.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Use its attack categories as the headings of your AI threat model so findings map to a public reference.</dd></div>
         </dl>
       </li>
     </ol>
-    
+    <p class="also-here" id="launch-also"><b>Also read here:</b> <a href="#src-underspecification">Underspecification Presents Challenges for Credibility in Modern…</a> <span class="ah-at">(Pilot)</span>, <a href="#src-inspect-evals">Inspect</a> <span class="ah-at">(Pilot)</span>, <a href="#src-mcp-specification">Model Context Protocol Specification</a> <span class="ah-at">(Scale)</span>, <a href="#src-prompt-injection-design-patterns">Design Patterns for Securing LLM Agents against Prompt Injections</a> <span class="ah-at">(Scale)</span>, <a href="#src-oauth-security-bcp">Best Current Practice for OAuth 2.0 Security</a> <span class="ah-at">(Scale)</span>, <a href="#src-sre-service-level-objectives">Service Level Objectives</a> <span class="ah-at">(Operate)</span>, <a href="#src-eu-ai-act">EU Artificial Intelligence Act</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-genai-profile">AI RMF Generative AI Profile</a> <span class="ah-at">(Govern)</span>, <a href="#src-model-cards">Model Cards for Model Reporting</a> <span class="ah-at">(Govern)</span>, <a href="#src-moffatt-v-air-canada">Moffatt v. Air Canada, 2024 BCCRT 149</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="scale" aria-labelledby="scale-h">
@@ -164,20 +380,116 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
     </div>
     <div class="ls-body">
     <ol class="entries">
-      <li class="entry" id="src-hidden-technical-debt-ml">
-        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+      <li class="entry" id="src-mcp-specification">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg>
         <div class="e-id">
-          <h3 class="e-t"><a href="https://papers.nips.cc/paper_files/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html">Hidden Technical Debt in Machine Learning Systems</a></h3>
-          <p class="e-m">NeurIPS · 2015</p>
-          <p class="e-k">Paper · Stable · also <a href="#operate">Operate</a></p>
+          <h3 class="e-t"><a href="https://modelcontextprotocol.io/specification/2026-07-28">Model Context Protocol Specification (2026-07-28)</a></h3>
+          <p class="e-m">Model Context Protocol project (LF Projects) · 2026</p>
+          <p class="e-k">Specification · Evolving · also <a href="#launch">Launch</a></p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>The model is a small part of a production ML system. Cost and fragility accumulate in the glue, data dependencies and feedback loops around it, which is where scaling budgets go.</dd></div>
-          <div class="check"><dt>What to check</dt><dd>Are data dependencies, configuration and feedback loops inventoried, owned and tested like code?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>An open protocol for connecting AI applications to tools and data. Standardising on one protocol reduces bespoke integration work and gives security teams a single interface to review.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Pin the protocol revision your servers support and review its authorization section before exposing any MCP server beyond localhost.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-a2a-specification">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://a2a-protocol.org/v1.0.0/specification/">Agent2Agent (A2A) Protocol Specification</a></h3>
+          <p class="e-m">A2A Project, Linux Foundation · 2026</p>
+          <p class="e-k">Specification · Evolving</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>An open protocol for agents built by different teams or vendors to discover each other and delegate tasks. It matters once agents multiply and must cooperate across organisational boundaries.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Treat each Agent Card as an interface contract: version it, sign it, and review its declared skills and security schemes.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-tail-at-scale">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://research.google/pubs/the-tail-at-scale/">The Tail at Scale</a></h3>
+          <p class="e-m">Jeffrey Dean and Luiz André Barroso, Communications of the ACM · 2013</p>
+          <p class="e-k">Paper · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Brief latency spikes that are harmless in small systems come to dominate performance at scale. Agent workflows that chain many model and tool calls inherit this problem directly.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Measure p99 latency per step and end to end for agent runs, and set per-call timeouts and hedging where steps are idempotent.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-sre-cascading-failures">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://sre.google/sre-book/addressing-cascading-failures/">Addressing Cascading Failures</a></h3>
+          <p class="e-m">Google, Site Reliability Engineering (O'Reilly) · 2016</p>
+          <p class="e-k">Book · Stable · also <a href="#operate">Operate</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Explains how overload in one component spreads through retries and dependencies until a whole service fails. Agents that retry automatically can turn a model-provider slowdown into exactly this.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Cap retries with budgets and jittered backoff, propagate deadlines through agent steps, and load-test the provider-throttled case.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-frugalgpt">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2305.05176">FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance</a></h3>
+          <p class="e-m">Lingjiao Chen, Matei Zaharia and James Zou · 2023</p>
+          <p class="e-k">Paper · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Routing each query through a cascade, cheaper models first and stronger ones only when needed, matched the best single model at up to 98% lower cost. Model choice is a per-request decision.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Log which model served each request and at what cost, then test whether a cheaper first-pass model meets the quality bar.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-finops-for-ai">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.finops.org/wg/finops-for-ai-overview/">FinOps for AI Overview</a></h3>
+          <p class="e-m">FinOps Foundation · living document</p>
+          <p class="e-k">Guide · Evolving · also <a href="#govern">Govern</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Vendor-neutral practice for allocating and controlling AI spend, including token-based pricing and scarce GPU capacity. AI costs move faster and reach more teams than typical cloud spend.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Tag every model call with team, product and use case so cost per outcome can be reported, not just total spend.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-multi-agent-failures">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2503.13657">Why Do Multi-Agent LLM Systems Fail?</a></h3>
+          <p class="e-m">Mert Cemri et al. · 2025</p>
+          <p class="e-k">Paper · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A taxonomy of fourteen failure modes from expert-annotated traces, grouped into system design, misalignment between agents, and task verification. Adding agents adds coordination risk, not only capability.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Classify failed multi-agent runs with the paper's taxonomy, and require an explicit verification step before any agent marks a task complete.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-prompt-injection-design-patterns">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/2506.08837">Design Patterns for Securing LLM Agents against Prompt Injections</a></h3>
+          <p class="e-m">Luca Beurer-Kellner et al. · 2025</p>
+          <p class="e-k">Paper · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Proposes agent designs with provable resistance to prompt injection by limiting what an agent can do after reading untrusted input. Each trades some utility for security, a choice the business should own.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>For each agent, identify where untrusted content enters and which pattern, such as plan-then-execute, constrains actions after that point.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-oauth-security-bcp">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.rfc-editor.org/rfc/rfc9700">Best Current Practice for OAuth 2.0 Security</a></h3>
+          <p class="e-m">IETF (RFC 9700) · 2025</p>
+          <p class="e-k">Standard · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Agents increasingly act on delegated credentials, and agent protocols such as MCP authorise through OAuth. This is the IETF's current security baseline for OAuth deployments.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Confirm agent access tokens are audience-restricted and sender-constrained, and that public-client refresh tokens are rotated or sender-constrained.</dd></div>
         </dl>
       </li>
     </ol>
-    
+    <p class="also-here" id="scale-also"><b>Also read here:</b> <a href="#src-owasp-agentic-top-10-2026">OWASP Top 10 for Agentic Applications for 2026</a> <span class="ah-at">(Launch)</span>, <a href="#src-nist-adversarial-ml-taxonomy">Adversarial Machine Learning</a> <span class="ah-at">(Launch)</span>, <a href="#src-otel-genai-semconv">Semantic conventions for generative AI systems</a> <span class="ah-at">(Operate)</span>, <a href="#src-w3c-trace-context">Trace Context</a> <span class="ah-at">(Operate)</span>, <a href="#src-governing-agentic-ai">Practices for Governing Agentic AI Systems</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="operate" aria-labelledby="operate-h">
@@ -197,16 +509,76 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg>
         <div class="e-id">
           <h3 class="e-t"><a href="https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai">Semantic conventions for generative AI systems</a></h3>
-          <p class="e-m">OpenTelemetry</p>
-          <p class="e-k">Specification · Evolving · also <a href="#govern">Govern</a></p>
+          <p class="e-m">OpenTelemetry · living document</p>
+          <p class="e-k">Specification · Evolving · also <a href="#scale">Scale</a></p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>A shared vocabulary for tracing agents, model calls and tool calls, so that cost, quality and incidents can be attributed across vendors and teams.</dd></div>
-          <div class="check"><dt>What to check</dt><dd>Do traces follow the gen_ai conventions end to end, with the convention version recorded per service?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>The open standard for recording model calls, agent steps, tool use and token usage as telemetry. It keeps observability portable across vendors. Still marked Development, so expect changes.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Emit gen_ai spans and token-usage metrics for every model and tool call, and record which convention version each service emits.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-w3c-trace-context">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.w3.org/TR/trace-context/">Trace Context</a></h3>
+          <p class="e-m">W3C · 2021</p>
+          <p class="e-k">Standard · Stable · also <a href="#scale">Scale</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>The web standard for carrying a trace identifier across services. When one user request passes through several agents, tools and vendors, it is what lets you reconstruct the whole path.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Confirm traceparent headers propagate through every agent hop, tool call and third-party API, including asynchronous queues.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-dapper">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a></h3>
+          <p class="e-m">Benjamin H. Sigelman et al., Google · 2010</p>
+          <p class="e-k">Paper · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Google's account of ubiquitous, low-overhead tracing across production services. Its lesson holds for agents: tracing pays off only when it is everywhere and cheap enough to leave on.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Decide your trace sampling policy explicitly; keep full traces for errors, high-cost agent runs and sampled quality reviews.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-sre-service-level-objectives">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://sre.google/sre-book/service-level-objectives/">Service Level Objectives</a></h3>
+          <p class="e-m">Google, Site Reliability Engineering (O'Reilly) · 2016</p>
+          <p class="e-k">Book · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Defines reliability through indicators and objectives that reflect what users notice, and makes the target explicit. For AI systems, answer quality belongs beside latency and availability.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Define at least one quality SLI per AI feature, such as graded answer acceptability on sampled traffic, with an explicit SLO target.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-sre-postmortem-culture">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://sre.google/sre-book/postmortem-culture/">Postmortem Culture: Learning from Failure</a></h3>
+          <p class="e-m">Google, Site Reliability Engineering (O'Reilly) · 2016</p>
+          <p class="e-k">Book · Stable · also <a href="#govern">Govern</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Blameless postmortems turn incidents into durable fixes and shared knowledge. AI incidents, such as harmful outputs or quality regressions, deserve the same written review as outages.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Add AI-specific triggers to the postmortem policy: a quality regression, a harmful output reaching users, or an agent acting outside its scope.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-anthropic-quality-postmortem">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues">A postmortem of three recent issues</a></h3>
+          <p class="e-m">Anthropic · 2025</p>
+          <p class="e-k">Postmortem · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Three infrastructure bugs intermittently degraded responses, and the evaluations in place did not capture what users were reporting. Quality can regress in production through infrastructure alone.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Run quality evaluations continuously against true production endpoints, and keep a privacy-safe path to investigate user-reported bad outputs.</dd></div>
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-owasp-llm-top-10">OWASP Top 10 for LLM Applications 2025</a> <span class="ah-at">(Launch)</span>, <a href="#src-hidden-technical-debt-ml">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Scale)</span></p>
+    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-hidden-technical-debt">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Frame)</span>, <a href="#src-who-validates-the-validators">Who Validates the Validators?</a> <span class="ah-at">(Pilot)</span>, <a href="#src-sre-canarying-releases">Canarying Releases</a> <span class="ah-at">(Launch)</span>, <a href="#src-sre-cascading-failures">Addressing Cascading Failures</a> <span class="ah-at">(Scale)</span>, <a href="#src-ironies-of-automation">Ironies of automation</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage is-govern" id="govern" aria-labelledby="govern-h">
@@ -218,20 +590,116 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
     </div>
     <div class="ls-body">
     <ol class="entries">
+      <li class="entry" id="src-eu-ai-act">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence (Artificial Intelligence Act)</a></h3>
+          <p class="e-m">European Parliament and Council of the European Union · 2024</p>
+          <p class="e-k">Regulation · Evolving · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>EU law that tiers obligations by risk and places duties on deployers as well as providers. Obligations phase in over several years; establish which apply to your systems, and from when.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Classify each AI system against Article 6 and Annex III, and confirm logging and human-oversight duties for any high-risk use.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-iso-iec-42001">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://webstore.iec.ch/en/publication/90574">ISO/IEC 42001:2023 Information technology — Artificial intelligence — Management system</a></h3>
+          <p class="e-m">ISO/IEC JTC 1/SC 42 · 2023</p>
+          <p class="e-k">Standard · Stable</p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>The certifiable management-system standard for AI, built on the same structure as ISO/IEC 27001. It gives boards an auditable answer to who owns AI risk, how it is assessed, and how it improves.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Map existing AI controls to the standard's Annex A and record gaps before deciding whether to pursue certification.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-iso-iec-42005">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://webstore.iec.ch/en/publication/107659">ISO/IEC 42005:2025 Information technology — Artificial intelligence (AI) — AI system impact assessment</a></h3>
+          <p class="e-m">ISO/IEC JTC 1/SC 42 · 2025</p>
+          <p class="e-k">Standard · Stable · also <a href="#frame">Frame</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Guidance on assessing how an AI system may affect individuals and society, and when in the lifecycle to do it. Done early, it shapes scope; done late, it becomes paperwork.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Run the impact assessment before build and again at each material change, and link results to the risk register.</dd></div>
+        </dl>
+      </li>
       <li class="entry" id="src-nist-ai-rmf">
         <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
         <div class="e-id">
-          <h3 class="e-t"><a href="https://www.nist.gov/itl/ai-risk-management-framework">Artificial Intelligence Risk Management Framework (AI RMF 1.0)</a></h3>
-          <p class="e-m">NIST · 2023</p>
+          <h3 class="e-t"><a href="https://doi.org/10.6028/NIST.AI.100-1">Artificial Intelligence Risk Management Framework (AI RMF 1.0)</a></h3>
+          <p class="e-m">NIST (NIST AI 100-1) · 2023</p>
           <p class="e-k">Framework · Stable · also <a href="#frame">Frame</a></p>
         </div>
         <dl class="e-read">
-          <div class="why"><dt>Why it matters</dt><dd>Organises AI risk into four functions, Govern, Map, Measure and Manage, with Govern cutting across the others. A common language for boards, auditors and engineering.</dd></div>
-          <div class="check"><dt>What to check</dt><dd>Does each production AI system have a documented owner, risk tolerance and measurement plan?</dd></div>
+          <div class="why"><dt>Why it matters</dt><dd>A voluntary framework organised around four functions: govern, map, measure and manage. Useful as common language between risk, legal and engineering. NIST has announced it is being revised.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Map each AI system's controls to the four functions and name an accountable owner for every gap.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-nist-genai-profile">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://doi.org/10.6028/NIST.AI.600-1">Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile</a></h3>
+          <p class="e-m">NIST (NIST AI 600-1) · 2024</p>
+          <p class="e-k">Framework · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Applies the AI RMF to generative AI, defining risks novel to or worsened by it, such as confabulation and value-chain integration, with suggested actions. A practical basis for governance reviews.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Check the launch risk register covers each of the profile's risk categories, with an owner and a chosen action or explicit acceptance.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-governing-agentic-ai">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-evolving"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf">Practices for Governing Agentic AI Systems</a></h3>
+          <p class="e-m">Yonadav Shavit et al., OpenAI · 2023</p>
+          <p class="e-k">Paper · Evolving · also <a href="#scale">Scale</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Defines the parties in an agent's lifecycle and proposes initial practices such as constraining actions, requiring approval, attributability and interruptibility. A starting map of who is accountable when an agent acts.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>For each production agent, confirm actions are attributable to a principal and that a tested shutdown path exists.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-model-cards">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://arxiv.org/abs/1810.03993">Model Cards for Model Reporting</a></h3>
+          <p class="e-m">Margaret Mitchell et al., FAT* 2019 · 2019</p>
+          <p class="e-k">Paper · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A short, standard record of what a model is for, how it was evaluated, and where it should not be used. Write one before launch, not after an incident.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Maintain a card for each deployed model or agent, including disaggregated evaluation results and explicitly out-of-scope uses.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-moffatt-v-air-canada">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://decisions.civilresolutionbc.ca/crt/crtd/en/item/525448/index.do">Moffatt v. Air Canada, 2024 BCCRT 149</a></h3>
+          <p class="e-m">Civil Resolution Tribunal of British Columbia · 2024</p>
+          <p class="e-k">Postmortem · Stable · also <a href="#launch">Launch</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A tribunal held an airline liable for its website chatbot's incorrect advice, rejecting the idea that the chatbot was responsible for its own actions. A small claim, but a clear signal.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Ensure customer-facing AI answers on policy, price or entitlement are grounded in the authoritative source and logged for later review.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-ironies-of-automation">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://doi.org/10.1016/0005-1098(83)90046-8">Ironies of automation</a></h3>
+          <p class="e-m">Lisanne Bainbridge, Automatica · 1983</p>
+          <p class="e-k">Paper · Stable · also <a href="#operate">Operate</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Automation erodes the skills and attention people need to supervise it and take over when it fails. Every 'human in the loop' promise for agents has to be designed against this.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>For each human approval step, measure approval rates and review time; near-total approval with seconds of review signals rubber-stamping.</dd></div>
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="govern-also"><b>Also read here:</b> <a href="#src-otel-genai-semconv">Semantic conventions for generative AI systems</a> <span class="ah-at">(Operate)</span></p>
+    <p class="also-here" id="govern-also"><b>Also read here:</b> <a href="#src-datasheets-for-datasets">Datasheets for Datasets</a> <span class="ah-at">(Pilot)</span>, <a href="#src-secure-ai-development-guidelines">Guidelines for secure AI system development</a> <span class="ah-at">(Launch)</span>, <a href="#src-finops-for-ai">FinOps for AI Overview</a> <span class="ah-at">(Scale)</span>, <a href="#src-sre-postmortem-culture">Postmortem Culture</a> <span class="ah-at">(Operate)</span></p>
     </div>
   </section>
 </div>
