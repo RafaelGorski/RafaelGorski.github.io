@@ -127,8 +127,9 @@ Thoughtworks form (quadrants, four rings, numbered blips, a list per quadrant) w
 or palette.
 
 It is light only, because readers open shared links on laptops and phones in daylight offices. The
-pages read in full without JavaScript. The only scripts are one inline base-path fix on 404 and
-`site/assets/radar.js`, which adds hover and focus linking to the radar as progressive enhancement.
+pages read in full without JavaScript. The only script is `site/assets/radar.js`, which adds hover
+and focus linking to the radar as progressive enhancement. The 404 page uses root-relative links
+because the site is served from a domain root.
 There is no tracking and there are no third-party requests.
 
 Anti-references: the RFC or specification sheet (the previous iteration), the personal-brand hero,

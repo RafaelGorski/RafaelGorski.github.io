@@ -30,15 +30,5 @@
     <p>The address may have changed, or the note may not be published yet. Start again from <a id="home" href="/">the map</a> or the <a id="lib" href="/library/">library</a>.</p>
   </main>
 </div>
-<script>
-  // Works both under the GitHub Pages project path and on the root domain.
-  (function () {
-    var base = "/rafaelgorski.com/";
-    if (location.pathname.indexOf(base) !== 0) return;
-    document.getElementById("home").setAttribute("href", base);
-    document.getElementById("name").setAttribute("href", base);
-    document.getElementById("lib").setAttribute("href", base + "library/");
-  })();
-</script>
 </body>
 </html>
