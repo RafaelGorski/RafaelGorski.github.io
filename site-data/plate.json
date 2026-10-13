@@ -15,7 +15,7 @@
   },
   "tests": {
     "purpose": { "label": "Move on when", "text": "there is a named owner, a decision this will change, and a measure of success agreed before building." },
-    "pilot": { "label": "Move on when", "text": "results on real data beat a simple baseline, and the failures are written down, not only the average." },
+    "design": { "label": "Move on when", "text": "results on real data beat a simple baseline, and the failures are written down, not only the average." },
     "launch": { "label": "Move on when", "text": "a staged rollout, a tested rollback and a human escalation path are live before the first user." },
     "scale": { "label": "Move on when", "text": "the cost of a completed task is known, and the platform enforces limits on spend and agent loops." },
     "operate": { "label": "In control when", "text": "every request leaves one connected trace, incidents are reviewed, and each lesson becomes an evaluation." },

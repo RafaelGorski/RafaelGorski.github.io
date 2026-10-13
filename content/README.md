@@ -7,7 +7,7 @@ not edit them. Nothing in this folder is published HTML.
 
 | File | Purpose |
 |------|---------|
-| `stages.json` | The six stages of an AI programme (purpose, pilot, launch, scale, operate, govern), each with the question it answers. The ids are fixed: the site hardcodes them. |
+| `stages.json` | The six stages of an AI programme (purpose, design, launch, scale, operate, govern), each with the question it answers. The ids are fixed: the site hardcodes them. |
 | `library.json` | The curated library: primary sources for launching and scaling AI systems, including agentic systems. |
 | `editorial-plan.md` | Eight proposed future notes, each built on library entries. A proposal for the owner's review, not settled positions. |
 
@@ -40,8 +40,9 @@ not edit them. Nothing in this folder is published HTML.
 - `why`: why it matters to someone deciding whether and how to launch or scale AI.
 - `check`: the one concrete thing an engineer should verify or adopt from it.
 - `maturity`: `stable` for published, final texts; `evolving` for documents in active revision,
-  versioned protocols, and texts whose obligations or guidance are still being phased in;
-  `draft` for unfinished texts (none are currently included).
+  versioned protocols, texts whose obligations or guidance are still being phased in, and
+  proposals for practices that are not yet standardised; `draft` for unfinished texts (none are
+  currently included).
 - `verified`: the date the URL was fetched and the title, publisher and year were checked
   against the source.
 
@@ -57,8 +58,8 @@ not edit them. Nothing in this folder is published HTML.
 3. **Vendor writing only as evidence.** Engineering write-ups and postmortems from AI vendors are
    included for what they disclose about practice or failure, never for product claims.
 4. **Free where possible.** Free canonical versions are linked where they exist (arXiv, the
-   publisher's research page, sre.google). ISO/IEC standards and Bainbridge (1983) are paid; no
-   free canonical version exists.
+   publisher's research page, sre.google). ISO/IEC standards, Bainbridge (1983) and the Hubbard
+   and Meadows books are paid; no free canonical version exists.
 5. **Honest about maturity.** Drafts, revisions in progress and phased obligations are flagged in
    `maturity` and, where it matters, in `why`.
 6. **Voice.** Plain English, British spelling, no hype words, no exclamation marks.
@@ -76,6 +77,10 @@ not edit them. Nothing in this folder is published HTML.
   and the text stay in step.
 - **`postmortem`** covers public, first-party accounts of a failure, and also *Moffatt v. Air
   Canada*, a tribunal decision that serves as the public record of an AI incident.
+- **Essays** use `guide`, the closest kind, because they propose practices (for example
+  `models-as-insider-risks`).
+- **Books** link to the publisher's page for the edition cited. The Google SRE chapters are the
+  exception: they link to Google's free online text.
 - **Publisher** names the organisation, or the first author with "et al." and the venue where one
   was verified.
 

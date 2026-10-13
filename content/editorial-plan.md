@@ -21,7 +21,7 @@ is still in development.
 
 ## 2. Once is a demo: measuring reliability before launch
 
-- **Primary stage:** pilot
+- **Primary stage:** design
 - **Decision:** What evidence should a pilot team present before we approve a launch:
   repeated-trial success, agreement between automated graders and human reviewers, or both?
 - **Builds on:** `tau-bench`, `who-validates-the-validators`, `llm-as-a-judge`, `inspect-evals`
@@ -95,7 +95,7 @@ is still in development.
 | Stage   | Proposed notes |
 |---------|----------------|
 | purpose | 1              |
-| pilot   | 2              |
+| design  | 2              |
 | launch  | 3, 4           |
 | scale   | 5, 6           |
 | operate | 7 (plus the published observability note) |
