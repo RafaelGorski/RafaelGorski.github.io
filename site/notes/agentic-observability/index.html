@@ -7,60 +7,78 @@
 <meta name="description" content="Agents turn one request into a tree of decisions, model calls and tool calls. The OpenTelemetry GenAI semantic conventions give that tree a shared vocabulary. Eight requirements for leaders.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/site.css">
 <!--
-THESIS: A note is a specification: numbered sections, an exhibit, and
-  requirements that each trace to a source. Refuses the blog-post template
-  (hero image, author card, share buttons).
-OWN-WORLD: White sheet, one ink, link blue; RFC header block and identifiers in
-  the fixed-pitch face; prose in the book face; exhibits on #eef1fa.
-STORY: The reader learns why agents need tracing, sees what one agent run looks
-  like as a trace, maps executive questions to named signals, and leaves with
-  eight adoptable requirements and a 90-day plan.
-FIRST VIEWPORT: Header block with note ID, status and source; title; abstract.
-FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
+THESIS: A note is a plate in the atlas: it says where on the route it sits
+  (Operate), then draws its argument as exhibits and adoptable requirements.
+  Refuses the blog-post template (hero image, author card, share buttons) and
+  the RFC sheet.
+OWN-WORLD: White plate paper; locator band in ultramarine tint with the note's
+  stage in vermilion; Jost lettering for heads, numerals and labels; system sans
+  for reading; exhibits drawn with flat ink, ultramarine and vermilion bars.
+STORY: The reader learns why agents need tracing, sees one agent run as a trace,
+  maps executive questions to named signals, and leaves with eight adoptable
+  requirements and a 90-day plan.
+FIRST VIEWPORT: Locator band, note chip and date, title, lede and abstract.
+FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
 -->
 </head>
-<body>
+<body class="is-note">
 <a class="skip" href="#content">Skip to content</a>
-<div class="sheet">
-  <header>
-    <div class="docblock">
-      <dl>
-        <dt>Author</dt><dd><a class="home" href="../../">Rafael Gorski</a></dd>
-        <dt>Series</dt><dd>Notes on AI at scale</dd>
-        <dt>Note</dt><dd>GN-0001</dd>
-      </dl>
-      <div class="right">
-        <dl>
-          <dt>Status</dt><dd>Draft</dd>
-          <dt>Date</dt><dd><time datetime="2026-10">October 2026</time></dd>
-          <dt>Source</dt><dd><a href="#ref-otel-genai">OTel GenAI semconv</a></dd>
-        </dl>
+<header class="margin">
+  <a class="name" href="../../">Rafael Gorski</a>
+  <nav class="site-nav" aria-label="Site">
+    <ul>
+      <li><a href="../../">Map</a></li>
+      <li><a href="../../library/">Library</a></li>
+      <li><a href="../../about/">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="content">
+  <article class="note">
+    <div class="note-head">
+      <nav class="locator" aria-label="Where this note sits on the map">
+        <ol>
+          <li><a href="../../library/#purpose">Purpose</a></li>
+          <li><a href="../../library/#pilot">Pilot</a></li>
+          <li><a href="../../library/#launch">Launch</a></li>
+          <li><a href="../../library/#scale">Scale</a></li>
+          <li><a href="../../library/#operate" aria-current="location">Operate</a></li>
+          <li><a href="../../library/#govern">Govern</a></li>
+        </ol>
+      </nav>
+      <div class="nh-grid">
+        <div>
+          <p class="note-meta"><span class="n-chip">GN-0001</span> Draft · <time datetime="2026-10">October 2026</time> · Source: <a href="#ref-otel-genai">OpenTelemetry GenAI semantic conventions</a></p>
+          <h1>Agentic observability: what leaders should require before agents reach production</h1>
+          <p class="lede">An agent turns one request into a tree of plans, model calls and tool calls that nobody wrote down in advance. If you cannot see that tree, you cannot govern its cost, quality or risk.</p>
+        </div>
+        <p class="abstract">OpenTelemetry now publishes semantic conventions for generative AI that name every part of that tree: workflows, agents, planning, model inference, tool execution, MCP calls, token usage and evaluations. This note explains what the conventions cover, maps the questions executives actually ask to the signals that answer them, and sets out eight requirements a program can adopt today, with the caveat that the conventions are still in <em>Development</em> status.</p>
       </div>
     </div>
-    <nav class="site" aria-label="Site">
-      <a href="../../">Notes</a>
-      <a href="../../about/">About</a>
-    </nav>
-  </header>
 
-  <main id="content">
-    <article>
-      <div class="title">
-        <h1>Agentic observability: what leaders should require before agents reach production</h1>
-        <span class="docid">GN-0001 · Draft</span>
-      </div>
-
-      <section class="abstract prose" aria-labelledby="abstract">
-        <h2 id="abstract">Abstract</h2>
-        <p class="lede">An agent turns one request into a tree of plans, model calls and tool calls that nobody wrote down in advance. If you cannot see that tree, you cannot govern its cost, quality or risk.</p>
-        <p>OpenTelemetry now publishes semantic conventions for generative AI that name every part of that tree: workflows, agents, planning, model inference, tool execution, MCP calls, token usage and evaluations. This note explains what the conventions cover, maps the questions executives actually ask to the signals that answer them, and sets out eight requirements a program can adopt today, with the caveat that the conventions are still in <em>Development</em> status.</p>
-      </section>
+    <div class="note-body">
+      <nav class="toc" aria-labelledby="toc-h">
+        <h2 id="toc-h">In this note</h2>
+        <ol>
+          <li><a href="#s1"><span class="secno">1</span>Agents make decisions</a></li>
+          <li><a href="#s2"><span class="secno">2</span>The shared vocabulary</a></li>
+          <li><a href="#s3"><span class="secno">3</span>One agent run</a></li>
+          <li><a href="#s4"><span class="secno">4</span>Questions to signals</a></li>
+          <li><a href="#s5"><span class="secno">5</span>Content capture</a></li>
+          <li><a href="#s6"><span class="secno">6</span>Requirements R1–R8</a></li>
+          <li><a href="#s7"><span class="secno">7</span>A first ninety days</a></li>
+          <li><a href="#s8"><span class="secno">8</span>What is still open</a></li>
+          <li><a href="#refs"><span class="secno">9</span>References</a></li>
+        </ol>
+      </nav>
 
       <div class="prose">
 
-        <h2 id="s1"><a class="self" href="#s1"><span class="secno">1.</span>Agents are distributed systems that make decisions</a></h2>
+        <h2 id="s1"><a class="self" href="#s1"><span class="secno">1</span>Agents are distributed systems that make decisions</a></h2>
         <p>A conventional service does what its code says. An agent decides what to do next. A single customer request might cause an orchestrator to start two agents; one of them plans, calls a model, calls a policy-lookup tool through an MCP server, calls the model again, and hands off. The other retries a slow database call before it answers. None of that sequence existed before the request arrived, and the next request will produce a different one.</p>
         <p>That has three consequences for anyone accountable for the program:</p>
         <ul>
@@ -70,7 +88,7 @@ FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
         </ul>
         <p>The answer to all three is the same engineering artifact: a trace. A trace records the run as a tree of timed operations, which are called <em>spans</em>, each with a name and attributes. Distributed tracing is mature for ordinary services. What was missing for agents was an agreed way to name the spans and attributes, so that traces from different frameworks, vendors and teams mean the same thing.</p>
 
-        <h2 id="s2"><a class="self" href="#s2"><span class="secno">2.</span>The shared vocabulary now exists</a></h2>
+        <h2 id="s2"><a class="self" href="#s2"><span class="secno">2</span>The shared vocabulary now exists</a></h2>
         <p>The OpenTelemetry project maintains semantic conventions for generative AI <a href="#ref-otel-genai">[OTEL-GENAI]</a>. They define, for any GenAI system:</p>
         <ul>
           <li><strong>Spans</strong> for model operations (chat, text completion, embeddings, retrieval, memory) and for agent operations: creating an agent, invoking an agent, invoking a workflow, planning, and executing a tool <a href="#ref-spans">[SPANS]</a> <a href="#ref-agent">[AGENT]</a>.</li>
@@ -80,43 +98,41 @@ FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
           <li><strong>Provider mappings</strong> for Anthropic, AWS Bedrock, Azure AI Inference and OpenAI.</li>
         </ul>
         <p>The strategic value is not any single attribute. It is that a framework, a model vendor, an MCP server and your own platform can all emit telemetry that lands in the same backend and joins into one tree. That is what turns observability from a per-team project into a program-wide capability, and it is what keeps you from being locked in to one vendor's console.</p>
-        <p class="note">Every document in the set is marked <em>Development</em>. Names and requirement levels can still change. Section <a href="#s6">6</a> covers how to adopt now without being caught out later.</p>
+        <p class="callout">Every document in the set is marked <em>Development</em>. Names and requirement levels can still change. Section <a href="#s6">6</a> covers how to adopt now without being caught out later.</p>
 
-        <h2 id="s3"><a class="self" href="#s3"><span class="secno">3.</span>What one agent run looks like</a></h2>
+        <h2 id="s3"><a class="self" href="#s3"><span class="secno">3</span>What one agent run looks like</a></h2>
         <p>The exhibit below is a single run of a hypothetical claims-triage workflow, drawn the way a tracing tool would show it. Each row is a span. Indentation is the parent–child relationship and the bar is when the span ran.</p>
-      </div>
 
-      <figure class="exhibit" aria-labelledby="exhibit-cap">
-        <div class="trace-head" aria-hidden="true">
-          <span>span name</span>
-          <span class="scale"><span>0 s</span><span>4.2 s</span><span>8.4 s</span></span>
-          <span class="dur">duration</span>
-        </div>
-        <ol class="trace">
-          <li class="trace-row k-workflow" style="--depth:0;--s:0;--w:100"><span class="name">invoke_workflow claims-triage</span><span class="lane"><span class="bar"></span></span><span class="dur">8.40 s</span></li>
-          <li class="trace-row k-agent" style="--depth:1;--s:1.2;--w:33.3"><span class="name">invoke_agent intake-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">2.80 s</span></li>
-          <li class="trace-row k-plan" style="--depth:2;--s:1.4;--w:8.7"><span class="name">plan intake-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">0.73 s</span></li>
-          <li class="trace-row k-model" style="--depth:3;--s:1.8;--w:8.2"><span class="name">chat example-model-large</span><span class="lane"><span class="bar"></span></span><span class="dur">0.69 s</span></li>
-          <li class="trace-row k-tool" style="--depth:2;--s:11.3;--w:7.1"><span class="name">execute_tool lookup_policy</span><span class="lane"><span class="bar"></span></span><span class="dur">0.60 s</span></li>
-          <li class="trace-row k-model" style="--depth:2;--s:19;--w:14.9"><span class="name">chat example-model-large</span><span class="lane"><span class="bar"></span></span><span class="dur">1.25 s</span></li>
-          <li class="trace-row k-agent" style="--depth:1;--s:35.7;--w:63.1"><span class="name">invoke_agent fraud-check-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">5.30 s</span></li>
-          <li class="trace-row k-model" style="--depth:2;--s:36.3;--w:7.7"><span class="name">chat example-model-small</span><span class="lane"><span class="bar"></span></span><span class="dur">0.65 s</span></li>
-          <li class="trace-row k-tool is-error" style="--depth:2;--s:44.6;--w:35.7"><span class="name">execute_tool query_ledger<span class="err">error.type = timeout</span></span><span class="lane"><span class="bar"></span></span><span class="dur">3.00 s</span></li>
-          <li class="trace-row k-tool" style="--depth:2;--s:81;--w:7.1"><span class="name">execute_tool query_ledger</span><span class="lane"><span class="bar"></span></span><span class="dur">0.60 s</span></li>
-          <li class="trace-row k-model" style="--depth:2;--s:88.7;--w:9.5"><span class="name">chat example-model-small</span><span class="lane"><span class="bar"></span></span><span class="dur">0.80 s</span></li>
-        </ol>
-        <div class="trace-legend" aria-hidden="true">
-          <span style="--c:var(--span)">workflow</span>
-          <span style="--c:var(--span-agent)">agent / plan</span>
-          <span style="--c:var(--span-model)">model inference</span>
-          <span style="--c:var(--span-tool)">tool execution</span>
-          <span style="--c:var(--span-error)">error</span>
-        </div>
-        <figcaption id="exhibit-cap"><b>Exhibit 1.</b> Illustrative trace of one agent run. Synthetic data: the workflow, agents, tools and model names are invented. Span names follow the conventions: <code>invoke_workflow {gen_ai.workflow.name}</code>, <code>invoke_agent {gen_ai.agent.name}</code>, <code>plan {gen_ai.agent.name}</code>, <code>{gen_ai.operation.name} {gen_ai.request.model}</code> and <code>execute_tool {gen_ai.tool.name}</code>.</figcaption>
-      </figure>
+        <figure class="exhibit" aria-labelledby="exhibit-cap">
+          <div class="trace-head" aria-hidden="true">
+            <span class="name-h">span name</span>
+            <span class="scale"><span>0 s</span><span>4.2 s</span><span>8.4 s</span></span>
+            <span class="dur">duration</span>
+          </div>
+          <ol class="trace">
+            <li class="trace-row k-workflow" style="--depth:0;--s:0;--w:100"><span class="name">invoke_workflow claims-triage</span><span class="lane"><span class="bar"></span></span><span class="dur">8.40 s</span></li>
+            <li class="trace-row k-agent" style="--depth:1;--s:1.2;--w:33.3"><span class="name">invoke_agent intake-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">2.80 s</span></li>
+            <li class="trace-row k-plan" style="--depth:2;--s:1.4;--w:8.7"><span class="name">plan intake-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">0.73 s</span></li>
+            <li class="trace-row k-model" style="--depth:3;--s:1.8;--w:8.2"><span class="name">chat example-model-large</span><span class="lane"><span class="bar"></span></span><span class="dur">0.69 s</span></li>
+            <li class="trace-row k-tool" style="--depth:2;--s:11.3;--w:7.1"><span class="name">execute_tool lookup_policy</span><span class="lane"><span class="bar"></span></span><span class="dur">0.60 s</span></li>
+            <li class="trace-row k-model" style="--depth:2;--s:19;--w:14.9"><span class="name">chat example-model-large</span><span class="lane"><span class="bar"></span></span><span class="dur">1.25 s</span></li>
+            <li class="trace-row k-agent" style="--depth:1;--s:35.7;--w:63.1"><span class="name">invoke_agent fraud-check-agent</span><span class="lane"><span class="bar"></span></span><span class="dur">5.30 s</span></li>
+            <li class="trace-row k-model" style="--depth:2;--s:36.3;--w:7.7"><span class="name">chat example-model-small</span><span class="lane"><span class="bar"></span></span><span class="dur">0.65 s</span></li>
+            <li class="trace-row k-tool is-error" style="--depth:2;--s:44.6;--w:35.7"><span class="name">execute_tool query_ledger<span class="err">error.type = timeout</span></span><span class="lane"><span class="bar"></span></span><span class="dur">3.00 s</span></li>
+            <li class="trace-row k-tool" style="--depth:2;--s:81;--w:7.1"><span class="name">execute_tool query_ledger</span><span class="lane"><span class="bar"></span></span><span class="dur">0.60 s</span></li>
+            <li class="trace-row k-model" style="--depth:2;--s:88.7;--w:9.5"><span class="name">chat example-model-small</span><span class="lane"><span class="bar"></span></span><span class="dur">0.80 s</span></li>
+          </ol>
+          <div class="trace-legend" aria-hidden="true">
+            <span style="--c:var(--ink)">workflow</span>
+            <span style="--c:var(--ultra)">agent / plan</span>
+            <span style="--c:var(--ultra-mid)">model inference</span>
+            <span style="--c:var(--ink-2)">tool execution</span>
+            <span style="--c:var(--red)">error</span>
+          </div>
+          <figcaption id="exhibit-cap"><b>Exhibit 1.</b> Illustrative trace of one agent run. Synthetic data: the workflow, agents, tools and model names are invented. Span names follow the conventions: <code>invoke_workflow {gen_ai.workflow.name}</code>, <code>invoke_agent {gen_ai.agent.name}</code>, <code>plan {gen_ai.agent.name}</code>, <code>{gen_ai.operation.name} {gen_ai.request.model}</code> and <code>execute_tool {gen_ai.tool.name}</code>.</figcaption>
+        </figure>
 
-      <div class="prose">
-        <p style="margin-top:1.5rem">Read top to bottom, the trace tells the story a leader needs. One workflow ran two agents. The intake agent planned and then looked up a policy. The fraud check spent more than a third of the whole run waiting on a ledger query that timed out and was retried. Every model call carries the tokens it consumed, so the cost of this run can be added up span by span and charged to the workflow and the agents responsible.</p>
+        <p>Read top to bottom, the trace tells the story a leader needs. One workflow ran two agents. The intake agent planned and then looked up a policy. The fraud check spent more than a third of the whole run waiting on a ledger query that timed out and was retried. Every model call carries the tokens it consumed, so the cost of this run can be added up span by span and charged to the workflow and the agents responsible.</p>
         <p>A few conventions make this tree trustworthy across teams:</p>
         <ul>
           <li><strong>Remote and in-process agents are distinguished.</strong> An agent invoked over a remote service (the conventions cite OpenAI Assistants and AWS Bedrock Agents) is a <code>CLIENT</code> span. An agent running inside your process (LangChain or CrewAI, for example) is an <code>INTERNAL</code> span <a href="#ref-agent">[AGENT]</a>.</li>
@@ -125,7 +141,7 @@ FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
           <li><strong>MCP calls join the same trace.</strong> Instrumentations propagate trace context inside the MCP request's <code>params._meta</code>, so a tool server owned by another team appears in your tree. Where an outer GenAI instrumentation already traces the tool call, MCP adds its attributes to that span instead of creating a duplicate <a href="#ref-mcp">[MCP]</a>.</li>
         </ul>
 
-        <h2 id="s4"><a class="self" href="#s4"><span class="secno">4.</span>From executive questions to signals</a></h2>
+        <h2 id="s4"><a class="self" href="#s4"><span class="secno">4</span>From executive questions to signals</a></h2>
         <p>Executives do not need to learn attribute names, but they should know that each of their recurring questions has a specific, standard answer. If your platform team cannot produce these, the gap is in instrumentation, not in reporting.</p>
 
         <table class="signals">
@@ -164,78 +180,81 @@ FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
           </tbody>
         </table>
 
-        <h2 id="s5"><a class="self" href="#s5"><span class="secno">5.</span>Content capture is a governance decision</a></h2>
+        <h2 id="s5"><a class="self" href="#s5"><span class="secno">5</span>Content capture is a governance decision</a></h2>
         <p>The most consequential setting in agent telemetry is whether to record <em>content</em>: the system instructions, the messages sent to the model, the model's output, tool definitions, tool-call arguments and results, retrieval queries and memory records. The conventions treat all of these as <em>Opt-In</em> attributes, and they warn that message content is likely to include sensitive information, including personal data <a href="#ref-spans">[SPANS]</a>.</p>
         <p>Engineers will reasonably want content turned on, because it makes debugging far easier. Legal, privacy and security functions will reasonably want it off. The conventions give you both paths. You can keep content out of telemetry, capture it under explicit configuration, or send it to separate storage through an upload hook that is independent of the capture flags <a href="#ref-spans">[SPANS]</a>. Which path each environment takes is a policy choice with an owner. It should not be a default someone accepted in a pull request.</p>
 
-        <h2 id="s6"><a class="self" href="#s6"><span class="secno">6.</span>Requirements for leadership</a></h2>
+        <h2 id="s6"><a class="self" href="#s6"><span class="secno">6</span>Requirements for leadership</a></h2>
         <p>These are written so that they can be copied into a platform standard, a program charter or a vendor contract. Each one links to the section above that motivates it and to the source in the conventions.</p>
+        <p class="reqs-key">The key words <span class="kw">MUST</span>, <span class="kw">MUST NOT</span> and <span class="kw">SHOULD</span> are to be read as described in <a href="#ref-rfc2119">RFC&nbsp;2119 and RFC&nbsp;8174</a> when, and only when, they appear in capitals.</p>
 
         <ol class="reqs">
           <li id="r1">
             <span class="rid"><a href="#r1">R1</a></span>
             <div>
               <p>AI programs <span class="kw">MUST</span> emit agent and model telemetry using the OpenTelemetry GenAI semantic conventions. Contracts for agent platforms, frameworks and model gateways <span class="kw">MUST</span> require it, and <span class="kw">MUST NOT</span> accept telemetry available only in a vendor's own console.</p>
-              <p class="trace">§<a href="#s2">2</a> · <a href="#ref-otel-genai">[OTEL-GENAI]</a></p>
+              <p class="rtrace">§<a href="#s2">2</a> · <a href="#ref-otel-genai">[OTEL-GENAI]</a></p>
             </div>
           </li>
           <li id="r2">
             <span class="rid"><a href="#r2">R2</a></span>
             <div>
               <p>Every user-facing agent entry point <span class="kw">MUST</span> produce a single connected trace from workflow to individual tool call, including across MCP servers operated by other teams.</p>
-              <p class="trace">§<a href="#s3">3</a> · <a href="#ref-agent">[AGENT]</a> · <a href="#ref-mcp">[MCP]</a></p>
+              <p class="rtrace">§<a href="#s3">3</a> · <a href="#ref-agent">[AGENT]</a> · <a href="#ref-mcp">[MCP]</a></p>
             </div>
           </li>
           <li id="r3">
             <span class="rid"><a href="#r3">R3</a></span>
             <div>
               <p>Every agent in production <span class="kw">MUST</span> report a stable name and version, so that cost, quality and incidents can be attributed to a specific agent and a specific release.</p>
-              <p class="trace">§<a href="#s4">4</a> · <a href="#ref-agent">[AGENT]</a></p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-agent">[AGENT]</a></p>
             </div>
           </li>
           <li id="r4">
             <span class="rid"><a href="#r4">R4</a></span>
             <div>
               <p>Cost reporting <span class="kw">MUST</span> be derived from token usage on inference spans, including cached and reasoning tokens, and <span class="kw">MUST</span> be attributable per agent and per workflow rather than only per API key or account.</p>
-              <p class="trace">§<a href="#s4">4</a> · <a href="#ref-tokens">[TOKENS]</a></p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-tokens">[TOKENS]</a></p>
             </div>
           </li>
           <li id="r5">
             <span class="rid"><a href="#r5">R5</a></span>
             <div>
               <p>Programs <span class="kw">SHOULD</span> alert on the distribution of model calls and tool calls per agent invocation, not only on latency and error rate, so that runaway loops are detected before they appear on an invoice.</p>
-              <p class="trace">§<a href="#s4">4</a> · <a href="#ref-metrics">[METRICS]</a></p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-metrics">[METRICS]</a></p>
             </div>
           </li>
           <li id="r6">
             <span class="rid"><a href="#r6">R6</a></span>
             <div>
               <p>Quality <span class="kw">SHOULD</span> be measured with evaluation events attached to the spans they judge, using named evaluation metrics that are reviewed with the business owner of the workflow.</p>
-              <p class="trace">§<a href="#s4">4</a> · <a href="#ref-events">[EVENTS]</a></p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-events">[EVENTS]</a></p>
             </div>
           </li>
           <li id="r7">
             <span class="rid"><a href="#r7">R7</a></span>
             <div>
               <p>Capture of prompts, outputs, system instructions and tool arguments <span class="kw">MUST</span> be disabled unless a written policy enables it for a named environment, with an accountable owner, a retention period and access controls.</p>
-              <p class="trace">§<a href="#s5">5</a> · <a href="#ref-spans">[SPANS]</a></p>
+              <p class="rtrace">§<a href="#s5">5</a> · <a href="#ref-spans">[SPANS]</a></p>
             </div>
           </li>
           <li id="r8">
             <span class="rid"><a href="#r8">R8</a></span>
             <div>
               <p>Because the conventions are in Development status, programs <span class="kw">MUST</span> record which version of the conventions each service emits and <span class="kw">SHOULD</span> plan upgrades as normal platform work, so that dashboards and cost reports do not break when names change.</p>
-              <p class="trace">§<a href="#s2">2</a> · <a href="#ref-otel-genai">[OTEL-GENAI]</a></p>
+              <p class="rtrace">§<a href="#s2">2</a> · <a href="#ref-otel-genai">[OTEL-GENAI]</a></p>
             </div>
           </li>
         </ol>
 
-        <h2 id="s7"><a class="self" href="#s7"><span class="secno">7.</span>A first ninety days</a></h2>
-        <p><strong>Days 1–30: one workflow, end to end.</strong> Choose the agent workflow closest to production that has a real business owner. Instrument it with the conventions, keep content capture off, and confirm that a single request produces one connected trace that includes the tool calls (<a href="#r2">R2</a>, <a href="#r3">R3</a>, <a href="#r7">R7</a>).</p>
-        <p><strong>Days 31–60: the four numbers.</strong> Publish cost per completed task, the distribution of model and tool calls per invocation, tool error rate, and end-to-end duration for that workflow. Add one evaluation metric agreed with the business owner (<a href="#r4">R4</a>, <a href="#r5">R5</a>, <a href="#r6">R6</a>).</p>
-        <p><strong>Days 61–90: make it the standard.</strong> Write <a href="#r1">R1</a> to <a href="#r8">R8</a> into the platform standard and procurement templates, pin the convention version, and review a handful of real traces with the leadership team. Looking at traces together builds a shared, concrete sense of how the agents actually behave faster than any summary dashboard.</p>
+        <h2 id="s7"><a class="self" href="#s7"><span class="secno">7</span>A first ninety days</a></h2>
+        <ol class="phases">
+          <li><p><strong>Days 1–30: one workflow, end to end.</strong> Choose the agent workflow closest to production that has a real business owner. Instrument it with the conventions, keep content capture off, and confirm that a single request produces one connected trace that includes the tool calls (<a href="#r2">R2</a>, <a href="#r3">R3</a>, <a href="#r7">R7</a>).</p></li>
+          <li><p><strong>Days 31–60: the four numbers.</strong> Publish cost per completed task, the distribution of model and tool calls per invocation, tool error rate, and end-to-end duration for that workflow. Add one evaluation metric agreed with the business owner (<a href="#r4">R4</a>, <a href="#r5">R5</a>, <a href="#r6">R6</a>).</p></li>
+          <li><p><strong>Days 61–90: make it the standard.</strong> Write <a href="#r1">R1</a> to <a href="#r8">R8</a> into the platform standard and procurement templates, pin the convention version, and review a handful of real traces with the leadership team. Looking at traces together builds a shared, concrete sense of how the agents actually behave faster than any summary dashboard.</p></li>
+        </ol>
 
-        <h2 id="s8"><a class="self" href="#s8"><span class="secno">8.</span>What is still open</a></h2>
+        <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>What is still open</a></h2>
         <p>Being specific about maturity is part of the guidance:</p>
         <ul>
           <li>All of the GenAI conventions are in <em>Development</em> status, so names, requirement levels and span structure can change.</li>
@@ -245,26 +264,32 @@ FORM: Grounded direction 3 of 7 ("the specification"); seed fb4dc1d6.
         </ul>
         <p>None of this is a reason to wait. The cost of instrumenting against a moving standard is a planned upgrade. The cost of running agents without a shared trace is finding out what they did only after a customer, an auditor or an invoice tells you.</p>
 
-        <h2 id="refs"><a class="self" href="#refs"><span class="secno">9.</span>References</a></h2>
+        <h2 id="refs"><a class="self" href="#refs"><span class="secno">9</span>References</a></h2>
         <ul class="refs">
-          <li id="ref-otel-genai"><span class="key">[OTEL-GENAI]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai">Semantic conventions for generative AI systems</a>. Status: Development.</span></li>
-          <li id="ref-agent"><span class="key">[AGENT]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-agent-spans.md">Semantic conventions for GenAI agent and framework spans</a>.</span></li>
-          <li id="ref-spans"><span class="key">[SPANS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-spans.md">Semantic conventions for GenAI model spans</a>, including “Recording content on attributes”.</span></li>
-          <li id="ref-metrics"><span class="key">[METRICS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-metrics.md">Semantic conventions for GenAI metrics</a>.</span></li>
-          <li id="ref-tokens"><span class="key">[TOKENS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-token-metrics.md">Semantic conventions for GenAI inference token metrics</a>.</span></li>
-          <li id="ref-events"><span class="key">[EVENTS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-events.md">Semantic conventions for GenAI events</a>.</span></li>
-          <li id="ref-exc"><span class="key">[EXC]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-exceptions.md">Semantic conventions for GenAI exceptions</a>.</span></li>
-          <li id="ref-mcp"><span class="key">[MCP]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/mcp.md">Semantic conventions for Model Context Protocol</a>.</span></li>
-          <li id="ref-rfc2119"><span class="key">[RFC2119]</span><span>Bradner, S. <a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>, and <a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>.</span></li>
+          <li id="ref-otel-genai"><span class="rk">[OTEL-GENAI]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai">Semantic conventions for generative AI systems</a>. Status: Development.</span></li>
+          <li id="ref-agent"><span class="rk">[AGENT]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-agent-spans.md">Semantic conventions for GenAI agent and framework spans</a>.</span></li>
+          <li id="ref-spans"><span class="rk">[SPANS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-spans.md">Semantic conventions for GenAI model spans</a>, including “Recording content on attributes”.</span></li>
+          <li id="ref-metrics"><span class="rk">[METRICS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-metrics.md">Semantic conventions for GenAI metrics</a>.</span></li>
+          <li id="ref-tokens"><span class="rk">[TOKENS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-token-metrics.md">Semantic conventions for GenAI inference token metrics</a>.</span></li>
+          <li id="ref-events"><span class="rk">[EVENTS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-events.md">Semantic conventions for GenAI events</a>.</span></li>
+          <li id="ref-exc"><span class="rk">[EXC]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-exceptions.md">Semantic conventions for GenAI exceptions</a>.</span></li>
+          <li id="ref-mcp"><span class="rk">[MCP]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/mcp.md">Semantic conventions for Model Context Protocol</a>.</span></li>
+          <li id="ref-rfc2119"><span class="rk">[RFC2119]</span><span>Bradner, S. <a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>, and <a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>.</span></li>
         </ul>
-      </div>
-    </article>
-  </main>
 
-  <footer class="site">
-    <span>GN-0001 · Draft · © 2026 Rafael Gorski. Views are the author's own.</span>
-    <a href="../../">All notes</a>
-  </footer>
-</div>
+        <aside class="charted" aria-labelledby="charted-h">
+          <p id="charted-h" class="c-stage">Charted at Operate</p>
+          <p class="c-q">Can we see, fix and improve it in production?</p>
+          <p><a href="../../library/#operate">Sources for this stage in the library</a> · <a href="../../">Back to the map</a></p>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="foot">
+  <p>GN-0001 · Draft · © 2026 Rafael Gorski. Views are the author's own.</p>
+  <p><a href="../../">Back to the map</a></p>
+</footer>
 </body>
 </html>

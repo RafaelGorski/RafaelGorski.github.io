@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "content/**"
+      - "site-data/**"
+      - "scripts/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -25,6 +28,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Zero-dependency build: renders the map and library from content/*.json into site/.
+      - run: node scripts/build.mjs
+      - run: node scripts/check-links.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

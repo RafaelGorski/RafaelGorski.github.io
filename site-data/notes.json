@@ -1,0 +1,15 @@
+{
+  "notes": [
+    {
+      "id": "GN-0001",
+      "slug": "agentic-observability",
+      "title": "Agentic observability: what leaders should require before agents reach production",
+      "short": "Agentic observability",
+      "stage": "operate",
+      "status": "Draft",
+      "date": "2026-10",
+      "dateLabel": "October 2026",
+      "summary": "Agents turn one request into a tree of decisions, model calls and tool calls. The OpenTelemetry GenAI conventions give that tree a shared vocabulary. Eight requirements to adopt."
+    }
+  ]
+}
