@@ -11,7 +11,7 @@ is still in development.
 
 ## 1. What must the pilot beat?
 
-- **Primary stage:** frame
+- **Primary stage:** purpose
 - **Decision:** Do we approve an AI pilot, and what baseline, task scope and success threshold
   must it be judged against before any further funding?
 - **Builds on:** `rules-of-ml`, `metr-time-horizons`, `ai-agents-that-matter`, `data-cascades`
@@ -94,7 +94,7 @@ is still in development.
 
 | Stage   | Proposed notes |
 |---------|----------------|
-| frame   | 1              |
+| purpose | 1              |
 | pilot   | 2              |
 | launch  | 3, 4           |
 | scale   | 5, 6           |
