@@ -431,6 +431,19 @@
       "verified": "2026-10-12"
     },
     {
+      "id": "dapper",
+      "title": "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure",
+      "publisher": "Benjamin H. Sigelman et al., Google",
+      "year": 2010,
+      "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+      "kind": "paper",
+      "stages": ["operate"],
+      "why": "Google's account of ubiquitous, low-overhead tracing across production services. Its lesson holds for agents: tracing pays off only when it is everywhere and cheap enough to leave on.",
+      "check": "Decide your trace sampling policy explicitly; keep full traces for errors, high-cost agent runs and sampled quality reviews.",
+      "maturity": "stable",
+      "verified": "2026-10-12"
+    },
+    {
       "id": "sre-service-level-objectives",
       "title": "Service Level Objectives",
       "publisher": "Google, Site Reliability Engineering (O'Reilly)",
