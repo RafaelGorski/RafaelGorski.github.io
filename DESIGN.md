@@ -13,6 +13,10 @@ colors:
   ultramarine-mid: "#6b82c4"
   vermilion: "#c2361c"
   vermilion-deep: "#a82e17"
+  ring-adopt: "#c9d2ee"
+  ring-trial: "#d8def2"
+  ring-assess: "#e5e9f6"
+  ring-hold: "#f0f2f9"
 typography:
   display:
     fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
@@ -86,6 +90,23 @@ components:
   sample-notice:
     textColor: "{colors.ink}"
     padding: "0.45rem 0.7rem"
+  quadrant-band:
+    backgroundColor: "{colors.ultramarine}"
+    textColor: "{colors.paper}"
+    typography: "{typography.stage}"
+    rounded: "{rounded.none}"
+    padding: "0.9rem 0.9rem 0.85rem"
+  quadrant-band-governance:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  radar-blip:
+    backgroundColor: "{colors.ultramarine}"
+    textColor: "{colors.paper}"
+    size: "1.85rem"
+  stage-chip:
+    backgroundColor: "{colors.ultramarine-tint}"
+    textColor: "{colors.ultramarine}"
+    typography: "{typography.label}"
 ---
 
 # Design System: Rafael Gorski — Launching and scaling AI systems
@@ -99,9 +120,16 @@ The home page is the map. Six stages run left to right as an ultramarine band, e
 question it must answer. Every curated source is one counted unit pinned below the stage where it
 matters most, and the author's own notes are the only vermilion on the page.
 
-It is light only, because readers open shared links on laptops and phones in daylight offices. There
-is no JavaScript, apart from one inline base-path fix on 404. There is no tracking and there are no
-third-party requests.
+The radar is the plate's second reading. The map says when something matters in the lifecycle; the
+radar says how far to rely on it: adopt, trial, assess or hold. It is drawn as a polar plate in the
+same world (paper, ultramarine value steps, Jost lettering), not as a dashboard, and it borrows the
+Thoughtworks form (quadrants, four rings, numbered blips, a list per quadrant) without its artwork
+or palette.
+
+It is light only, because readers open shared links on laptops and phones in daylight offices. The
+pages read in full without JavaScript. The only scripts are one inline base-path fix on 404 and
+`site/assets/radar.js`, which adds hover and focus linking to the radar as progressive enhancement.
+There is no tracking and there are no third-party requests.
 
 Anti-references: the RFC or specification sheet (the previous iteration), the personal-brand hero,
 post-card grids, metro-map "journey" slides, and dark gradient tech aesthetics.
@@ -123,7 +151,11 @@ original writing.
 - **Ultramarine mid `#6b82c4`**: exhibits only (model-inference bars, 3.6:1 against paper).
 - **Vermilion `#c2361c`**: the author's notes (note pins, note chips and the current locator
   segment), with white text at 5.5:1. Inside an exhibit it also marks the error span, always
-  paired with a text label.
+  paired with a text label. The radar uses none: its placements are editorial judgement, not
+  original notes.
+- **Ring fills** `#c9d2ee` → `#d8def2` → `#e5e9f6` → `#f0f2f9`: radar only. Four ultramarine value
+  steps, darkest at Adopt, lightest at Hold (a Bertin value scale for an ordered variable). Ring
+  names in ink secondary hold 5:1 on the darkest step. The ring is always also written in text.
 
 ## Typography
 
@@ -140,6 +172,9 @@ original writing.
   heading as an eyebrow.
 - **Display:** h1 is set at weight 500 and line-height 1, with tracking of -0.025em and balanced
   wrapping.
+- **Disc lettering** is set in SVG user units, so it scales with the disc: quadrant names 15
+  (uppercase, 0.07em), blip numerals 13.5, counts 12.5, the ring scale 11.5 (uppercase, 0.08em).
+  At the smallest desktop disc a numeral renders near 10px.
 
 ## Layout
 
@@ -158,6 +193,13 @@ original writing.
     band.
 - **Library:** sticky stage-index band (anchor filter), then one section per stage. A sticky stage
   head on the left; entries on the right as glyph, identity, then why and check in two columns.
+- **Radar:** at 72rem and wider, two columns. The disc sits at left (at least `34rem`) and stays
+  still (sticky) at up to the viewport height; the right column holds the title and caption, the
+  key and edition, the quadrant index, then the ledger. Below 72rem it is one column: head, disc
+  (up to `44rem`, centred), key, index, ledger, and each quadrant opens with its own quarter of the
+  disc (up to `26rem`) so the drawing stays beside the reading. At 40rem and below the whole disc
+  becomes a dots-only overview under the caption (numerals and lettering hidden), and the quarter
+  crops carry the numerals at full size.
 - **Note:** a full-width locator band, then a two-column head (title and lede left, abstract
   right). Below that, a sticky contents rail and the prose, held at `68ch`. Exhibits, the signals
   table and the ninety-day phases break out to `62rem`.
@@ -178,11 +220,14 @@ sprite in each page:
 - **Maturity → fill:** solid = stable; 45° hatch = evolving; open outline = draft.
 - **Ghost units:** a source charted at another stage, shown at 50% opacity in an "Also read here"
   list. At most three are shown, followed by "N more in the library".
+- **Radar blips** are circles, always: on the radar, shape is not spent on kind. A numbered
+  ultramarine disc with a paper edge; movement is a mark around it, never a colour (see Radar
+  below).
 
 ## Components
 
-- **Margin line:** name at left, nav at right (Map, Library, About). The current page carries a
-  3px ultramarine underline. A 1px ink rule spans the gutters.
+- **Margin line:** name at left, nav at right (Map, Radar, Library, About). The current page
+  carries a 3px ultramarine underline. A 1px ink rule spans the gutters.
 - **Key:** a `dl` of Shape, Fill and Red, using the same glyphs as the plate. It appears on the
   map, the library and About.
 - **Stage band:** an `h3` link to the library section, with a pale numeral and an uppercase name.
@@ -206,6 +251,50 @@ sprite in each page:
   RFC 2119 keywords are bold, with slight tracking.
 - **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace.
 
+### Radar
+
+Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index.html`.
+
+- **Disc:** an inline SVG, 720 user units square, centre at 360. Rings end at radii 175, 253, 308
+  and 350, narrowing outward so Adopt holds the most. Each ring is a flat fill from the ring scale,
+  separated by 2-unit paper lines; the plate edge is a 1-unit ink circle. Two paper axes cut the
+  disc into four quarter plates, like the 3px gaps in the stage band. The horizontal axis is wider
+  (26 units) and carries the ring scale: ring names in uppercase with ink ticks at each boundary,
+  on both sides. Quadrant names and blip counts sit in the four corners (Governance in ink).
+  Positions are fixed: Techniques top left, Platforms and protocols top right, Measures bottom
+  left, Governance bottom right.
+- **Blip:** a 12.5-unit ultramarine circle with a paper edge and a white Jost numeral. Numbers run
+  in list order (quadrant, ring, then file order). Within a ring they sweep clockwise. Positions
+  are computed at build time: seeded best-candidate sampling, a short Lloyd relaxation, then a
+  repulsion pass. The build fails if two marks in a cell would overlap. Each blip is an SVG link to
+  its ledger entry, with a `<title>` for mouse users. It is kept out of the tab order, because the
+  ledger is the keyboard and screen-reader path. The SVG is `aria-hidden`, and a visually hidden
+  figcaption describes it.
+- **Movement marks:** no change = the bare blip; new = a full 1.5-unit ring at radius 15.5; moved
+  in = a 3-unit arc on the side facing the centre; moved out = the same arc on the side facing the
+  edge. The ledger always writes the movement in words.
+- **Ring glyph:** a quarter disc with four bands, the ring's band solid ultramarine and the rest
+  tint. It names the ring by position, not colour, in the key and on every ring heading.
+- **Key:** Ring (glyph, name, meaning from `radar.json`) and Mark (the four movement marks).
+  Edition, status and ring counts follow on the quiet `.edition` line.
+- **Quadrant index:** four bands in a two-by-two grid, in the same positions as the quadrants on the
+  disc, each with its count. Governance is the ink band.
+- **Ledger:** per quadrant, a band (`h2`) and its scope, then all four rings in order (`h3` on a 2px
+  ink rule, with glyph and count; an empty ring says so). Each entry has a numbered disc matching
+  the blip, the name (`h4`), a line of ring · quadrant · movement, the summary, then Evidence (unit
+  glyph and short title, linked to `library/#src-<id>`) and On the map (tint stage chips with the
+  stage numeral, linked to `#stage-<id>` on the map). `:target` takes the tint highlight. The
+  quarter crops omit the corner names, which the quadrant band already carries.
+- **Progressive enhancement (`radar.js`):** pointing at or focusing an entry lights its blip and
+  names it in the readout under the disc; pointing at a blip does the reverse. While a quadrant
+  section crosses the middle of the viewport, blips in the other quadrants drop to 28% opacity and
+  their corner names turn ink secondary.
+  Arriving at `#blip-<id>` keeps that blip lit.
+- **Cross-links:** library entries carry "On the radar" for every blip that cites them, and each
+  library stage section ends with "On the radar" for blips charted at that stage. On the map, each
+  stage column ends with "On the radar": the numbered discs of the blips charted there (1.5rem, a
+  24px target), each linked to its entry. `.stage:target` tints the column a blip links to.
+
 ## Do's and Don'ts
 
 Do:
@@ -217,8 +306,12 @@ Do:
   block on the map and in the library section for that stage.
 - Show maturity honestly through fill. If a source is in revision, it is hatched.
 - Keep all internal links relative, and run `node scripts/check-links.mjs` before publishing.
+- Keep the radar's quadrant and ring ids and their order fixed. Placements live in
+  `content/radar.json`; the build validates ids, stage and evidence references and the 30-word
+  summary limit, and refuses a cell too full to draw.
 - Respect `prefers-reduced-motion`. The only authored motions are units stamping in column by
-  column on the map, and trace bars drawing on note pages.
+  column on the map, radar blips stamping in ring by ring from Adopt outward, and trace bars
+  drawing on note pages.
 
 Don't:
 
@@ -226,4 +319,6 @@ Don't:
 - Add cards, shadows, rounded corners, gradients, icons or eyebrow labels.
 - Add self-descriptors such as expert or leader, or a portrait, logos or testimonials.
 - Use monospace as a "technical" costume. It is for code and data only.
-- Edit `site/index.html` or `site/library/index.html` by hand. They are generated.
+- Edit `site/index.html`, `site/radar/index.html` or `site/library/index.html` by hand. They are
+  generated.
+- Colour radar blips by quadrant or ring. Position and text carry both.

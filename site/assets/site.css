@@ -24,6 +24,11 @@
   --ultra-mid: #6b82c4;    /* exhibit only: model inference, 3.6:1 */
   --red: #c2361c;          /* vermilion, white on it 5.5:1 */
   --red-deep: #a82e17;
+  /* Radar rings: ultramarine value steps, darkest at Adopt. Ink-2 labels hold 5:1 on the darkest. */
+  --ring-adopt: #c9d2ee;
+  --ring-trial: #d8def2;
+  --ring-assess: #e5e9f6;
+  --ring-hold: #f0f2f9;
 
   --letter: "Jost", "Futura", "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --read: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -195,6 +200,8 @@ h1 {
 }
 .stage + .stage > :not(.band) { border-left: 1px solid var(--rule); }
 .stage + .stage > .band { margin-left: 3px; }
+/* Arriving from a radar blip: the stage's column takes the target tint. */
+.stage:target > :not(.band) { background: var(--ultra-tint); }
 
 .band {
   margin: 0;
@@ -258,6 +265,19 @@ h1 {
 .ghost .u-t { font-size: 0.86rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ghost:hover .u-t { color: var(--ultra-deep); }
 .ghost-more { display: inline-block; margin-left: 1.6rem; font-family: var(--letter); font-size: 0.82rem; }
+
+/* Radar blips charted at a stage: numbered discs, as on the radar, each a 24px target. */
+.map-radar { border-top: 1px dashed var(--rule); padding-top: 0.8rem; }
+.rdots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.rdot {
+  display: grid; place-items: center;
+  width: 1.5rem; height: 1.5rem;
+  border-radius: 50%;
+  background: var(--ultra); color: #fff; text-decoration: none;
+  font-family: var(--letter); font-weight: 600; font-size: 0.7rem; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.rdot:hover { background: var(--ultra-deep); color: #fff; }
 
 .note-pin {
   display: grid; gap: 0.2rem;
@@ -437,11 +457,251 @@ h1 {
 .also-here { margin: 1.4rem 0 0; padding-top: 0.85rem; border-top: 1px dashed var(--rule); font-size: 0.92rem; }
 .also-here b { font-family: var(--letter); font-weight: 600; }
 .ah-at { color: var(--ink-2); }
+.on-radar { scroll-margin-top: 4.5rem; }
+.e-r { margin: 0.1rem 0 0; font-size: 0.84rem; color: var(--ink-2); }
 
 @media (max-width: 40rem) {
   .stage-index { position: static; }
   .stage-index ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .stage-index a { font-size: 0.82rem; padding: 0.6rem 0.55rem; }
+}
+
+/* ---------- Radar ---------- */
+.radar {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.radar-head { padding: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem) 0 1.6rem; }
+.radar-head h1 { max-width: 13ch; }
+.radar-legend { margin-bottom: 1.75rem; }
+.radar-key ol, .radar-key ul { list-style: none; margin: 0; padding: 0; }
+.radar-key .rk-rings { display: grid; gap: 0.45rem; }
+.radar-key .rk-rings li {
+  display: grid; grid-template-columns: 1.05rem 3.7rem minmax(0, 1fr); gap: 0 0.55rem; align-items: start;
+}
+.radar-key .rk-rings li > span { display: contents; }
+.radar-key .rk-rings .rg { margin-top: 0.1rem; }
+.radar-key .k-sub { font-family: var(--read); font-size: 0.86rem; line-height: 1.4; }
+.radar-key .rk-rings b { font-weight: 600; }
+.radar-key .rk-marks { gap: 0.4rem 1.2rem; }
+.rk-marks .k-sub { font-family: var(--letter); }
+.rg { width: 1.05rem; height: 1.05rem; flex: none; display: block; }
+.rg-on { fill: var(--ultra); }
+.rg-off { fill: var(--ultra-tint); stroke: var(--ultra-pale); stroke-width: 0.6; }
+.mk { width: 1.3rem; height: 1.3rem; flex: none; overflow: visible; }
+
+/* The disc */
+.disc { margin: 0 0 2rem; }
+.disc-svg, .crop-svg { display: block; width: 100%; height: auto; overflow: hidden; font-family: var(--letter); }
+.disc-svg { max-width: 44rem; }
+.rf-adopt { fill: var(--ring-adopt); }
+.rf-trial { fill: var(--ring-trial); }
+.rf-assess { fill: var(--ring-assess); }
+.rf-hold { fill: var(--ring-hold); }
+.r-sep { fill: none; stroke: var(--paper); stroke-width: 2; }
+.r-edge { fill: none; stroke: var(--ink); stroke-width: 1; }
+.strip { fill: var(--paper); }
+.r-tick { stroke: var(--ink); stroke-width: 1; }
+.rl { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; fill: var(--ink-2); text-anchor: middle; }
+.ql { font-size: 15px; font-weight: 600; letter-spacing: 0.07em; fill: var(--ultra); }
+.ql-gov { fill: var(--ink); }
+.qc { font-size: 12.5px; font-weight: 500; letter-spacing: 0; fill: var(--ink-2); }
+.bp { cursor: pointer; }
+.bp:focus { outline: none; }
+.bp-c { fill: var(--ultra); stroke: var(--paper); stroke-width: 1.5; }
+.mk .bp-c { stroke: none; }
+.bp-n { font-size: 13.5px; font-weight: 600; fill: #fff; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.bp-mk { fill: none; stroke: var(--ultra); stroke-width: 1.5; }
+.bp-arc { stroke-width: 3; }
+.bp-g { transform-box: fill-box; transform-origin: center; }
+.bp:hover .bp-c, .bp.is-lit .bp-c, .bp.is-target .bp-c { fill: var(--ultra-deep); stroke: var(--ink); stroke-width: 2; }
+.bp.is-lit .bp-g, .bp.is-target .bp-g { transform: scale(1.18); }
+.disc-read {
+  display: block; min-height: 2.9em; margin-top: 0.75rem;
+  font-family: var(--letter); font-size: 0.9rem; line-height: 1.35; color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.disc-read b { font-weight: 600; color: var(--ink); }
+/* While a quadrant is being read, the disc keeps only its blips at full strength. */
+.disc[data-q="techniques"] .bp:not([data-q="techniques"]),
+.disc[data-q="platforms"] .bp:not([data-q="platforms"]),
+.disc[data-q="measures"] .bp:not([data-q="measures"]),
+.disc[data-q="governance"] .bp:not([data-q="governance"]) { opacity: 0.28; }
+.disc[data-q="techniques"] .ql:not([data-q="techniques"]),
+.disc[data-q="platforms"] .ql:not([data-q="platforms"]),
+.disc[data-q="measures"] .ql:not([data-q="measures"]),
+.disc[data-q="governance"] .ql:not([data-q="governance"]) { fill: var(--ink-2); }
+.disc .bp.is-lit, .disc .bp.is-target { opacity: 1; }
+
+/* Quadrant index: two by two, in the same positions as the quadrants on the disc. */
+.q-index { margin: 0 0 0.5rem; }
+.q-index ol {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px;
+}
+.q-index a {
+  height: 100%;
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  padding: 0.65rem 0.75rem 0.6rem;
+  background: var(--ultra); color: #fff; text-decoration: none;
+  font-family: var(--letter); font-weight: 600; font-size: 0.82rem;
+  letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.15;
+}
+.q-index a:hover { background: var(--ultra-deep); color: #fff; }
+.q-index .is-gov a { background: var(--ink); }
+.q-index .is-gov a:hover { background: #000; }
+.q-index a:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
+.qi-c { margin-left: auto; font-weight: 500; letter-spacing: 0; color: var(--ultra-pale); font-variant-numeric: tabular-nums; }
+.q-index .is-gov .qi-c { color: #c4c6cc; }
+
+/* Ledger: each quadrant, ring by ring */
+.rq { padding-top: 2.5rem; scroll-margin-top: 0.5rem; }
+.rq-band {
+  margin: 0;
+  display: flex; align-items: baseline; gap: 0.6rem;
+  padding: 0.9rem var(--cell) 0.85rem;
+  background: var(--ultra); color: #fff;
+  font-family: var(--letter); font-weight: 600;
+  font-size: clamp(0.98rem, 0.8rem + 0.5vw, 1.3rem);
+  letter-spacing: 0.07em; text-transform: uppercase; line-height: 1;
+}
+.is-gov .rq-band { background: var(--ink); }
+.rq-c { margin-left: auto; font-size: 0.72em; font-weight: 500; letter-spacing: 0; color: var(--ultra-pale); font-variant-numeric: tabular-nums; }
+.is-gov .rq-c { color: #c4c6cc; }
+.rq-scope {
+  margin: 0; padding: 0.85rem 0 0.4rem;
+  font-family: var(--letter); font-weight: 500;
+  font-size: clamp(1rem, 0.88rem + 0.35vw, 1.22rem); line-height: 1.22;
+}
+.q-crop { display: none; }
+
+.rr { margin-top: 1.5rem; }
+.rr-h {
+  margin: 0 0 0.25rem;
+  display: flex; align-items: center; gap: 0.55rem;
+  padding-top: 0.6rem;
+  border-top: 2px solid var(--ink);
+  font-family: var(--letter); font-weight: 600; font-size: 0.82rem;
+  letter-spacing: 0.09em; text-transform: uppercase; line-height: 1;
+}
+.rr-c { margin-left: auto; font-weight: 500; letter-spacing: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.rr .empty { padding-top: 0.6rem; }
+
+.blips { list-style: none; margin: 0; padding: 0; }
+.blip {
+  display: grid;
+  grid-template-columns: 1.85rem minmax(0, 1fr);
+  gap: 0 0.85rem;
+  padding: 0.95rem 0 1.15rem;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: 1rem;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.blip:first-child { border-top: 0; }
+.blip > * { grid-column: 2; }
+.b-n {
+  grid-column: 1; grid-row: 1 / span 2;
+  width: 1.85rem; height: 1.85rem; margin-top: 0.05rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--ultra); color: #fff;
+  font-family: var(--letter); font-weight: 600; font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
+}
+.blip.is-lit .b-n { background: var(--ultra-deep); box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--ink); }
+.b-t { margin: 0; font-family: var(--letter); font-weight: 500; font-size: 1.18rem; line-height: 1.25; text-wrap: balance; }
+.b-m { margin: 0.2rem 0 0; font-family: var(--letter); font-size: 0.84rem; color: var(--ink-2); }
+.b-s { margin: 0.5rem 0 0; font-size: 0.96rem; line-height: 1.5; max-width: 62ch; }
+.b-x { margin: 0.7rem 0 0; display: grid; gap: 0.45rem; font-size: 0.86rem; line-height: 1.35; }
+.b-x > div { display: grid; grid-template-columns: 6.4rem minmax(0, 1fr); gap: 0 0.6rem; align-items: baseline; }
+.b-x dt {
+  font-family: var(--letter); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.b-x dd { margin: 0; }
+.b-x ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; }
+.b-ev a { display: inline-flex; align-items: baseline; gap: 0.4rem; font-family: var(--letter); font-weight: 500; }
+.b-ev .g { width: 0.78rem; height: 0.78rem; flex: none; align-self: center; }
+.b-st { gap: 3px !important; }
+.b-st a {
+  display: block; padding: 0.35rem 0.55rem 0.3rem;
+  background: var(--ultra-tint); color: var(--ultra); text-decoration: none;
+  font-family: var(--letter); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  line-height: 1;
+}
+.b-st a:hover { background: var(--ultra-pale); color: var(--ultra-deep); }
+.b-st .band-n { margin-right: 0.4em; font-size: 0.95em; color: var(--ink-2); }
+.blip:target { background: var(--ultra-tint); box-shadow: -0.75rem 0 0 var(--ultra-tint), 0.75rem 0 0 var(--ultra-tint); }
+.blip:target .b-st a { background: var(--paper); }
+
+.radar-close {
+  margin: 2.5rem 0 0; padding-top: 0.85rem;
+  border-top: 2px solid var(--ink);
+  font-family: var(--letter); font-weight: 500; font-size: 1.02rem;
+}
+
+/* Desktop: the disc holds still at left while the ledger scrolls at right. */
+@media (min-width: 72rem) {
+  .radar {
+    grid-template-columns: minmax(34rem, 1.12fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 0.5rem + 3vw, 4.5rem);
+    align-items: start;
+  }
+  .radar-head { grid-column: 2; grid-row: 1; }
+  .radar-legend { grid-column: 2; grid-row: 2; }
+  .q-index { grid-column: 2; grid-row: 3; }
+  .ledger { grid-column: 2; grid-row: 4; }
+  .radar-close { grid-column: 2; grid-row: 5; }
+  .disc {
+    grid-column: 1; grid-row: 1 / span 5;
+    position: sticky; top: 0;
+    margin: 0;
+    padding-top: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem);
+  }
+  .disc-svg { max-width: none; width: min(100%, calc(100vh - 8.5rem)); margin-inline: auto; }
+  .disc figcaption { width: min(100%, calc(100vh - 8.5rem)); margin-inline: auto; }
+}
+@media (min-width: 72rem) and (max-height: 34rem) {
+  .disc { position: static; }
+  .disc-svg, .disc figcaption { width: 100%; }
+}
+
+/* Below the two-column layout the disc cannot stay beside the list, so each quadrant
+   opens with its own quarter of it, numerals at full size. */
+@media (max-width: 71.99rem) {
+  .disc-svg, .disc figcaption { margin-inline: auto; }
+  .disc figcaption { max-width: 44rem; }
+  .q-crop { display: block; max-width: 26rem; margin: 0.8rem 0 0.4rem; }
+}
+
+/* Phone: the whole disc becomes a dots-only overview in the first screen. */
+@media (max-width: 40rem) {
+  .disc { margin: 0 0 1.75rem; }
+  .disc .bp-n, .disc .rl, .disc .ql, .disc .r-tick, .disc-read { display: none; }
+  .q-crop { max-width: none; }
+  .radar-key > div { grid-template-columns: minmax(0, 1fr); gap: 0.35rem; }
+  .rq-band { padding-inline: 0.75rem; }
+  .b-x > div { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+  .b-t { font-size: 1.1rem; }
+}
+
+/* One authored moment: blips are stamped in from Adopt outward, like a count. */
+@media (prefers-reduced-motion: no-preference) {
+  .bp-g {
+    animation: radar-stamp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(160ms + var(--ri, 0) * 170ms + var(--j, 0) * 45ms);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bp-mk {
+    animation: radar-fade 0.5s ease-out backwards;
+    animation-delay: calc(360ms + var(--ri, 0) * 170ms + var(--j, 0) * 45ms);
+  }
+  .bp { transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes radar-stamp { from { opacity: 0; transform: scale(0.35); } }
+  @keyframes radar-fade { from { opacity: 0; } }
 }
 
 /* ---------- Note ---------- */
