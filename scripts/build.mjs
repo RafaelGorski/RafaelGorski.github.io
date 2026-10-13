@@ -113,6 +113,9 @@ for (const e of entries) {
   if (words(e.check) > 25) warnings.push(`${e.id}: check has ${words(e.check)} words (max 25)`);
 }
 for (const n of notes) if (!stageById[n.stage]) errors.push(`note ${n.id}: unknown stage "${n.stage}"`);
+for (const id of Object.keys(plate.tests || {})) if (!stageById[id]) warnings.push(`site-data/plate.json tests: unknown stage "${id}"`);
+for (const s of stages) if (!plate.tests?.[s.id]) warnings.push(`site-data/plate.json tests: no test for stage "${s.id}"`);
+for (const id of Object.keys(plate.short || {})) if (!seen.has(id)) warnings.push(`site-data/plate.json short: unknown entry "${id}"`);
 if (errors.length) {
   console.error("Content errors:\n  " + errors.join("\n  "));
   process.exit(1);
@@ -122,6 +125,7 @@ const primaryAt = (id) => entries.filter((e) => e.stages[0] === id);
 const secondaryAt = (id) => entries.filter((e) => e.stages[1] === id);
 const notesAt = (id) => notes.filter((n) => n.stage === id);
 const updatedLabel = formatDate(library.updated);
+const stageRange = `${stages[0].name} to ${stages[stages.length - 1].name}`;
 
 // ---------- Shared pieces ----------
 const CONTRACT = `<!--
@@ -304,7 +308,7 @@ ${cols}
     rel,
     current: "map",
     title: `Rafael Gorski — ${plate.title}: a map from first decision to accountable operation`,
-    description: `A map of launching and scaling AI systems in six stages, from Frame to Govern, with original notes and curated sources pinned to the stage where each matters.`,
+    description: `A map of launching and scaling AI systems in ${stages.length} stages, from ${stageRange}, with original notes and curated sources pinned to the stage where each matters.`,
     bodyClass: "is-map",
     main,
   });
@@ -394,7 +398,7 @@ ${sections}
     rel,
     current: "library",
     title: "Library — Rafael Gorski",
-    description: `Curated sources for launching and scaling AI systems, grouped by stage from Frame to Govern, each with why it matters and what to check.`,
+    description: `Curated sources for launching and scaling AI systems, grouped by stage from ${stageRange}, each with why it matters and what to check.`,
     bodyClass: "is-library",
     main,
   });

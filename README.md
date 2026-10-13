@@ -1,6 +1,6 @@
 # rafaelgorski.com
 
-A map of launching and scaling AI systems, from Frame to Govern, with original notes and curated
+A map of launching and scaling AI systems, from Purpose to Govern, with original notes and curated
 sources pinned to the stage where each matters. The site is static HTML served by GitHub Pages.
 A zero-dependency Node script generates the map and the library from JSON.
 

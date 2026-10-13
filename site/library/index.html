@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Library — Rafael Gorski</title>
-<meta name="description" content="Curated sources for launching and scaling AI systems, grouped by stage from Frame to Govern, each with why it matters and what to check.">
+<meta name="description" content="Curated sources for launching and scaling AI systems, grouped by stage from Purpose to Govern, each with why it matters and what to check.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -57,7 +57,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
 <div class="page-head lib-head">
   <div class="ph-title">
     <h1>Library</h1>
-    <p class="caption">45 sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <p class="caption">46 sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
   </div>
   <div class="ph-key">
     <dl class="key">
@@ -71,7 +71,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
 </div>
 <nav class="stage-index" aria-label="Stages">
   <ol>
-      <li><a href="#frame"><span class="band-n">1</span><span class="si-name">Frame</span><span class="si-c">5<span class="vh"> sources</span></span></a></li>
+      <li><a href="#purpose"><span class="band-n">1</span><span class="si-name">Purpose</span><span class="si-c">6<span class="vh"> sources</span></span></a></li>
       <li><a href="#pilot"><span class="band-n">2</span><span class="si-name">Pilot</span><span class="si-c">7<span class="vh"> sources</span></span></a></li>
       <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
       <li><a href="#scale"><span class="band-n">4</span><span class="si-name">Scale</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
@@ -80,15 +80,27 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   </ol>
 </nav>
 <div class="lib">
-  <section class="lib-stage" id="frame" aria-labelledby="frame-h">
+  <section class="lib-stage" id="purpose" aria-labelledby="purpose-h">
     <div class="ls-head">
-      <h2 id="frame-h"><span class="band-n">1</span>Frame</h2>
+      <h2 id="purpose-h"><span class="band-n">1</span>Purpose</h2>
       <p class="q">Is this worth building, and what would prove it?</p>
       <p class="test"><b>Move on when</b> there is a named owner, a decision this will change, and a measure of success agreed before building.</p>
       
     </div>
     <div class="ls-body">
     <ol class="entries">
+      <li class="entry" id="src-problem-based-srs">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://doi.org/10.21529/RESI.2016.1502002">Problem-Based Software Requirements Specification</a></h3>
+          <p class="e-m">Rafael Gorski M. Souza and Paulo Cézar Stadzisz, Revista Eletrônica de Sistemas de Informação · 2016</p>
+          <p class="e-k">Framework · Stable · also <a href="#pilot">Pilot</a></p>
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Starts from named customer problems, not requested features, and derives customer needs and requirements from them. In an AI programme, every capability, including each agent, should then trace to a problem it solves.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Confirm every requirement derives from a customer need, and each need from a named customer problem; cut the rest. MIT-licensed agent skill: github.com/RafaelGorski/Problem-Based-SRS.</dd></div>
+        </dl>
+      </li>
       <li class="entry" id="src-rules-of-ml">
         <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
         <div class="e-id">
@@ -150,7 +162,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="frame-also"><b>Also read here:</b> <a href="#src-ai-agents-that-matter">AI Agents That Matter</a> <span class="ah-at">(Pilot)</span>, <a href="#src-iso-iec-42005">ISO/IEC 42005 AI system impact assessment</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-ai-rmf">AI RMF 1.0</a> <span class="ah-at">(Govern)</span></p>
+    <p class="also-here" id="purpose-also"><b>Also read here:</b> <a href="#src-ai-agents-that-matter">AI Agents That Matter</a> <span class="ah-at">(Pilot)</span>, <a href="#src-iso-iec-42005">ISO/IEC 42005 AI system impact assessment</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-ai-rmf">AI RMF 1.0</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="pilot" aria-labelledby="pilot-h">
@@ -179,7 +191,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <div class="e-id">
           <h3 class="e-t"><a href="https://arxiv.org/abs/2407.01502">AI Agents That Matter</a></h3>
           <p class="e-m">Sayash Kapoor et al. · 2024</p>
-          <p class="e-k">Paper · Stable · also <a href="#frame">Frame</a></p>
+          <p class="e-k">Paper · Stable · also <a href="#purpose">Purpose</a></p>
         </div>
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>Shows that agent evaluations often ignore cost and lack proper holdout sets, so headline accuracy can mislead. Ask for accuracy and cost together, measured on tasks the agent has not seen.</dd></div>
@@ -247,7 +259,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="pilot-also"><b>Also read here:</b> <a href="#src-rules-of-ml">Rules of Machine Learning</a> <span class="ah-at">(Frame)</span>, <a href="#src-building-effective-agents">Building effective agents</a> <span class="ah-at">(Frame)</span>, <a href="#src-metr-time-horizons">Measuring AI Ability to Complete Long Software Tasks</a> <span class="ah-at">(Frame)</span>, <a href="#src-data-cascades">Data Cascades in High-Stakes AI</a> <span class="ah-at">(Frame)</span>, <a href="#src-ml-test-score">The ML Test Score</a> <span class="ah-at">(Launch)</span>, <a href="#src-openai-sycophancy-postmortem">Expanding on what we missed with sycophancy</a> <span class="ah-at">(Launch)</span>, <a href="#src-multi-agent-failures">Why Do Multi-Agent LLM Systems Fail?</a> <span class="ah-at">(Scale)</span></p>
+    <p class="also-here" id="pilot-also"><b>Also read here:</b> <a href="#src-problem-based-srs">Problem-Based Software Requirements Specification</a> <span class="ah-at">(Purpose)</span>, <a href="#src-rules-of-ml">Rules of Machine Learning</a> <span class="ah-at">(Purpose)</span>, <a href="#src-building-effective-agents">Building effective agents</a> <span class="ah-at">(Purpose)</span>, <a href="#src-metr-time-horizons">Measuring AI Ability to Complete Long Software Tasks</a> <span class="ah-at">(Purpose)</span>, <a href="#src-data-cascades">Data Cascades in High-Stakes AI</a> <span class="ah-at">(Purpose)</span>, <a href="#src-ml-test-score">The ML Test Score</a> <span class="ah-at">(Launch)</span>, <a href="#src-openai-sycophancy-postmortem">Expanding on what we missed with sycophancy</a> <span class="ah-at">(Launch)</span>, <a href="#src-multi-agent-failures">Why Do Multi-Agent LLM Systems Fail?</a> <span class="ah-at">(Scale)</span></p>
     </div>
   </section>
   <section class="lib-stage" id="launch" aria-labelledby="launch-h">
@@ -578,7 +590,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-hidden-technical-debt">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Frame)</span>, <a href="#src-who-validates-the-validators">Who Validates the Validators?</a> <span class="ah-at">(Pilot)</span>, <a href="#src-sre-canarying-releases">Canarying Releases</a> <span class="ah-at">(Launch)</span>, <a href="#src-sre-cascading-failures">Addressing Cascading Failures</a> <span class="ah-at">(Scale)</span>, <a href="#src-ironies-of-automation">Ironies of automation</a> <span class="ah-at">(Govern)</span></p>
+    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-hidden-technical-debt">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Purpose)</span>, <a href="#src-who-validates-the-validators">Who Validates the Validators?</a> <span class="ah-at">(Pilot)</span>, <a href="#src-sre-canarying-releases">Canarying Releases</a> <span class="ah-at">(Launch)</span>, <a href="#src-sre-cascading-failures">Addressing Cascading Failures</a> <span class="ah-at">(Scale)</span>, <a href="#src-ironies-of-automation">Ironies of automation</a> <span class="ah-at">(Govern)</span></p>
     </div>
   </section>
   <section class="lib-stage is-govern" id="govern" aria-labelledby="govern-h">
@@ -619,7 +631,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <div class="e-id">
           <h3 class="e-t"><a href="https://webstore.iec.ch/en/publication/107659">ISO/IEC 42005:2025 Information technology — Artificial intelligence (AI) — AI system impact assessment</a></h3>
           <p class="e-m">ISO/IEC JTC 1/SC 42 · 2025</p>
-          <p class="e-k">Standard · Stable · also <a href="#frame">Frame</a></p>
+          <p class="e-k">Standard · Stable · also <a href="#purpose">Purpose</a></p>
         </div>
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>Guidance on assessing how an AI system may affect individuals and society, and when in the lifecycle to do it. Done early, it shapes scope; done late, it becomes paperwork.</dd></div>
@@ -631,7 +643,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <div class="e-id">
           <h3 class="e-t"><a href="https://doi.org/10.6028/NIST.AI.100-1">Artificial Intelligence Risk Management Framework (AI RMF 1.0)</a></h3>
           <p class="e-m">NIST (NIST AI 100-1) · 2023</p>
-          <p class="e-k">Framework · Stable · also <a href="#frame">Frame</a></p>
+          <p class="e-k">Framework · Stable · also <a href="#purpose">Purpose</a></p>
         </div>
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>A voluntary framework organised around four functions: govern, map, measure and manage. Useful as common language between risk, legal and engineering. NIST has announced it is being revised.</dd></div>

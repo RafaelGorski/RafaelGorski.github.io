@@ -1,6 +1,6 @@
 ---
 name: Rafael Gorski — Launching and scaling AI systems
-description: An atlas plate of the AI lifecycle, from Frame to Govern, with every note and curated source pinned to the stage where it matters.
+description: An atlas plate of the AI lifecycle, from Purpose to Govern, with every note and curated source pinned to the stage where it matters.
 colors:
   paper: "#fcfcfa"
   ink: "#16171b"
@@ -150,7 +150,7 @@ original writing.
     hairlines.
   - The test row sits on a 2px ink rule that runs the full width of the plate.
 - **Annotations:** a bracket above the band marks that Govern holds across every stage. A return
-  bracket under Frame–Operate carries "What production teaches goes back to Frame."
+  bracket under Purpose–Operate carries "What production teaches goes back to Purpose."
 - **Responsive:**
   - At 64rem and below, the plate becomes three columns by two rows, and the brackets turn into
     plain text lines.
@@ -190,7 +190,7 @@ sprite in each page:
   `year` is null). The accessible text adds the kind and maturity. Short titles come from
   `site-data/plate.json → short`, or from a heuristic in `scripts/build.mjs`.
 - **Note pin:** a vermilion block showing the note ID and status, then its short title.
-- **Test:** a label ("Move on when" for Frame to Scale, "In control when" for Operate and Govern)
+- **Test:** a label ("Move on when" for Purpose to Scale, "In control when" for Operate and Govern)
   and one sentence. The copy lives in `site-data/plate.json`.
 - **Library entry:** glyph, title linked to the source, the full publisher with year (or "living
   document"), kind, maturity and secondary stage. It is followed by "Why it matters" and "What to
@@ -204,7 +204,7 @@ sprite in each page:
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.
-- **Placeholder:** a dashed frame with an ink tag. It marks copy the owner must replace.
+- **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace.
 
 ## Do's and Don'ts
 
