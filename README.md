@@ -28,8 +28,9 @@ site/                          published root
 PRODUCT.md / DESIGN.md         product and design records
 ```
 
-All internal links are relative, so the site works both at
-`https://rafaelgorski.github.io/rafaelgorski.com/` and at the root of a custom domain.
+This repository is the GitHub Pages user site, published at <https://rafaelgorski.github.io/>.
+Internal links are relative, so the site also works at the root of a custom domain or under a
+subpath.
 
 ## Build and preview locally
 

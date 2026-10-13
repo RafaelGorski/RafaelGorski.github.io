@@ -21,13 +21,13 @@ A personal publication for Rafael Gorski that builds executive presence: it teac
 Executive guidance that is derived from the actual engineering standards and specifications (for example, OpenTelemetry semantic conventions), not from vendor marketing or trend commentary. Every executive recommendation is traceable to a technical source.
 
 ## Operating Context
-- Hosted on GitHub Pages from `RafaelGorski/rafaelgorski.com` first; the `rafaelgorski.com` domain will be rotated to it later.
+- Hosted on GitHub Pages as the user site `RafaelGorski/RafaelGorski.github.io`, served at `https://rafaelgorski.github.io/`; the `rafaelgorski.com` domain will be rotated to it later.
 - Readers arrive mostly from direct links (shared by the owner), on laptops and phones, often between meetings.
 - First article: agentic observability, sourced from `open-telemetry/semantic-conventions-genai/docs/gen-ai`.
 
 ## Capabilities and Constraints
 - Static output, no tracking, no third-party scripts or fonts. A zero-dependency Node build (`scripts/build.mjs`) renders the map and library from `content/*.json`; the published pages are plain HTML that read without JavaScript. *(decision, inferred from "low profile")*
-- Must work under both a project path (`/rafaelgorski.com/`) and the root domain: all internal links are relative.
+- Served at a domain root (`rafaelgorski.github.io` now, `rafaelgorski.com` later). Internal links stay relative so the site also works under a subpath.
 - Undecided: contact channel, newsletter, speaking/advisory offer.
 
 ## Brand Commitments
