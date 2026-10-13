@@ -6,8 +6,17 @@
 
 @font-face {
   font-family: "Jost";
-  src: url("fonts/jost-var.woff2") format("woff2");
+  src: url("fonts/jost-var.woff2?v=3a27ff1e") format("woff2");
   font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Titles only (h1, section titles): a light condensed grotesk, so authority comes from size,
+   space and placement rather than weight. One file, weight 300, Latin subset. */
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("fonts/barlow-condensed-light.woff2?v=bfca2719") format("woff2");
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
@@ -32,6 +41,7 @@
   --ring-hold: #f0f2f9;
 
   --letter: "Jost", "Futura", "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --title: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", system-ui, sans-serif;
   --read: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --code: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
@@ -107,29 +117,102 @@ a:hover { color: var(--ultra-deep); text-decoration-thickness: 2px; }
 
 main { display: block; }
 
-/* ---------- Page heads (map, library, about) ---------- */
-.plate-head, .page-head {
+/* ---------- Page heads ----------
+   Titles are lettered into the drawing rather than stacked over a subtitle: the map's title is
+   the range name across its ridge, the library's sits on its ascent, the radar's labels the disc,
+   the home thesis names the summit. Captions join the key as legend text. */
+.page-head {
   max-width: var(--wide);
   margin: 0 auto;
-  padding: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem) var(--gutter) clamp(1.4rem, 1rem + 1vw, 2.2rem);
+  padding: var(--head-pad) var(--gutter) clamp(1.4rem, 1rem + 1vw, 2.2rem);
   display: grid; gap: 1.5rem 4rem;
   grid-template-columns: minmax(0, 1fr);
 }
-@media (min-width: 60rem) {
-  .plate-head, .page-head { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: end; }
-}
+:root { --head-pad: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem); }
 
+/* The plain light title: the fallback for every lettered title (phones, print, long titles). */
 h1 {
-  font-family: var(--letter);
-  font-weight: 500;
-  font-size: clamp(2.3rem, 1.2rem + 3.4vw, 4.1rem);
-  line-height: 1;
-  letter-spacing: -0.025em;
+  font-family: var(--title);
+  font-weight: 300;
+  font-size: clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: 0;
   margin: 0 0 1.1rem;
-  max-width: 15ch;
+  max-width: 24ch;
   text-wrap: balance;
 }
 .caption { margin: 0; max-width: 56ch; font-size: 1.075rem; line-height: 1.55; }
+
+/* Range lettering: light, widely spaced capitals across the ridge. The build writes the title's
+   width in the title face (--tw, in em) and its length (--tn); the spacing is whatever fills the
+   sheet, so the name always spans the climb exactly and never wraps. */
+.range {
+  position: relative; z-index: 1;
+  max-width: none;
+  margin: 0;
+  font-size: clamp(2rem, 4.2cqi, 3.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  letter-spacing: 0.24em;
+  letter-spacing: calc((100cqi - var(--tw) * 1em) / (var(--tn) - 1));
+}
+/* A short name (the library) keeps the range's size and spacing but not its span. */
+.range-short { font-size: clamp(2.5rem, 4.2cqi, 3.6rem); letter-spacing: 0.32em; }
+
+/* Legend: the caption and the key read together, as a sheet's legend does. */
+.legend { display: flex; flex-wrap: wrap; align-items: start; gap: 1.1rem clamp(2rem, 1rem + 3vw, 4rem); }
+.legend .caption { flex: 1 1 20rem; max-width: 44ch; font-size: 0.98rem; line-height: 1.55; }
+.legend-key { flex: 1 1 26rem; }
+
+/* Map and library heads: six columns, so the title can share the ridge's row. Placement first,
+   then the breakpoints that move it. */
+.plate, .lib-head { container-type: inline-size; }
+.plate > h1 { grid-row: title; grid-column: 1 / -1; }
+.plate > .legend { grid-row: legend; grid-column: 1 / -1; padding-bottom: 1.6rem; }
+
+/* Library head: the title stands on the ascent above the stage index. The head paints above the
+   sticky index so the ascent can stand 3px off its bands; only the bands stick. */
+.lib-head {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: [title] auto [legend] auto [ridge] auto;
+  gap: 0;
+  padding-bottom: 0;
+  z-index: 4;
+  margin-bottom: calc(3px - 0.5rem);
+}
+.lib-head > h1 { grid-row: title; grid-column: 1 / -1; }
+.lib-head > .range { grid-row: ridge; grid-column: 1 / -1; align-self: start; }
+.lib-head > .legend { grid-row: legend; grid-column: 1 / -1; padding-bottom: 1.6rem; }
+.lib-head > .lib-ascent { grid-row: ridge; grid-column: 1 / -1; }
+
+@media (min-width: 64.01rem) {
+  .plate > .legend { grid-column: 1 / 5; padding-bottom: clamp(1.6rem, 1rem + 1.6vw, 2.6rem); }
+  .plate > .range { grid-row: ridge; align-self: start; }
+}
+@media (min-width: 40.01rem) {
+  .lib-head > .legend { grid-column: 1 / 5; padding-bottom: clamp(1.6rem, 1rem + 1.6vw, 2.6rem); }
+}
+/* Where there is no single climb to letter across (the map below 64rem, everything below 40rem,
+   print), the name is set as the plain light title. */
+@media (max-width: 64rem) {
+  .plate > .range {
+    margin: 0 0 1.1rem; max-width: 24ch;
+    font-size: clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem); line-height: 0.98;
+    text-transform: none; letter-spacing: 0; white-space: normal; text-wrap: balance;
+  }
+}
+@media (max-width: 40rem) {
+  .range {
+    margin: 0 0 1.1rem; max-width: 24ch;
+    font-size: clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem); line-height: 0.98;
+    text-transform: none; letter-spacing: 0; white-space: normal; text-wrap: balance;
+  }
+  .lib-head { margin-bottom: 0; padding-bottom: 1.2rem; }
+  .lib-head > .range { grid-row: title; }
+  .lib-head > .legend { padding-bottom: 0; }
+}
 
 /* ---------- Key (legend) ---------- */
 .key { margin: 0; display: grid; gap: 0.55rem; font-family: var(--letter); font-size: 0.9rem; line-height: 1.3; }
@@ -161,17 +244,24 @@ h1 {
 /* ---------- Glyphs ---------- */
 .g { display: block; color: var(--ultra); overflow: visible; }
 
-/* ---------- The plate ---------- */
+/* ---------- The plate ----------
+   One grid holds the head and the route, so the title can share the ridge's row: it is lettered
+   across the climb as a range name. The route nests in it on subgrids (columns and rows). */
 .plate {
   max-width: var(--wide);
   margin: 0 auto;
-  padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  padding: var(--head-pad) var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: [title] auto [legend] auto [bracket] auto [ridge] auto [band] auto [q] auto [pins] 1fr [test] auto [loop] auto [end];
+}
+.route {
+  grid-column: 1 / -1; grid-row: bracket / end;
+  display: grid; grid-template-columns: subgrid; grid-template-rows: subgrid;
 }
 
 .span-govern {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; grid-row: bracket;
   position: relative;
   margin: 0 0 0.55rem;
   padding: 0 0 0.35rem;
@@ -187,11 +277,11 @@ h1 {
 .span-govern span { padding-right: 0.6rem; }
 
 .stages {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; grid-row: ridge / loop;
   list-style: none; margin: 0; padding: 0;
   display: grid;
   grid-template-columns: subgrid;
-  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-rows: subgrid;
 }
 .stage {
   grid-row: span 5;
@@ -312,7 +402,7 @@ h1 {
 }
 
 .loop {
-  grid-column: 1 / 6;
+  grid-column: 1 / 6; grid-row: loop;
   position: relative;
   margin: 1.2rem 0 0;
   padding-top: 1.45rem;
@@ -331,9 +421,12 @@ h1 {
 }
 .loop span { position: relative; background: var(--paper); padding: 0 0.75rem; }
 
-/* Tablet: three columns, two rows */
+/* Tablet: three columns, two rows. The ridge splits into two rows of three, so there is no single
+   climb to letter across: the title is set plain above the legend. */
 @media (max-width: 64rem) {
-  .plate { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .plate { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: [title] auto [legend] auto [route] auto; }
+  .route { grid-row: route; grid-template-rows: none; }
+  .span-govern, .stages, .loop { grid-row: auto; }
   .stages { grid-template-rows: auto auto auto 1fr auto auto auto auto 1fr auto; }
   .stage:nth-child(3n + 1) > :not(.band) { border-left: 0; }
   .stage:nth-child(3n + 1) > .band { margin-left: 0; }
@@ -349,6 +442,7 @@ h1 {
 /* Phone: one column, the route reads top to bottom */
 @media (max-width: 40rem) {
   .plate { display: block; }
+  .route { display: block; }
   .stages { display: block; }
   .stage { display: block; margin-top: 1.6rem; }
   .stage > :not(.band) { border-left: 0 !important; }
@@ -400,12 +494,9 @@ h1 {
 .si-c { margin-left: auto; font-weight: 500; color: var(--ultra-pale); font-variant-numeric: tabular-nums; letter-spacing: 0; }
 .stage-index .is-govern .si-c { color: #c4c6cc; }
 /* The ascent above the index: the map's six ridge stretches on the index's own grid, so they join
-   into one climb that stands 3px off the bands, as on the map. Only the bands stick. */
+   into one climb that stands 3px off the bands, as on the map. It sits in the library head, which
+   carries the overlap; only the bands stick. */
 .lib-ascent {
-  position: relative; z-index: 4;
-  max-width: var(--wide);
-  margin: 0 auto calc(3px - 0.5rem);
-  padding: 0 var(--gutter);
   display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; align-items: end;
 }
 
@@ -421,16 +512,17 @@ h1 {
   .lib-stage { grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); }
   .ls-head { position: sticky; top: 4.6rem; align-self: start; }
 }
+/* Stage heads are lettered like the range name, smaller; the stage numeral stays plate lettering. */
 .ls-head h2 {
   margin: 0;
-  display: flex; align-items: baseline; gap: 0.6rem;
-  font-family: var(--letter); font-weight: 600;
-  font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.3rem);
-  letter-spacing: 0.05em; text-transform: uppercase; line-height: 1;
+  display: flex; align-items: baseline; gap: 0.55rem;
+  font-family: var(--title); font-weight: 300;
+  font-size: clamp(2rem, 1.5rem + 1.4vw, 2.75rem);
+  letter-spacing: 0.16em; text-transform: uppercase; line-height: 1;
   color: var(--ultra);
 }
 .is-govern .ls-head h2 { color: var(--ink); }
-.ls-head .band-n { color: var(--ink-2); font-size: 0.55em; }
+.ls-head .band-n { font-family: var(--letter); font-weight: 500; letter-spacing: 0; color: var(--ink-2); font-size: 0.5em; }
 .ls-head .q {
   margin: 0.7rem 0 1rem;
   font-family: var(--letter); font-weight: 500; font-size: 1.2rem; line-height: 1.25;
@@ -488,15 +580,19 @@ h1 {
 
 /* ---------- Radar ---------- */
 .radar {
+  container-type: inline-size;
+  --rgap: clamp(2rem, 0.5rem + 3vw, 4.5rem);
+  --t: clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem);
   max-width: var(--wide);
   margin: 0 auto;
   padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
-.radar-head { padding: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem) 0 1.6rem; }
-.radar-head h1 { max-width: 13ch; }
+.radar-head { padding: var(--head-pad) 0 1.5rem; }
+.radar-head h1 { position: relative; z-index: 1; max-width: 13ch; margin: 0; font-size: var(--t); }
 .radar-legend { margin-bottom: 1.75rem; }
+.radar-legend .caption { max-width: 54ch; margin-bottom: 1.15rem; font-size: 0.98rem; }
 .radar-key ol, .radar-key ul { list-style: none; margin: 0; padding: 0; }
 .radar-key .rk-rings { display: grid; gap: 0.45rem; }
 .radar-key .rk-rings li {
@@ -663,12 +759,20 @@ h1 {
   font-family: var(--letter); font-weight: 500; font-size: 1.02rem;
 }
 
-/* Desktop: the disc holds still at left while the ledger scrolls at right. */
+/* Desktop: the disc holds still at left while the ledger scrolls at right. The title in the margin
+   is the summit's label: a hairline leader runs up the disc's vertical paper axis from the summit
+   (--reach of the way down the disc) and across above the disc to the title. It belongs to the
+   title, so as the page scrolls it slides up the axis with it rather than crossing any blip. */
 @media (min-width: 72rem) {
   .radar {
     grid-template-columns: minmax(34rem, 1.12fr) minmax(0, 1fr);
-    column-gap: clamp(2rem, 0.5rem + 3vw, 4.5rem);
+    column-gap: var(--rgap);
     align-items: start;
+    --left: max(34rem, (100cqi - var(--rgap)) * 1.12 / 2.12);
+    --lead: calc(var(--head-pad) + 0.55 * var(--t));
+    --disc-top: calc(var(--lead) + 1.1rem);
+    --disc: min(var(--left), 100vh - var(--disc-top) - 4.25rem);
+    --reach: 0.5;
   }
   .radar-head { grid-column: 2; grid-row: 1; }
   .radar-legend { grid-column: 2; grid-row: 2; }
@@ -679,19 +783,33 @@ h1 {
     grid-column: 1; grid-row: 1 / span 5;
     position: sticky; top: 0;
     margin: 0;
-    padding-top: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem);
+    padding-top: var(--disc-top);
   }
-  .disc-ground { max-width: none; width: min(100%, calc(100vh - 8.5rem)); margin-inline: auto; }
-  .disc figcaption { width: min(100%, calc(100vh - 8.5rem)); margin-inline: auto; }
+  .disc-ground { max-width: none; width: var(--disc); margin-inline: auto; }
+  .disc figcaption { width: var(--disc); margin-inline: auto; }
+  .radar-head h1::before {
+    content: ""; position: absolute; pointer-events: none;
+    top: 0.55em; right: calc(100% + 0.7rem);
+    width: calc(var(--left) / 2 + var(--rgap) - 0.7rem);
+    height: calc(var(--disc-top) + var(--disc) * var(--reach) - var(--lead));
+    border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
+  }
 }
 @media (min-width: 72rem) and (max-height: 34rem) {
+  .radar { --disc: var(--left); }
   .disc { position: static; }
-  .disc-ground, .disc figcaption { width: 100%; }
 }
 
-/* Below the two-column layout the disc cannot stay beside the list, so each quadrant
-   opens with its own quarter of it, numerals at full size. */
+/* Below the two-column layout the disc cannot stay beside the list, so each quadrant opens with
+   its own quarter of it, numerals at full size. The drawing comes straight after the title; the
+   legend, which comes first in reading order, follows it on screen. */
 @media (max-width: 71.99rem) {
+  .radar-head { grid-row: 1; }
+  .disc { grid-row: 2; }
+  .radar-legend { grid-row: 3; }
+  .q-index { grid-row: 4; }
+  .ledger { grid-row: 5; }
+  .radar-close { grid-row: 6; }
   .disc-ground, .disc figcaption { margin-inline: auto; }
   .disc figcaption { max-width: 44rem; }
   .q-crop { display: block; max-width: 26rem; margin: 0.8rem auto 0.4rem; }
@@ -727,10 +845,15 @@ h1 {
 /* ---------- Note ---------- */
 .note { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) 4rem; }
 .note-head { padding: 1.5rem 0 2.5rem; }
+/* A Read page with a long title: a readable light display title, the meta in the margin rail
+   (the contents rail below), then a standfirst in ink under a rule. */
 .nh-grid { display: grid; gap: 0 4rem; grid-template-columns: minmax(0, 1fr); }
+.standfirst { display: grid; gap: 1rem 4rem; padding-top: 1.1rem; border-top: 2px solid var(--ink); }
 @media (min-width: 75rem) {
-  .nh-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: end; }
-  .nh-grid .abstract { padding-bottom: 0.35rem; }
+  .nh-grid { grid-template-columns: 13.5rem minmax(0, 1fr); align-items: end; }
+  .nh-grid > h1 { grid-column: 2; grid-row: 1; }
+  .nh-grid > .note-meta { grid-column: 1; grid-row: 1; padding-bottom: 0.4rem; text-wrap: pretty; }
+  .standfirst { grid-column: 2; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
 }
 
 .locator ol {
@@ -751,16 +874,16 @@ h1 {
 }
 
 .note-meta {
-  margin: 0 0 1rem;
-  font-family: var(--letter); font-size: 0.9rem; color: var(--ink-2);
+  margin: 0 0 1.25rem;
+  font-family: var(--letter); font-size: 0.9rem; line-height: 1.5; color: var(--ink-2);
 }
 .n-chip {
   display: inline-block; margin-right: 0.4rem; padding: 0.1rem 0.4rem;
   background: var(--red); color: #fff;
   font-weight: 600; font-size: 0.78rem; letter-spacing: 0.08em;
 }
-.note h1 { font-size: clamp(2rem, 1.2rem + 2.6vw, 3.5rem); line-height: 1.04; max-width: 24ch; }
-.lede { margin: 0 0 1rem; max-width: 60ch; font-size: clamp(1.15rem, 1rem + 0.45vw, 1.35rem); line-height: 1.5; }
+.note h1 { font-size: clamp(2.6rem, 1.6rem + 2.8vw, 4.4rem); line-height: 1.02; max-width: 26ch; margin: 0 0 1.4rem; }
+.lede { margin: 0; max-width: 60ch; font-size: clamp(1.15rem, 1rem + 0.45vw, 1.35rem); line-height: 1.5; }
 .note-head .abstract { margin: 0; max-width: var(--measure); }
 
 .note-body { display: grid; gap: 2rem 4rem; grid-template-columns: minmax(0, 1fr); }
@@ -784,15 +907,15 @@ h1 {
 .prose > .exhibit, .prose > .signals, .prose > .phases { max-width: 62rem; }
 .prose h2 {
   margin: 3.25rem 0 0.8rem;
-  font-family: var(--letter); font-weight: 600; font-size: clamp(1.35rem, 1.15rem + 0.6vw, 1.7rem);
-  line-height: 1.2; letter-spacing: -0.005em;
+  font-family: var(--title); font-weight: 300; font-size: clamp(1.85rem, 1.45rem + 1.1vw, 2.4rem);
+  line-height: 1.08; letter-spacing: 0;
   text-wrap: balance;
   scroll-margin-top: 1.5rem;
 }
 .prose > h2:first-child { margin-top: 0; }
 .prose h2 .self { color: inherit; text-decoration: none; }
-.prose h2 .self:hover { text-decoration: underline; text-decoration-thickness: 2px; }
-.prose h2 .secno { color: var(--ultra); margin-right: 0.55rem; font-variant-numeric: tabular-nums; }
+.prose h2 .self:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.prose h2 .secno { font-family: var(--letter); font-weight: 500; font-size: 0.6em; color: var(--ultra); margin-right: 0.55rem; font-variant-numeric: tabular-nums; }
 .prose p { margin: 0 0 1rem; }
 .prose ul { margin: 0 0 1.1rem; padding-left: 1.15rem; }
 .prose li { margin: 0 0 0.5rem; }
@@ -965,24 +1088,55 @@ code {
 /* ---------- Home: the author's annotated page ----------
    His voice in the reading column and in vermilion; the margin points into the
    reference in its own ultramarine marks. */
-.home { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
+.home { container-type: inline-size; max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
 .home > * { max-width: 76rem; }
 .hm { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
 @media (min-width: 64rem) {
   .hm { grid-template-columns: minmax(0, 1fr) minmax(16rem, 23rem); column-gap: clamp(2.5rem, 0.5rem + 4vw, 5.5rem); }
 }
 
-.home-head { padding: clamp(1.9rem, 1rem + 2.6vw, 3.6rem) 0 0; row-gap: 1.6rem; }
+/* The thesis is the summit's label: set large and light beside the author's summit, its last line
+   running out on a hairline leader to the trail blaze, as a panorama drawing names a peak. 100cqi
+   is the sheet: the width of the margin line. */
+.home-head {
+  --thesis: clamp(3rem, 7.4cqi, 6rem);
+  --lead-y: calc(0.33 * var(--thesis)); /* from the foot of the last line to its x-height */
+  padding: clamp(1.9rem, 1rem + 2.6vw, 3.6rem) 0 0;
+  row-gap: 1.6rem;
+  /* The summit's sheet ends with the head: it never runs on behind the sections below. */
+  clip-path: inset(-6rem -100vw -0.75rem);
+}
+.summit { grid-column: 1 / -1; position: relative; }
 .is-home h1 {
-  grid-column: 1 / -1;
   max-width: none;
-  margin: 0 0 0.4rem;
-  font-size: clamp(2.55rem, 1rem + 5.4vw, 5.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.03em;
+  margin: 0;
+  font-size: var(--thesis);
+  line-height: 0.95;
+  letter-spacing: -0.005em;
 }
 .h1-l { display: block; }
-.lede { margin: 0; max-width: 54ch; font-size: clamp(1.12rem, 1rem + 0.4vw, 1.3rem); line-height: 1.5; }
+.home-head .lede { margin: 0; max-width: 54ch; font-size: 1.125rem; line-height: 1.55; }
+@media (min-width: 40rem) {
+  .is-home h1 { width: calc(0.8081 * 100cqi); }
+  .h1-last { display: flex; align-items: flex-end; }
+  .h1-t { flex: 0 1 auto; min-width: 0; }
+  .leader { flex: 1 0 1.25rem; height: 0; margin: 0 0 var(--lead-y) 0.3em; border-top: 1px solid var(--ink); }
+  .art-summit {
+    display: block; position: absolute; z-index: -1;
+    left: 0; top: calc(100% - var(--lead-y) - 0.1003 * 100cqi);
+    width: 100cqi; max-width: none; height: auto;
+  }
+}
+/* From 64rem the lede leaves the subtitle slot: a margin note in ink beside the who list. */
+@media (min-width: 64rem) {
+  .home-head { row-gap: 2.6rem; align-items: start; }
+  .home-head .lede {
+    grid-column: 1; justify-self: end;
+    max-width: 30ch; padding-top: 0.55rem;
+    border-top: 2px solid var(--ink);
+    font-size: 1.0625rem; line-height: 1.55;
+  }
+}
 
 .who { font-size: 0.92rem; line-height: 1.4; }
 .who dl { margin: 0; display: grid; border-top: 2px solid var(--ink); }
@@ -1022,9 +1176,9 @@ code {
 .sec-head { padding-top: 0.85rem; border-top: 2px solid var(--ink); margin-bottom: 0.4rem; }
 .sec-head h2 {
   margin: 0;
-  font-family: var(--letter); font-weight: 600;
-  font-size: clamp(1.6rem, 1.2rem + 1.3vw, 2.4rem);
-  line-height: 1.05; letter-spacing: -0.01em;
+  font-family: var(--title); font-weight: 300;
+  font-size: clamp(2.2rem, 1.6rem + 1.9vw, 3.2rem);
+  line-height: 1; letter-spacing: 0;
 }
 .sec-cap { margin: 0.55rem 0 0; max-width: 58ch; color: var(--ink-2); }
 
@@ -1196,6 +1350,23 @@ code {
 /* ---------- About ---------- */
 .page { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) 4rem; }
 .page .prose { padding-top: 0.5rem; }
+/* The title is lettered at the summit of the page's own sheet (62% across and 16% down its
+   900 × 1200 drawing), ending at the summit; the text runs beside the sheet, not under the title. */
+.has-margin-art { container-type: inline-size; --art-w: min(42cqi, 38rem); }
+.about-head .caption { max-width: 52ch; font-size: 1.125rem; line-height: 1.55; }
+@media (min-width: 64.01rem) {
+  .about-head { grid-template-columns: minmax(0, 1fr) var(--art-w); column-gap: 3rem; align-items: start; }
+  .about-head .caption { grid-column: 1; grid-row: 1; }
+  .about-head h1 {
+    grid-column: 2; grid-row: 1;
+    width: calc(0.62 * var(--art-w) - 1rem); max-width: none;
+    text-align: right;
+    /* "About this site" is 4.77em wide in the title face: sized to end at the summit on one line. */
+    font-size: min(4.75rem, (0.62 * var(--art-w) - 1rem) / 4.9);
+    margin: max(0px, 0.2133 * var(--art-w) - var(--head-pad) - 0.55em) 0 0;
+  }
+  .is-about .page .prose { max-width: calc(100% - var(--art-w) - 3rem); }
+}
 .placeholder { margin: 0 0 1rem; padding: 1rem 1.2rem 0.4rem; border: 1.5px dashed var(--ink-2); }
 .tag {
   display: inline-block; margin-bottom: 0.6rem; padding: 0.2rem 0.5rem;
@@ -1221,17 +1392,28 @@ code {
   width: 100%; height: 100%;
   object-fit: contain; object-position: right top;
 }
-.page-head > .art-sheet, .plate-head > .art-sheet { right: var(--gutter); width: calc(100% - 2 * var(--gutter)); }
-/* The home head is held to 76rem, but its sheet runs on to the end of the margin line. */
-.home-head > .art-sheet { left: 0; right: auto; width: calc(min(100vw, var(--wide)) - 2 * var(--gutter)); }
-/* Where a head carries a key, the sheet keeps to the open band above it. */
-.plate-head > .art-sheet, .lib-head > .art-sheet { height: 50%; }
+.page-head > .art-sheet { right: var(--gutter); width: calc(100% - 2 * var(--gutter)); }
+/* Map and library: the sheet is a corner of the head's grid, beside the legend and above the
+   ridge, rising to the margin rule; it never reaches the key. */
+.plate > .art-sheet, .lib-head > .art-sheet {
+  grid-row: title / ridge; grid-column: 5 / -1;
+  top: calc(-1 * var(--head-pad)); right: 0;
+  width: 100%; height: calc(100% + var(--head-pad));
+}
+@media (max-width: 64rem) {
+  .plate > .art-sheet { grid-row: title / legend; grid-column: 1 / -1; }
+}
+/* Home: the author's summit. It is placed from the thesis, not the head: its top is set so the
+   trail blaze (1293–1315 × 158–163 of a 1600 × 800 sheet) lands on the line of the leader that ends
+   the thesis, and the sheet runs from the reading edge to the end of the margin line (100cqi).
+   On a phone the thesis fills the width, so the blaze would land on its letters: no sheet. */
+@media (max-width: 39.99rem) { .art-summit { display: none; } }
 /* About has an empty right margin the whole way down: the sheet becomes a margin plate. */
 .has-margin-art { position: relative; isolation: isolate; }
 .art-margin {
   position: absolute; z-index: -1;
   top: 0; right: max(var(--gutter), (100% - var(--wide)) / 2 + var(--gutter));
-  width: min(42%, 38rem); height: auto;
+  width: var(--art-w); height: auto;
 }
 /* The radar is the summit seen from above; the apron draws the slopes falling away beyond it,
    in the disc's own units. */
@@ -1243,8 +1425,8 @@ code {
 }
 @media (max-width: 40rem) {
   .has-art > .art-sheet, .art-margin { height: 9rem; object-fit: cover; object-position: right top; opacity: 0.75; }
-  /* On a phone the thesis fills the width, so the summit's trail blaze would land on its letters. */
-  .home-head > .art-sheet { display: none; }
+  .plate > .art-sheet { top: 0; right: var(--gutter); width: calc(100% - 2 * var(--gutter)); }
+  .lib-head > .art-sheet { grid-row: title / legend; grid-column: 1 / -1; top: calc(-1 * var(--head-pad)); right: 0; width: 100%; }
   .stage > .ridge, .ls-head > .ridge { height: 3.5rem; }
 }
 
@@ -1263,9 +1445,20 @@ code {
   .band, .note-pin, .stage-index a, .locator a, .n-chip, .tag, .lab-index a, .lab-band, .mini-band a { border: 1px solid CanvasText; }
   .k-note, .x-sq { border: 1px solid CanvasText; }
   .art { display: none; }
+  .leader, .radar-head h1::before { display: none; }
+  h1, .sec-head h2, .ls-head h2, .prose h2 { color: CanvasText; }
 }
 
 @media print {
   .skip, .site-nav, .stage-index, .lab-index, .art { display: none; }
   .band, .stage-index a, .note-pin, .lab-band, .mini-band a { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  /* Titles print plain: no leaders, no range lettering. */
+  .leader, .radar-head h1::before { display: none; }
+  .range, .plate > .range, .lib-head > .range {
+    grid-row: title; margin: 0 0 1rem; max-width: 24ch;
+    font-size: 2.6rem; line-height: 1; text-transform: none; letter-spacing: 0; white-space: normal;
+  }
+  .lib-head { margin-bottom: 0; }
+  .home-head { clip-path: none; }
+  .is-home h1 { width: auto; }
 }

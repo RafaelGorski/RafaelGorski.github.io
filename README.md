@@ -37,7 +37,7 @@ site/                          published root
   assets/site.css              the whole design system
   assets/radar.js              radar hover and focus linking (progressive enhancement only)
   assets/art/                  the mountain art, one SVG per area and stage (generated)
-  assets/fonts/                self-hosted Jost (OFL)
+  assets/fonts/                self-hosted fonts (OFL): Barlow Condensed Light for titles, Jost for lettering
   404.html
 .github/workflows/pages.yml    builds, checks links and deploys site/ on every push to main
 PRODUCT.md / DESIGN.md         product and design records
@@ -60,10 +60,20 @@ python -m http.server 8000 --directory site
 Then open <http://localhost:8000>. The generated pages are committed, so the site also previews
 without running the build.
 
-The build also stamps every link to `assets/site.css`, `assets/radar.js` and the art in
-`assets/art/` with a short content hash (`site.css?v=1a2b3c4d`), in generated and hand-written
-pages alike. Browsers holding an old copy fetch the new file as soon as it changes. Run the build
-after editing any of them, even when no content changed.
+The build also stamps every link to `assets/site.css`, `assets/radar.js`, the art in
+`assets/art/` and the two fonts in `assets/fonts/` with a short content hash
+(`site.css?v=1a2b3c4d`), in generated and hand-written pages alike. It writes the fonts' hashes into
+the `@font-face` URLs in `site.css` too, so a font's preload and its request stay one fetch.
+Browsers holding an old copy fetch the new file as soon as it changes. Run the build after editing
+any of them, even when no content changed.
+
+## Titles
+
+Titles are lettered into each page's drawing rather than set as a bold title over a subtitle (see
+"Titles: map lettering" in `DESIGN.md`). The map's title is spaced to the exact width of its ridge
+from the title face's advance widths (`ADVANCE` in `scripts/build.mjs`); a title of 36 characters or
+more is set plain instead. If the title face is ever replaced, regenerate that table from the new
+font. The 404 page links the title font from the domain root, like its other assets.
 
 ## Mountain art
 

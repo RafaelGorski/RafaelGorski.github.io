@@ -7,8 +7,9 @@
 <meta name="description" content="A map of launching and scaling AI systems in 6 stages, from Purpose to Govern, with original notes and curated sources pinned to the stage where each matters.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="../assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=d3bc1597">
+<link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css?v=491ef175">
 <!--
 THESIS: The map is an atlas plate of the AI lifecycle. Six stages run
   across; every curated source is one counted unit pinned below the stage where
@@ -20,8 +21,9 @@ OWN-WORLD: White plate paper, ultramarine stage band and units, vermilion only
   open by maturity. Jost geometric lettering; system sans for reading.
 STORY: Visitors see the whole route at once and where the canon is settled or
   still moving. They then open a red note or follow a unit to its library entry.
-FIRST VIEWPORT: Name and nav on the margin line; title, caption and key; then
-  the full-width six-column plate. GN-0001 is the red block under Operate.
+FIRST VIEWPORT: Name and nav on the margin line; the legend (caption and key)
+  beside a contour corner; then the title lettered as a range name across the
+  six-stage ridge, and the full-width plate. GN-0001 is the red block under Operate.
 FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   grammar); stagings declined; seed 01706d71.
 -->
@@ -55,26 +57,25 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   </nav>
 </header>
 <main id="content">
-<div class="plate-head has-art">
+<div class="plate has-art">
   <img class="art art-sheet" src="../assets/art/map.svg?v=3fb5185c" alt="" aria-hidden="true" width="1600" height="360" decoding="async">
-  <div class="ph-title">
-    <h1>Launching and scaling AI systems</h1>
+  <h1 class="range" style="--tw:12.308;--tn:32">Launching and scaling AI systems</h1>
+  <div class="legend">
     <p class="caption">Six stages from the first decision to accountable operation: the question each stage must answer, and the sources worth reading there. Read across for the route, down for the evidence.</p>
-  </div>
-  <div class="ph-key">
-    <dl class="key">
+    <div class="legend-key">
+      <dl class="key">
       <div><dt>Shape</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Rule</b> <span class="k-sub">standard, specification, regulation</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span><b>Practice</b> <span class="k-sub">framework, guide, book</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span><b>Evidence</b> <span class="k-sub">paper, postmortem</span></span></li></ul></dd></div>
       <div><dt>Fill</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Stable</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span><b>Evolving</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-draft"/></svg><span><b>Draft</b></span></li></ul></dd></div>
       <div><dt>Red</dt><dd><ul><li><span class="k-note" aria-hidden="true"></span><span><b>Original note</b></span></li></ul></dd></div>
     </dl>
-    <p class="edition">Edition October 2026 · 1 note, 49 sources · library updated 12 October 2026</p>
-    
+      <p class="edition">Edition October 2026 · 1 note, 49 sources · library updated 12 October 2026</p>
+      
+    </div>
   </div>
-</div>
-<section class="plate" aria-labelledby="route">
-  <h2 id="route" class="vh">The route, stage by stage</h2>
-  <p class="span-govern" aria-hidden="true"><span>Govern is charted last but holds from the first decision</span></p>
-  <ol class="stages">
+  <section class="route" aria-labelledby="route">
+    <h2 id="route" class="vh">The route, stage by stage</h2>
+    <p class="span-govern" aria-hidden="true"><span>Govern is charted last but holds from the first decision</span></p>
+    <ol class="stages">
       <li class="stage" id="stage-purpose" style="--c:0">
         <img class="art ridge" src="../assets/art/stage-purpose.svg?v=11df9019" alt="" aria-hidden="true" width="300" height="84" decoding="async">
         <h3 class="band"><a href="../library/#purpose"><span class="band-n">1</span>Purpose</a></h3>
@@ -236,9 +237,10 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </div>
         <p class="test"><b>In control when</b> every system has an accountable owner and a record of what it did, on whose authority and why.</p>
       </li>
-  </ol>
-  <p class="loop"><span>What production teaches goes back to Purpose.</span></p>
-</section>
+    </ol>
+    <p class="loop"><span>What production teaches goes back to Purpose.</span></p>
+  </section>
+</div>
 </main>
 <footer class="foot">
   <p>© 2026 Rafael Gorski. Views are my own, not my employer's.</p>

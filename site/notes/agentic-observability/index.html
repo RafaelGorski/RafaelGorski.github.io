@@ -7,8 +7,9 @@
 <meta name="description" content="Agents turn one request into a tree of decisions, model calls and tool calls. The OpenTelemetry GenAI semantic conventions give that tree a shared vocabulary. Eight requirements for leaders.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="../../assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../assets/site.css?v=d3bc1597">
+<link rel="preload" href="../../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/site.css?v=491ef175">
 <!--
 THESIS: A note is a plate in the atlas: it says where on the route it sits
   (Operate), then draws its argument as exhibits and adoptable requirements.
@@ -20,7 +21,8 @@ OWN-WORLD: White plate paper; locator band in ultramarine tint with the note's
 STORY: The reader learns why agents need tracing, sees one agent run as a trace,
   maps executive questions to named signals, and leaves with eight adoptable
   requirements and a 90-day plan.
-FIRST VIEWPORT: Locator band, note chip and date, title, lede and abstract.
+FIRST VIEWPORT: Locator band; the title, with the note chip and date in the
+  margin rail; then the lede and abstract as a standfirst under a rule.
 FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
 -->
 </head>
@@ -53,12 +55,12 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
       </nav>
       <div class="nh-grid has-art">
         <img class="art art-sheet" src="../../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
-        <div>
-          <p class="note-meta"><span class="n-chip">GN-0001</span> Draft · <time datetime="2026-10">October 2026</time> · Source: <a href="#ref-otel-genai">OpenTelemetry GenAI semantic conventions</a></p>
-          <h1>Agentic observability: what leaders should require before agents reach production</h1>
+        <h1>Agentic observability: what leaders should require before agents reach production</h1>
+        <p class="note-meta"><span class="n-chip">GN-0001</span> Draft · <time datetime="2026-10">October 2026</time> · Source: <a href="#ref-otel-genai">OpenTelemetry GenAI semantic conventions</a></p>
+        <div class="standfirst">
           <p class="lede">An agent turns one request into a tree of plans, model calls and tool calls that nobody wrote down in advance. If you cannot see that tree, you cannot govern its cost, quality or risk.</p>
+          <p class="abstract">OpenTelemetry now publishes semantic conventions for generative AI that name every part of that tree: workflows, agents, planning, model inference, tool execution, MCP calls, token usage and evaluations. This note explains what the conventions cover, maps the questions executives actually ask to the signals that answer them, and sets out eight requirements a program can adopt today, with the caveat that the conventions are still in <em>Development</em> status.</p>
         </div>
-        <p class="abstract">OpenTelemetry now publishes semantic conventions for generative AI that name every part of that tree: workflows, agents, planning, model inference, tool execution, MCP calls, token usage and evaluations. This note explains what the conventions cover, maps the questions executives actually ask to the signals that answer them, and sets out eight requirements a program can adopt today, with the caveat that the conventions are still in <em>Development</em> status.</p>
       </div>
     </div>
 

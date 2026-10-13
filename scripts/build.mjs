@@ -35,8 +35,23 @@ const artSize = Object.fromEntries(
 // Cache-busting: every page links its assets with a short content hash, so a browser holding an
 // old copy fetches the new one as soon as the file changes. Line endings are normalised so the
 // hash is the same on Windows checkouts and in CI.
-const ASSETS = ["site.css", "radar.js", ...art.map((a) => a.file)];
+// Fonts are binary, so their bytes are hashed as they are. site.css names them with the same ?v= as
+// the preload links, so the preload and the @font-face request stay one fetch; it is rewritten
+// before site.css is hashed.
+const FONTS = ["fonts/jost-var.woff2", "fonts/barlow-condensed-light.woff2"];
 const assetVersion = {};
+for (const f of FONTS) {
+  assetVersion[f] = createHash("sha256").update(await readFile(site(`assets/${f}`))).digest("hex").slice(0, 8);
+}
+{
+  const css = await readFile(site("assets/site.css"), "utf8");
+  let next = css;
+  for (const f of FONTS) {
+    next = next.replace(new RegExp(`url\\("${f.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}(\\?v=[0-9a-f]*)?"\\)`, "g"), `url("${f}?v=${assetVersion[f]}")`);
+  }
+  if (next !== css) await writeFile(site("assets/site.css"), next);
+}
+const ASSETS = ["site.css", "radar.js", ...art.map((a) => a.file)];
 for (const f of ASSETS) {
   const text = (await readFile(site(`assets/${f}`), "utf8")).replace(/\r\n/g, "\n");
   assetVersion[f] = createHash("sha256").update(text).digest("hex").slice(0, 8);
@@ -48,6 +63,25 @@ const asset = (rel, f) => `${rel}assets/${f}?v=${assetVersion[f]}`;
 const artImg = (rel, name, cls, { lazy = false } = {}) => {
   const [w, h] = artSize[name];
   return `<img class="art ${cls}" src="${asset(rel, `art/${name}.svg`)}" alt="" aria-hidden="true" width="${w}" height="${h}" decoding="async"${lazy ? ' loading="lazy"' : ""}>`;
+};
+
+// Range lettering: the map's title is lettered in spaced capitals across the six-stage ridge, as a
+// range name is lettered across a topographic sheet. The build measures the title in the title
+// face (advance widths of Barlow Condensed Light, in em) so CSS can space it to the ridge's exact
+// width. Titles of RANGE_MAX characters or more are set as a plain light title instead.
+const RANGE_MAX = 36;
+const ADVANCE = {
+  A: 0.391, B: 0.443, C: 0.441, D: 0.463, E: 0.427, F: 0.399, G: 0.447, H: 0.47, I: 0.211, J: 0.419,
+  K: 0.442, L: 0.388, M: 0.514, N: 0.488, O: 0.451, P: 0.436, Q: 0.439, R: 0.436, S: 0.409, T: 0.411,
+  U: 0.475, V: 0.427, W: 0.606, X: 0.423, Y: 0.411, Z: 0.391, 0: 0.442, 1: 0.249, 2: 0.392, 3: 0.401,
+  4: 0.397, 5: 0.401, 6: 0.402, 7: 0.355, 8: 0.418, 9: 0.395, " ": 0.2, ",": 0.169, ".": 0.181,
+  "-": 0.309, "'": 0.106, "&": 0.527, ":": 0.194,
+};
+const rangeTitle = (text, cls = "range") => {
+  const chars = [...String(text)];
+  if (chars.length >= RANGE_MAX) return `<h1>${esc(text)}</h1>`;
+  const tw = chars.reduce((w, c) => w + (ADVANCE[c.toUpperCase()] ?? 0.44), 0);
+  return `<h1 class="${cls}" style="--tw:${tw.toFixed(3)};--tn:${chars.length}">${esc(text)}</h1>`;
 };
 
 const KINDS = {
@@ -514,8 +548,9 @@ OWN-WORLD: White plate paper, ultramarine stage band and units, vermilion only
   open by maturity. Jost geometric lettering; system sans for reading.
 STORY: Visitors see the whole route at once and where the canon is settled or
   still moving. They then open a red note or follow a unit to its library entry.
-FIRST VIEWPORT: Name and nav on the margin line; title, caption and key; then
-  the full-width six-column plate. GN-0001 is the red block under Operate.
+FIRST VIEWPORT: Name and nav on the margin line; the legend (caption and key)
+  beside a contour corner; then the title lettered as a range name across the
+  six-stage ridge, and the full-width plate. GN-0001 is the red block under Operate.
 FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   grammar); stagings declined; seed 01706d71.
 -->`;
@@ -557,7 +592,8 @@ function page({ rel, current, title, description, bodyClass, main, foot = "", co
 <meta name="description" content="${esc(description)}">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="${rel}assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="${rel}assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${asset(rel, "fonts/jost-var.woff2")}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${asset(rel, "fonts/barlow-condensed-light.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${asset(rel, "site.css")}">
 ${script ? `<script src="${asset(rel, script)}" defer></script>\n` : ""}${head}${contract}
 ${GENERATED}
@@ -674,26 +710,26 @@ ${sec
     })
     .join("\n");
 
-  const main = `<div class="plate-head has-art">
+  const main = `<div class="plate has-art">
   ${artImg(rel, "map", "art-sheet")}
-  <div class="ph-title">
-    <h1>${esc(plate.title)}</h1>
+  ${rangeTitle(plate.title)}
+  <div class="legend">
     <p class="caption">${esc(plate.caption)}</p>
+    <div class="legend-key">
+      ${key()}
+      <p class="edition">Edition ${esc(plate.edition)} · ${notes.length} note${notes.length === 1 ? "" : "s"}, ${entries.length} sources${updatedLabel ? ` · library updated ${esc(updatedLabel)}` : ""}</p>
+      ${sampleNotice(rel)}
+    </div>
   </div>
-  <div class="ph-key">
-    ${key()}
-    <p class="edition">Edition ${esc(plate.edition)} · ${notes.length} note${notes.length === 1 ? "" : "s"}, ${entries.length} sources${updatedLabel ? ` · library updated ${esc(updatedLabel)}` : ""}</p>
-    ${sampleNotice(rel)}
-  </div>
-</div>
-<section class="plate" aria-labelledby="route">
-  <h2 id="route" class="vh">The route, stage by stage</h2>
-  <p class="span-govern" aria-hidden="true"><span>Govern is charted last but holds from the first decision</span></p>
-  <ol class="stages">
+  <section class="route" aria-labelledby="route">
+    <h2 id="route" class="vh">The route, stage by stage</h2>
+    <p class="span-govern" aria-hidden="true"><span>Govern is charted last but holds from the first decision</span></p>
+    <ol class="stages">
 ${cols}
-  </ol>
-  <p class="loop"><span>${esc(plate.loop)}</span></p>
-</section>`;
+    </ol>
+    <p class="loop"><span>${esc(plate.loop)}</span></p>
+  </section>
+</div>`;
 
   return page({
     rel,
@@ -776,17 +812,17 @@ ${prim
 
   const main = `<div class="page-head lib-head has-art">
   ${artImg(rel, "library", "art-sheet")}
-  <div class="ph-title">
-    <h1>Library</h1>
+  ${rangeTitle("Library", "range range-short")}
+  <div class="legend">
     <p class="caption">${entries.length} sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <div class="legend-key">
+      ${key({ withNotes: false })}
+      ${updatedLabel ? `<p class="edition">Updated ${esc(updatedLabel)}${entries.every(isVerified) ? ". Every link, title, publisher and year checked against its source." : ""}</p>` : ""}
+      ${sampleNotice(rel)}
+    </div>
   </div>
-  <div class="ph-key">
-    ${key({ withNotes: false })}
-    ${updatedLabel ? `<p class="edition">Updated ${esc(updatedLabel)}${entries.every(isVerified) ? ". Every link, title, publisher and year checked against its source." : ""}</p>` : ""}
-    ${sampleNotice(rel)}
-  </div>
+  <div class="lib-ascent" aria-hidden="true">${stages.map((s) => artImg(rel, `stage-${s.id}`, "ridge")).join("")}</div>
 </div>
-<div class="lib-ascent" aria-hidden="true">${stages.map((s) => artImg(rel, `stage-${s.id}`, "ridge")).join("")}</div>
 <nav class="stage-index" aria-label="Stages">
   <ol>
       ${index}
@@ -827,8 +863,9 @@ OWN-WORLD: Paper ground; four rings stepped in ultramarine value from Adopt out
   Governance in ink. Jost lettering, system sans reading.
 STORY: The reader sees every placement at once, reads why each sits where it
   does, and follows a blip to its evidence in the library or its stage on the map.
-FIRST VIEWPORT: Margin line; the whole disc at left; title, caption, ring key and
-  edition at right, then the quadrant index.
+FIRST VIEWPORT: Margin line; the whole disc at left; at right the title as the
+  summit's label, a hairline leader running to it from the disc's centre, then
+  the legend (intro, ring key, edition) and the quadrant index.
 FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
   stagings declined; seed abd273c0.
 -->`;
@@ -914,7 +951,14 @@ ${rings}
   const main = `<div class="radar">
   <div class="radar-head">
     <h1>${esc(ringWords[0].toUpperCase() + ringWords.slice(1))}</h1>
+  </div>
+  <div class="radar-legend">
     <p class="caption">The map shows when something matters in the life of an AI system. The radar shows how far to rely on it. Each of the ${blips.length} blips sits in one ring and is backed by sources in the library.</p>
+    <dl class="key radar-key">
+      <div><dt>Ring</dt><dd><ol class="rk-rings">${ringKey}</ol></dd></div>
+      <div><dt>Mark</dt><dd><ul class="rk-marks">${marks}</ul></dd></div>
+    </dl>
+    <p class="edition">Edition ${esc(edition)} · ${esc(radar.status)} · ${counts}. Placements are editorial judgement; the marks will show how they move between editions.</p>
   </div>
   <figure class="disc">
     <div class="disc-ground">
@@ -926,13 +970,6 @@ ${rings}
       <span class="disc-read" aria-hidden="true">Each number matches an entry in the list. Select a blip to go to it.</span>
     </figcaption>
   </figure>
-  <div class="radar-legend">
-    <dl class="key radar-key">
-      <div><dt>Ring</dt><dd><ol class="rk-rings">${ringKey}</ol></dd></div>
-      <div><dt>Mark</dt><dd><ul class="rk-marks">${marks}</ul></dd></div>
-    </dl>
-    <p class="edition">Edition ${esc(edition)} · ${esc(radar.status)} · ${counts}. Placements are editorial judgement; the marks will show how they move between editions.</p>
-  </div>
   <nav class="q-index" aria-label="Quadrants">
     <ol>
       ${index}
@@ -969,8 +1006,10 @@ OWN-WORLD: The atlas plate, inverted. Vermilion (his voice) owns the bands,
 STORY: Visitors learn what he holds to about building agents and why, see what
   he is testing and what he would stop, follow a margin note into the field
   guide, and know how to reach him.
-FIRST VIEWPORT: Margin line; the thesis as a two-line h1 across the page; lede
-  left, who-and-where facts right; three vermilion bands indexing the lab notes.
+FIRST VIEWPORT: Margin line; the thesis as a two-line light h1 naming the
+  author's summit, its last line running on a hairline leader to the trail
+  blaze; the lede as a margin note beside the who-and-where facts; three
+  vermilion bands indexing the lab notes.
 FORM: Grounded structure 5 of 7 (essay with marginalia), after a re-roll on
   factual grounds; stagings declined; seed a1f6f0ec.
 -->`;
@@ -1009,9 +1048,15 @@ function renderHome() {
       .filter(({ t }) => t.group === g)
       .sort((a, b) => b.t.date.localeCompare(a.t.date) || a.i - b.i)
       .map(({ t }) => t);
-  const thesis = String(home.thesis)
-    .split(/(?<=[.!?])\s+/)
-    .map((s) => `<span class="h1-l">${esc(s)}</span>`)
+  // One sentence per line. The last line ends in the leader that runs out to the trail blaze on the
+  // summit beside it (CSS sets the art so the blaze sits on the leader's line).
+  const sentences = String(home.thesis).split(/(?<=[.!?])\s+/);
+  const thesis = sentences
+    .map((s, i) =>
+      i === sentences.length - 1
+        ? `<span class="h1-l h1-last"><span class="h1-t">${esc(s)}</span><span class="leader" aria-hidden="true"></span></span>`
+        : `<span class="h1-l">${esc(s)}</span>`
+    )
     .join(" ");
 
   const who = (home.who || [])
@@ -1099,8 +1144,10 @@ function renderHome() {
 
   const main = `<div class="home">
   <div class="home-head hm has-art">
-    ${artImg(rel, "home", "art-sheet")}
-    <h1>${thesis}</h1>
+    <div class="summit">
+      <h1>${thesis}</h1>
+      ${artImg(rel, "home", "art-summit")}
+    </div>
     <p class="lede">${inline(home.lede)}</p>
     <aside class="who" aria-label="Who writes this">
       <dl>
@@ -1192,7 +1239,7 @@ const versioned = [];
 for (const file of await htmlFiles(site(""))) {
   const html = await readFile(file, "utf8");
   let next = html;
-  for (const f of ASSETS) {
+  for (const f of [...ASSETS, ...FONTS]) {
     const re = new RegExp(`(assets/${f.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")})(\\?v=[0-9a-f]*)?(")`, "g");
     next = next.replace(re, `$1?v=${assetVersion[f]}$3`);
   }
@@ -1205,6 +1252,6 @@ for (const file of await htmlFiles(site(""))) {
 console.log(
   `Built home, map, radar and library: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
-console.log(`Asset versions: ${["site.css", "radar.js"].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
+console.log(`Asset versions: ${["site.css", "radar.js", ...FONTS].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
 console.log(`Art: ${art.length} SVGs in site/assets/art/, ${(art.reduce((s, a) => s + a.bytes, 0) / 1024).toFixed(1)} KB in all, largest ${art.reduce((m, a) => (a.bytes > m.bytes ? a : m)).name} at ${(Math.max(...art.map((a) => a.bytes)) / 1024).toFixed(1)} KB${art.some((a) => a.changed) ? ` (redrawn: ${art.filter((a) => a.changed).map((a) => a.name).join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));
