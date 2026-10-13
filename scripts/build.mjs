@@ -2,8 +2,9 @@
 // Zero-dependency build: renders the map (site/index.html), the radar
 // (site/radar/index.html) and the library (site/library/index.html) from
 // content/*.json. Run: node scripts/build.mjs
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -16,6 +17,17 @@ async function loadJson(file) {
   if (!existsSync(file)) throw new Error(`Missing ${path.relative(root, file)}`);
   return { file: path.relative(root, file), data: JSON.parse(await readFile(file, "utf8")) };
 }
+
+// Cache-busting: every page links its assets with a short content hash, so a browser holding an
+// old copy fetches the new one as soon as the file changes. Line endings are normalised so the
+// hash is the same on Windows checkouts and in CI.
+const ASSETS = ["site.css", "radar.js"];
+const assetVersion = {};
+for (const f of ASSETS) {
+  const text = (await readFile(site(`assets/${f}`), "utf8")).replace(/\r\n/g, "\n");
+  assetVersion[f] = createHash("sha256").update(text).digest("hex").slice(0, 8);
+}
+const asset = (rel, f) => `${rel}assets/${f}?v=${assetVersion[f]}`;
 
 const KINDS = {
   standard: { label: "Standard", family: "rule" },
@@ -365,9 +377,6 @@ function discFrame({ corners = true } = {}) {
     .join("");
   const seps = edges.slice(1, 4).map((e) => `<circle class="r-sep" cx="${c}" cy="${c}" r="${e}"/>`).join("");
   const strips = `<rect class="strip" x="${c - gapV}" y="${c - R - 2}" width="${2 * gapV}" height="${2 * R + 4}"/><rect class="strip" x="${c - R - 2}" y="${c - gapH}" width="${2 * R + 4}" height="${2 * gapH}"/>`;
-  const ticks = [-1, 1]
-    .flatMap((s) => edges.slice(1).map((e) => `<line class="r-tick" x1="${c + s * e}" y1="${c - 4.5}" x2="${c + s * e}" y2="${c + 4.5}"/>`))
-    .join("");
   const scale = [-1, 1]
     .flatMap((s) =>
       radar.rings.map((r, i) => `<text class="rl" x="${f1(c + s * ((edges[i] + edges[i + 1]) / 2))}" y="${c}" dy="0.36em">${esc(r.name.toUpperCase())}</text>`)
@@ -386,7 +395,7 @@ function discFrame({ corners = true } = {}) {
       return `<text class="ql${q.id === "governance" ? " ql-gov" : ""}" data-q="${q.id}" text-anchor="${anchor}">${tspans}<tspan class="qc" x="${x}" y="${top + lines.length * lh}">${count}</tspan></text>`;
     })
     .join("");
-  return `<g class="frame">${fills}${seps}<circle class="r-edge" cx="${c}" cy="${c}" r="${R}"/>${strips}${ticks}${scale}</g>${corners ? `<g class="corners">${corner}</g>` : ""}`;
+  return `<g class="frame">${fills}${seps}<circle class="r-edge" cx="${c}" cy="${c}" r="${R}"/>${strips}${scale}</g>${corners ? `<g class="corners">${corner}</g>` : ""}`;
 }
 
 function discSvg() {
@@ -459,8 +468,8 @@ function page({ rel, current, title, description, bodyClass, main, foot = "", co
 <meta name="color-scheme" content="light">
 <link rel="icon" href="${rel}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="${rel}assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${rel}assets/site.css">
-${script ? `<script src="${rel}assets/${script}" defer></script>\n` : ""}${contract}
+<link rel="stylesheet" href="${asset(rel, "site.css")}">
+${script ? `<script src="${asset(rel, script)}" defer></script>\n` : ""}${contract}
 ${GENERATED}
 </head>
 <body class="${bodyClass}">
@@ -855,7 +864,32 @@ await writeFile(site("index.html"), renderMap());
 await writeFile(site("radar/index.html"), renderRadar());
 await writeFile(site("library/index.html"), renderLibrary());
 
+// Hand-written pages (about, notes, 404) link the same assets; keep their versions in step.
+async function htmlFiles(dir) {
+  const out = [];
+  for (const d of await readdir(dir, { withFileTypes: true })) {
+    const p = path.join(dir, d.name);
+    if (d.isDirectory()) out.push(...(await htmlFiles(p)));
+    else if (d.name.endsWith(".html")) out.push(p);
+  }
+  return out;
+}
+const versioned = [];
+for (const file of await htmlFiles(site(""))) {
+  const html = await readFile(file, "utf8");
+  let next = html;
+  for (const f of ASSETS) {
+    const re = new RegExp(`(assets/${f.replace(".", "\\.")})(\\?v=[0-9a-f]*)?(")`, "g");
+    next = next.replace(re, `$1?v=${assetVersion[f]}$3`);
+  }
+  if (next !== html) {
+    await writeFile(file, next);
+    versioned.push(path.relative(site(""), file));
+  }
+}
+
 console.log(
   `Built map, radar and library: ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
+console.log(`Asset versions: ${ASSETS.map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));

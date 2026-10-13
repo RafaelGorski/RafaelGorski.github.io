@@ -45,7 +45,9 @@ for (const file of files) {
       problems.push(`${rel}: root-relative link "${ref}" breaks under a project path`);
       continue;
     }
-    const [p, frag] = ref.split("#");
+    // Asset links carry a ?v= content hash; the file on disk is the path without it.
+    const [withQuery, frag] = ref.split("#");
+    const p = withQuery.split("?")[0];
     let target = file;
     if (p) {
       target = path.resolve(path.dirname(file), p);

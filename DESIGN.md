@@ -259,8 +259,8 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
   and 350, narrowing outward so Adopt holds the most. Each ring is a flat fill from the ring scale,
   separated by 2-unit paper lines; the plate edge is a 1-unit ink circle. Two paper axes cut the
   disc into four quarter plates, like the 3px gaps in the stage band. The horizontal axis is wider
-  (26 units) and carries the ring scale: ring names in uppercase with ink ticks at each boundary,
-  on both sides. Quadrant names and blip counts sit in the four corners (Governance in ink).
+  (26 units) and carries the ring scale: ring names in uppercase, centred in each ring, on both
+  sides. Quadrant names and blip counts sit in the four corners (Governance in ink).
   Positions are fixed: Techniques top left, Platforms and protocols top right, Measures bottom
   left, Governance bottom right.
 - **Blip:** a 12.5-unit ultramarine circle with a paper edge and a white Jost numeral. Numbers run

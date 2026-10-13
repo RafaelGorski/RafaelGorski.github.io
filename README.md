@@ -49,6 +49,11 @@ python -m http.server 8000 --directory site
 Then open <http://localhost:8000>. The generated pages are committed, so the site also previews
 without running the build.
 
+The build also stamps every link to `assets/site.css` and `assets/radar.js` with a short content
+hash (`site.css?v=1a2b3c4d`), in generated and hand-written pages alike. Browsers holding an old
+copy fetch the new file as soon as it changes. Run the build after editing either asset, even when
+no content changed.
+
 ## Publish
 
 1. In **Settings → Pages**, set **Source** to **GitHub Actions** (one time).
