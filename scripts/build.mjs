@@ -1164,10 +1164,8 @@ function renderHome() {
 
   <section class="sec" id="take" aria-labelledby="take-h">
     <div class="sec-head hm">
-      <div>
-        <h2 id="take-h">${esc(home.take?.heading || "My take")}</h2>
-        ${home.take?.intro ? `<p class="sec-cap">${inline(home.take.intro)}</p>` : ""}
-      </div>
+      <h2 id="take-h">${esc(home.take?.heading || "My take")}</h2>
+      ${home.take?.intro ? `<p class="sec-cap">${inline(home.take.intro)}</p>` : ""}
     </div>
     <ol class="positions">
 ${positions}
@@ -1176,10 +1174,8 @@ ${positions}
 
   <section class="sec" id="lab" aria-labelledby="lab-h">
     <div class="sec-head hm">
-      <div>
-        <h2 id="lab-h">${esc(home.lab?.heading || "Lab notes")}</h2>
-        ${home.lab?.intro ? `<p class="sec-cap">${inline(home.lab.intro)}</p>` : ""}
-      </div>
+      <h2 id="lab-h">${esc(home.lab?.heading || "Lab notes")}</h2>
+      ${home.lab?.intro ? `<p class="sec-cap">${inline(home.lab.intro)}</p>` : ""}
     </div>
     <div class="lab-plate">
 ${groups}
@@ -1188,7 +1184,7 @@ ${groups}
 
   <section class="sec" id="work" aria-labelledby="work-h">
     <div class="sec-head hm">
-      <div><h2 id="work-h">${esc(home.work?.heading || "What I build")}</h2></div>
+      <h2 id="work-h">${esc(home.work?.heading || "What I build")}</h2>
     </div>
 ${work}
   </section>

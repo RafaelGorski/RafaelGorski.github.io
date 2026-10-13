@@ -589,10 +589,20 @@ h1 {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
-.radar-head { padding: var(--head-pad) 0 1.5rem; }
+.radar-head { padding: var(--head-pad) 0 1.9rem; }
 .radar-head h1 { position: relative; z-index: 1; max-width: 13ch; margin: 0; font-size: var(--t); }
-.radar-legend { margin-bottom: 1.75rem; }
-.radar-legend .caption { max-width: 54ch; margin-bottom: 1.15rem; font-size: 0.98rem; }
+/* The legend is a block of its own under a 2px neatline: the intro is its opening line, set in the
+   key's text column, so it reads as legend text and not as the title's subtitle. */
+.radar-legend {
+  margin-bottom: 1.75rem; padding-top: 0.85rem;
+  border-top: 2px solid var(--ink);
+  display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); column-gap: 0.75rem;
+}
+.radar-legend > .key, .radar-legend > .edition { grid-column: 1 / -1; }
+.radar-legend .caption { grid-column: 2; max-width: 52ch; margin-bottom: 1.1rem; font-size: 0.92rem; line-height: 1.5; }
+@media (max-width: 40rem) {
+  .radar-legend .caption { grid-column: 1 / -1; }
+}
 .radar-key ol, .radar-key ul { list-style: none; margin: 0; padding: 0; }
 .radar-key .rk-rings { display: grid; gap: 0.45rem; }
 .radar-key .rk-rings li {
@@ -1171,7 +1181,8 @@ code {
 .lab-index a:focus-visible, .lab-band:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
 .li-c, .lb-c { margin-left: auto; font-weight: 500; letter-spacing: 0; color: var(--red-pale); font-variant-numeric: tabular-nums; }
 
-/* Sections */
+/* Sections: the title on a 2px ink rule; its caption is never a grey subtitle. From 64rem it is a
+   margin note in ink beside the title, under the same rule; below that, a standfirst in ink. */
 .sec { margin-top: clamp(3.25rem, 2rem + 3.5vw, 5.75rem); scroll-margin-top: 1rem; }
 .sec-head { padding-top: 0.85rem; border-top: 2px solid var(--ink); margin-bottom: 0.4rem; }
 .sec-head h2 {
@@ -1180,7 +1191,13 @@ code {
   font-size: clamp(2.2rem, 1.6rem + 1.9vw, 3.2rem);
   line-height: 1; letter-spacing: 0;
 }
-.sec-cap { margin: 0.55rem 0 0; max-width: 58ch; color: var(--ink-2); }
+.sec-cap { margin: 0.7rem 0 0; max-width: 58ch; font-size: 1.0625rem; line-height: 1.55; color: var(--ink); }
+@media (min-width: 64rem) {
+  .sec-head { align-items: start; }
+  .sec-head .sec-cap { grid-column: 2; margin: 0; padding-top: 0.4rem; font-size: 0.98rem; line-height: 1.5; }
+}
+/* The first item of a section sits straight under the section's rule, with no hairline of its own. */
+.sec-head + .work { border-top: 0; }
 
 /* My take: positions in the reading column, evidence in the margin */
 .positions { list-style: none; margin: 0; padding: 0; }

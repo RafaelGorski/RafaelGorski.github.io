@@ -297,7 +297,9 @@ h1, then the legend or margin text, then the content.
 - **Radar (summit label):** the title sits in the margin; a 1px ink elbow leader runs up the disc's
   vertical paper axis from the centre (the summit), clear of every blip, and across above the disc
   to the title. It belongs to the title, so as the page scrolls it slides up the axis.
-  The intro sentence joins the ring legend, which precedes the disc in reading order.
+  The intro sentence joins the ring legend, which precedes the disc in reading order: the legend
+  stands under its own 2px neatline, and the intro is its opening line, set in the key's text
+  column at legend size.
 - **Library:** "Library" is lettered on the ascent above the stage index, at the range name's size
   and with 0.32em spacing, but not across the full width.
 - **Note:** a readable light display title (no range lettering), the meta in the margin rail
@@ -415,7 +417,9 @@ conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
 - **Lab index:** three vermilion bands across the full width, one per lab-note group, each with its
   count in pale vermilion. They link to the groups and stack one per row at 40rem and below.
 - **Sections:** a 2px ink rule and a light title-face h2 (My take, Lab notes, What I build,
-  Conversations), then an ink-secondary caption. No section numbers and no eyebrow labels.
+  Conversations). A section's caption is never a grey subtitle: from 64rem it is a margin note in
+  ink beside the title, under the same rule, and below 64rem a standfirst in ink after it. The
+  first item of a section has no hairline of its own. No section numbers and no eyebrow labels.
 - **Position:** an h3 in the position style and a paragraph in the essay style. Its margin holds an
   optional **remark** in vermilion Jost (his aside), then the cross-references.
 - **Cross-reference (`.xref`):** one line per link, each led by the reference's own mark: a
@@ -475,7 +479,8 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
   edge. The ledger always writes the movement in words.
 - **Ring glyph:** a quarter disc with four bands, the ring's band solid ultramarine and the rest
   tint. It names the ring by position, not colour, in the key and on every ring heading.
-- **Key:** Ring (glyph, name, meaning from `radar.json`) and Mark (the four movement marks).
+- **Key:** under a 2px ink neatline, the intro sentence in the key's text column, then Ring (glyph,
+  name, meaning from `radar.json`) and Mark (the four movement marks).
   Edition, status and ring counts follow on the quiet `.edition` line.
 - **Quadrant index:** four bands in a two-by-two grid, in the same positions as the quadrants on the
   disc, each with its count. Governance is the ink band.
