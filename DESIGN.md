@@ -207,6 +207,13 @@ original writing.
 - **Ring fills** `#c9d2ee` → `#d8def2` → `#e5e9f6` → `#f0f2f9`: radar only. Four ultramarine value
   steps, darkest at Adopt, lightest at Hold (a Bertin value scale for an ordered variable). Ring
   names in ink secondary hold 5:1 on the darkest step. The ring is always also written in text.
+- **Mountain art** uses no colour of its own. Contours are ultramarine pale (index lines) and a
+  62% screen of it over paper (the rest); on the home page they are rule grey instead, and the
+  summit carries the one vermilion mark. The ascent above the stages is ultramarine pale laid down
+  in four screens (50, 66, 83 and 100%) with paper hairlines between ridges. Nothing in the art is
+  darker than ultramarine pale (luminance 0.65), so every text colour on the site keeps at least
+  4.5:1 where it crosses a line, except vermilion text, which the art never sits behind. See
+  Mountain art below.
 
 ## Typography
 
@@ -401,6 +408,47 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
   stage column ends with "On the radar": the numbered discs of the blips charted there (1.5rem, a
   24px target), each linked to its entry. `.stage:target` tints the column a blip links to.
 
+### Mountain art (Contour Lineage)
+
+Górski means "of the mountains". The site's art is a generative mountain system drawn the way a
+cartographer draws one: contour lines (isohypses) seen from above, and a ridge seen from the side.
+`scripts/art.mjs` draws it from the seeds in `site-data/art.json` as static SVG in
+`site/assets/art/`, and `scripts/build.mjs` runs it first and stamps the files with the same `?v=`
+content hash as the other assets. The site loads no script for it and it reads with JavaScript off.
+The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` (not published).
+
+- **The system.** A main ridge through the summit with side ridges branching off it, smooth-joined
+  into V-shaped valleys, roughened by ridged noise on the high ground. Every summit is normalised to
+  2,499 m; contours every 50 m from a 1,000 m valley floor, every fifth (each 250 m) an index line
+  drawn heavier. Same seed, same drawing, on any machine.
+- **Where it appears.**
+  - Page heads (home, map, library, note): a sheet corner, `.art-sheet`, behind the head. Its top
+    and right edges are neatlines at the margin rule and the right gutter; its left and bottom fall
+    away to the valley floor, so the title stands on open ground. On the map and the library it
+    keeps to the open band above the key (`height: 50%`).
+  - Home: the author's summit, in rule grey, with a vermilion Polish trail blaze (a colour stripe
+    between two white ones) on the summit, in the empty corner beside the thesis. Hidden below
+    40rem, where the thesis fills the width.
+  - About: a portrait margin plate, `.art-margin`, in the empty right margin beside the prose.
+  - Radar: the apron, `.art-apron`. The disc is the summit seen from above and its four rings are
+    the top contours (2,450 to 2,300 m); the apron draws the slopes falling away beyond the edge,
+    in the disc's own units, clipped to the figure. Inside the disc the ring fills cover it.
+  - Map: the ascent, `.ridge`. Each stage column opens with its own stretch of one route seen from
+    the side, standing on its band with 3px of paper between, so the six join into one ridge that
+    climbs to the summit above Govern. Each stage shapes its stretch from its own seed. The same
+    six images stand at the foot of each library stage head and above the home page's mini band
+    (hidden there below 48rem, where the band wraps).
+  - 404: the slopes of a summit that lies beyond the sheet, full page behind the text.
+- **Rules.**
+  - Ground, never figure: never behind data (units, pins, blips, bands; where a head has a key, the
+    sheet keeps above it), never behind vermilion text, never darker than ultramarine pale.
+  - Decorative: `<img alt="" aria-hidden="true">`, no captions or alt text.
+  - Still: it never moves, so there is nothing to reduce for `prefers-reduced-motion`.
+  - Hidden in print and in forced colours.
+  - On phones every sheet becomes a 9rem cropped corner at 75% opacity, and the stage ridges a
+    3.5rem strip.
+  - Each SVG stays small (the largest is about 13 KB; all thirteen are about 70 KB).
+
 ## Do's and Don'ts
 
 Do:
@@ -418,7 +466,9 @@ Do:
 - Respect `prefers-reduced-motion`. The only authored motions are units stamping in column by
   column on the map, radar blips stamping in ring by ring from Adopt outward, trace bars drawing on
   note pages, and the three lab bands on the home page being laid down left to right (a clip-path
-  wipe).
+  wipe). The mountain art never moves.
+- Change the mountain art through seeds and settings in `site-data/art.json` (explore them first in
+  `art/viewer.html`), then run `node scripts/build.mjs`. The algorithm lives in `scripts/art.mjs`.
 
 Don't:
 
@@ -432,3 +482,6 @@ Don't:
 - Link to the map as `/` or `../`. The map is at `map/`; `scripts/check-links.mjs` fails on a link
   whose text names the map but lands on the home page.
 - Colour radar blips by quadrant or ring. Position and text carry both.
+- Put the mountain art behind data or vermilion text, draw it darker than ultramarine pale, animate
+  it, or load p5.js or any other script on the site to draw it. Do not edit `site/assets/art/` by
+  hand; it is generated.

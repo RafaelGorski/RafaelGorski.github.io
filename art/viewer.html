@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contour Lineage · generative mountains for rafaelgorski.com</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Anthropic Brand Colors */
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar h1 {
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .sidebar .subtitle {
+            color: var(--anthropic-mid-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        /* Control Sections */
+        .control-section {
+            margin-bottom: 32px;
+        }
+
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--anthropic-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-section h3::before {
+            content: '•';
+            color: var(--anthropic-orange);
+            font-weight: bold;
+        }
+
+        /* Seed Controls */
+        .seed-input {
+            width: 100%;
+            background: var(--anthropic-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--anthropic-light-gray);
+            text-align: center;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+            box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
+            background: white;
+        }
+
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .regen-button {
+            margin-bottom: 0;
+        }
+
+        /* Parameter Controls */
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #c86641;
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* Color Pickers */
+        .color-group {
+            margin-bottom: 16px;
+        }
+
+        .color-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            margin-bottom: 4px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker-container input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .color-value {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        /* Buttons */
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #c86641;
+            transform: translateY(-1px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: var(--anthropic-blue);
+        }
+
+        .button.secondary:hover {
+            background: #5a8bb8;
+        }
+
+        .button.tertiary {
+            background: var(--anthropic-green);
+        }
+
+        .button.tertiary:hover {
+            background: #6b7b52;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-row .button {
+            flex: 1;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            background: white;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        /* Responsive - Stack on mobile */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .canvas-area {
+                padding: 20px;
+            }
+        }
+    
+        /* Contour Lineage additions */
+        .control-group select, .control-group .check {
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+        }
+        .control-group select {
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--anthropic-light-gray);
+            background: var(--anthropic-light);
+            color: var(--anthropic-dark);
+        }
+        .control-group .check { display: flex; align-items: center; gap: 8px; color: var(--anthropic-mid-gray); }
+        .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .preset-grid .button { font-size: 13px; padding: 8px 10px; }
+        .preset-grid .button.is-on { background: var(--anthropic-dark); }
+        .hint { font-size: 12px; line-height: 1.5; color: var(--anthropic-mid-gray); margin-top: 10px; }
+        .hint b { color: var(--anthropic-dark); font-weight: 500; }
+        #canvas-container { background: #fcfcfa; }
+        @media (min-width: 601px) { .container { height: 100vh; } }
+    </style>
+</head>
+<!--
+    Contour Lineage: the generative mountain art of rafaelgorski.com, explored.
+    Built from the algorithmic-art skill's viewer template (anthropics/skills, Apache-2.0; see NOTICE).
+    The algorithm between the <core> markers is copied here by scripts/art.mjs; edit it there.
+    The site itself never loads p5.js: scripts/art.mjs writes static SVG from the same code.
+-->
+<body>
+    <div class="container">
+        <!-- Control Sidebar -->
+        <div class="sidebar">
+            <h1>Contour Lineage</h1>
+            <div class="subtitle">The mountain art of rafaelgorski.com. Górski means "of the mountains"; every seed raises a summit of exactly 2,499 m and draws it as a cartographer would, from above or from the side.</div>
+
+            <!-- Seed Section (ALWAYS KEEP THIS) -->
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="2499" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">← Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next →</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">↻ Random</button>
+            </div>
+
+            <!-- Site areas: the seeds and settings the site ships, from site-data/art.json -->
+            <div class="control-section">
+                <h3>Site areas</h3>
+                <div class="preset-grid" id="presets"></div>
+                <p class="hint">Each button loads the seed and settings the site uses for that area. To ship a seed you like, put it in <b>site-data/art.json</b> and run <b>node scripts/build.mjs</b>.</p>
+            </div>
+
+            <!-- Parameters Section -->
+            <div class="control-section">
+                <h3>Parameters</h3>
+
+                <div class="control-group">
+                    <label>View</label>
+                    <select id="view" onchange="updateParam('view', this.value)">
+                        <option value="plan">Plan: the summit from above</option>
+                        <option value="apron">Apron: the slopes around the radar</option>
+                        <option value="ascent">Ascent: the route from the side</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Contour interval (m)</label>
+                    <select id="interval" onchange="updateParam('interval', this.value)">
+                        <option value="25">25</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="125">125</option>
+                        <option value="250">250</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Valley floor (m)</label>
+                    <div class="slider-container">
+                        <input type="range" id="floor" min="500" max="2000" step="50" value="1000" oninput="updateParam('floor', this.value)">
+                        <span class="value-display" id="floor-value">1000</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Ridge width</label>
+                    <div class="slider-container">
+                        <input type="range" id="width" min="0.08" max="0.3" step="0.01" value="0.17" oninput="updateParam('width', this.value)">
+                        <span class="value-display" id="width-value">0.17</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Side ridges</label>
+                    <div class="slider-container">
+                        <input type="range" id="spurs" min="0" max="14" step="1" value="8" oninput="updateParam('spurs', this.value)">
+                        <span class="value-display" id="spurs-value">8</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Rock</label>
+                    <div class="slider-container">
+                        <input type="range" id="rock" min="0" max="0.6" step="0.02" value="0.3" oninput="updateParam('rock', this.value)">
+                        <span class="value-display" id="rock-value">0.3</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Warp</label>
+                    <div class="slider-container">
+                        <input type="range" id="warp" min="0" max="1.2" step="0.05" value="0.5" oninput="updateParam('warp', this.value)">
+                        <span class="value-display" id="warp-value">0.5</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Valley share</label>
+                    <div class="slider-container">
+                        <input type="range" id="valley" min="0.1" max="0.8" step="0.01" value="0.42" oninput="updateParam('valley', this.value)">
+                        <span class="value-display" id="valley-value">0.42</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Summit across</label>
+                    <div class="slider-container">
+                        <input type="range" id="sx" min="-0.2" max="1.2" step="0.01" value="0.8" oninput="updateParam('sx', this.value)">
+                        <span class="value-display" id="sx-value">0.8</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Summit down</label>
+                    <div class="slider-container">
+                        <input type="range" id="sy" min="-0.3" max="1" step="0.01" value="0.2" oninput="updateParam('sy', this.value)">
+                        <span class="value-display" id="sy-value">0.2</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="check"><input type="checkbox" id="bearingSeeded" checked onchange="updateParam('bearingSeeded', this.checked)"> Let the seed choose the ridge bearing</label>
+                </div>
+
+                <div class="control-group">
+                    <label>Ridge bearing (°)</label>
+                    <div class="slider-container">
+                        <input type="range" id="bearing" min="-90" max="90" step="1" value="0" oninput="updateParam('bearing', this.value)">
+                        <span class="value-display" id="bearing-value">0</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Ascent: starting height</label>
+                    <div class="slider-container">
+                        <input type="range" id="start" min="0.1" max="0.8" step="0.01" value="0.34" oninput="updateParam('start', this.value)">
+                        <span class="value-display" id="start-value">0.34</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Ascent: climb</label>
+                    <div class="slider-container">
+                        <input type="range" id="climb" min="0.6" max="2.6" step="0.05" value="1.45" oninput="updateParam('climb', this.value)">
+                        <span class="value-display" id="climb-value">1.45</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Ascent: ridgelines</label>
+                    <div class="slider-container">
+                        <input type="range" id="layers" min="1" max="6" step="1" value="4" oninput="updateParam('layers', this.value)">
+                        <span class="value-display" id="layers-value">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors Section: the site's own tokens, by voice -->
+            <div class="control-section">
+                <h3>Colors</h3>
+                <div class="control-group">
+                    <label>Voice</label>
+                    <select id="voice" onchange="updateParam('voice', this.value)">
+                        <option value="reference">Reference: ultramarine pale</option>
+                        <option value="author">Author: rule ink, vermilion summit</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="check"><input type="checkbox" id="mark" onchange="updateParam('mark', this.checked)"> Trail blaze on the summit</label>
+                </div>
+            </div>
+
+            <!-- Actions Section (ALWAYS KEEP THIS) -->
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row">
+                    <button class="button" onclick="initializeSystem()">Regenerate</button>
+                    <button class="button" onclick="resetParameters()">Reset</button>
+                </div>
+                <div class="button-row" style="margin-top: 8px">
+                    <button class="button secondary" onclick="downloadPNG()">Download PNG</button>
+                    <button class="button secondary" onclick="downloadSVG()">Download SVG</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Canvas Area -->
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">Surveying the summit...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════
+        // THE ALGORITHM: copied verbatim from scripts/art.mjs, so the viewer and the
+        // site draw the same mountain for the same seed. Do not edit it here.
+        // ═══════════════════════════════════════════════════════════════════════
+
+/* <core> Plain JavaScript with no imports. scripts/art.mjs copies this block verbatim into
+   art/viewer.html; edit it here, never in the viewer. */
+
+// Rysy, the highest point in Poland, in metres. Every summit is normalised to it. With the
+// 50 m interval, 2,499 is 50² − 1: the 50th contour, 2,500 m, is never drawn.
+const RYSY = 2499;
+
+const ART_DEFAULTS = {
+  interval: 50, // metres between contours; index contours every fifth
+  floor: 1000, // the valley floor, in metres; nothing is drawn below it
+  width: 0.17, // half-width of the main ridge, in sheet heights
+  spurs: 8, // side ridges branching off the main ridge
+  rock: 0.3, // ridged-noise crags on the high ground
+  warp: 0.5, // domain warp that keeps lines from looking computed
+  valley: 0.42, // share of the sheet left as valley floor
+  bearing: null, // main ridge bearing in degrees; null lets the seed choose
+  fadeLeft: 0.4, // the sheet falls to the valley floor toward its left edge...
+  fadeBottom: 0.45, // ...and its bottom edge; top and right are neatlines
+  cell: 8, // marching-squares grid, in user units
+  tolerance: 0.9, // path simplification, in user units
+  start: 0.34, // ascent: height of the route where it starts, as a share of the summit
+  climb: 1.45, // ascent: how late the route steepens
+  layers: 4, // ascent: ridgelines from the skyline to the foreground
+};
+
+function hashSeed(text) {
+  let h = 0x811c9dc5;
+  for (const ch of String(text)) {
+    h ^= ch.codePointAt(0);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
+function rng(seed) {
+  let a = seed >>> 0 || 0x9e3779b9;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Seeded 2D gradient noise in about [-1, 1].
+const GRAD = Array.from({ length: 16 }, (_, k) => [Math.cos((k * Math.PI) / 8 + 0.2), Math.sin((k * Math.PI) / 8 + 0.2)]);
+function makeNoise(seed) {
+  const r = rng(seed);
+  const perm = Array.from({ length: 256 }, (_, i) => i);
+  for (let i = 255; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [perm[i], perm[j]] = [perm[j], perm[i]];
+  }
+  const p = new Uint8Array(512);
+  for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
+  const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+  const dot = (ix, iy, dx, dy) => {
+    const g = GRAD[p[p[ix] + iy] & 15];
+    return g[0] * dx + g[1] * dy;
+  };
+  return (x, y) => {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const xf = x - xi, yf = y - yi;
+    const X = xi & 255, Y = yi & 255;
+    const u = fade(xf), v = fade(yf);
+    const a = dot(X, Y, xf, yf) + u * (dot(X + 1, Y, xf - 1, yf) - dot(X, Y, xf, yf));
+    const b = dot(X, Y + 1, xf, yf - 1) + u * (dot(X + 1, Y + 1, xf - 1, yf - 1) - dot(X, Y + 1, xf, yf - 1));
+    return (a + v * (b - a)) * 1.41;
+  };
+}
+
+function fbm(n, x, y, octaves) {
+  let sum = 0, amp = 0.5, freq = 1, norm = 0;
+  for (let i = 0; i < octaves; i++) {
+    sum += amp * n(x * freq, y * freq);
+    norm += amp;
+    amp *= 0.5;
+    freq *= 2.03;
+  }
+  return sum / norm;
+}
+
+// Musgrave's ridged multifractal: sharp crests that feed their own detail. About [0, 1].
+function ridged(n, x, y, octaves) {
+  let sum = 0, amp = 0.5, freq = 1, weight = 1, norm = 0;
+  for (let i = 0; i < octaves; i++) {
+    let v = 1 - Math.abs(n(x * freq, y * freq));
+    v *= v * weight;
+    weight = Math.min(1, v * 2);
+    sum += v * amp;
+    norm += amp;
+    freq *= 2.1;
+    amp *= 0.5;
+  }
+  return sum / norm;
+}
+
+const smoothstep = (e0, e1, x) => {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+};
+
+// The massif: a main ridge through the summit with side ridges branching off it, the way the
+// Tatras hang their side ridges off one main ridge. Returns h(x, y) in sheet units.
+function massif(seed, sx, sy, P) {
+  const r = rng(seed);
+  const nWarp = makeNoise(seed + 1), nBend = makeNoise(seed + 2), nRock = makeNoise(seed + 3);
+  const bearing = ((P.bearing ?? (r() * 2 - 1) * 24) * Math.PI) / 180;
+  const dx = Math.cos(bearing), dy = Math.sin(bearing);
+  const reachA = 0.55 + r() * 0.5, reachB = 0.45 + r() * 0.5;
+  const bendAmp = 0.05 + r() * 0.07;
+  const bend = (t) => bendAmp * (nBend(t * 1.6 + 5.3, 0.41) - nBend(5.3, 0.41));
+  const crest = (t) =>
+    Math.exp(-Math.pow(Math.abs(t) / (t < 0 ? reachA : reachB), 1.35)) * (1 + 0.09 * nBend(t * 5 + 1.7, 2.3) * Math.min(1, Math.abs(t) * 6));
+  const across = (q, w) => Math.exp(-Math.pow(Math.abs(q) / w, 1.1));
+
+  const spurs = [];
+  const count = Math.max(0, Math.round(P.spurs));
+  let side = r() < 0.5 ? -1 : 1;
+  for (let i = 0; i < count; i++) {
+    const t = -reachA * 1.15 + ((i + 0.5 + (r() - 0.5) * 0.6) / count) * (reachA + reachB) * 1.15;
+    side = r() < 0.8 ? -side : side;
+    const lean = (t < 0 ? -1 : 1) * (0.15 + r() * 0.45);
+    const px = -dy * side, py = dx * side;
+    const c = crest(t);
+    spurs.push({
+      ox: sx + dx * t - dy * bend(t),
+      oy: sy + dy * t + dx * bend(t),
+      ex: px * Math.cos(lean) + dx * Math.sin(lean),
+      ey: py * Math.cos(lean) + dy * Math.sin(lean),
+      len: (0.24 + r() * 0.26) * (0.55 + c),
+      hf: c * (0.8 + r() * 0.14),
+      w: P.width * (0.5 + r() * 0.2),
+      curl: (r() * 2 - 1) * 0.6,
+    });
+  }
+
+  const k = 0.025;
+  const terms = new Float64Array(count + 1);
+  return (x, y) => {
+    const wx = x + P.warp * 0.08 * fbm(nWarp, x * 2.1, y * 2.1, 2);
+    const wy = y + P.warp * 0.08 * fbm(nWarp, x * 2.1 + 19.7, y * 2.1 - 7.3, 2);
+    const rx = wx - sx, ry = wy - sy;
+    const t = rx * dx + ry * dy;
+    const off = -rx * dy + ry * dx - bend(t);
+    terms[0] = crest(t) * across(off, P.width * (1 + 0.9 * Math.abs(t)));
+    for (let i = 0; i < count; i++) {
+      const s = spurs[i];
+      const qx = wx - s.ox, qy = wy - s.oy;
+      let a = qx * s.ex + qy * s.ey;
+      let q = -qx * s.ey + qy * s.ex - s.curl * a * a;
+      if (a < 0) {
+        q = Math.hypot(qx, qy);
+        a = 0;
+      }
+      terms[i + 1] = s.hf * Math.exp(-Math.pow(a / s.len, 1.25)) * across(q, s.w * (1 + 1.2 * a));
+    }
+    // Smooth union: ridges meet in sharp valleys instead of overlapping.
+    let m = 0;
+    for (let i = 0; i <= count; i++) m = Math.max(m, terms[i]);
+    let sum = 0;
+    for (let i = 0; i <= count; i++) sum += Math.exp((terms[i] - m) / k);
+    let h = m + k * Math.log(sum / (count + 1));
+    // Rock roughens the slopes but leaves the summit where the sheet puts it.
+    const rock = P.rock * smoothstep(0.03, 0.22, Math.hypot(wx - sx, wy - sy));
+    h *= 1 + rock * (ridged(nRock, wx * 4.2, wy * 4.2, 3) - 0.5);
+    return h + rock * 0.04 * fbm(nRock, wx * 1.7 + 40, wy * 1.7, 3);
+  };
+}
+
+// Marching squares: every isoline of `level` over a grid, stitched into polylines.
+function isolines(E, nx, ny, cell, level, ox = 0, oy = 0) {
+  const VOFF = nx * ny;
+  const nb = new Map();
+  const link = (p, q) => {
+    if (!nb.has(p)) nb.set(p, []);
+    if (!nb.has(q)) nb.set(q, []);
+    nb.get(p).push(q);
+    nb.get(q).push(p);
+  };
+  for (let j = 0; j < ny - 1; j++) {
+    for (let i = 0; i < nx - 1; i++) {
+      const a = E[j * nx + i], b = E[j * nx + i + 1], c = E[(j + 1) * nx + i + 1], d = E[(j + 1) * nx + i];
+      const code = (a >= level ? 8 : 0) | (b >= level ? 4 : 0) | (c >= level ? 2 : 0) | (d >= level ? 1 : 0);
+      if (code === 0 || code === 15) continue;
+      const T = j * nx + i, B = (j + 1) * nx + i, L = VOFF + j * nx + i, R = VOFF + j * nx + i + 1;
+      const centre = (a + b + c + d) / 4 >= level;
+      switch (code) {
+        case 1: case 14: link(L, B); break;
+        case 2: case 13: link(B, R); break;
+        case 3: case 12: link(L, R); break;
+        case 4: case 11: link(T, R); break;
+        case 6: case 9: link(T, B); break;
+        case 7: case 8: link(L, T); break;
+        case 5: if (centre) { link(T, L); link(B, R); } else { link(T, R); link(L, B); } break;
+        case 10: if (centre) { link(T, R); link(L, B); } else { link(L, T); link(B, R); } break;
+      }
+    }
+  }
+  const at = (id) => {
+    if (id < VOFF) {
+      const i = id % nx, j = (id - i) / nx;
+      const a = E[id], b = E[id + 1];
+      return [ox + (i + (level - a) / (b - a)) * cell, oy + j * cell];
+    }
+    const v = id - VOFF, i = v % nx, j = (v - i) / nx;
+    const a = E[v], b = E[v + nx];
+    return [ox + i * cell, oy + (j + (level - a) / (b - a)) * cell];
+  };
+  const seen = new Set();
+  const walk = (start) => {
+    const ids = [start];
+    seen.add(start);
+    let cur = start;
+    for (;;) {
+      const next = nb.get(cur).find((n) => !seen.has(n));
+      if (next === undefined) break;
+      seen.add(next);
+      ids.push(next);
+      cur = next;
+    }
+    const closed = ids.length > 2 && nb.get(cur).includes(start);
+    return { pts: ids.map(at), closed };
+  };
+  const lines = [];
+  for (const [id, ns] of nb) if (ns.length === 1 && !seen.has(id)) lines.push(walk(id));
+  for (const id of nb.keys()) if (!seen.has(id)) lines.push(walk(id));
+  return lines;
+}
+
+function chaikin(pts, closed) {
+  const n = pts.length;
+  if (n < 3) return pts;
+  const out = closed ? [] : [pts[0]];
+  for (let i = 0; i < (closed ? n : n - 1); i++) {
+    const a = pts[i], b = pts[(i + 1) % n];
+    out.push([0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]], [0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]]);
+  }
+  if (!closed) out.push(pts[n - 1]);
+  return out;
+}
+
+// Ramer–Douglas–Peucker, iterative.
+function rdp(pts, eps) {
+  if (pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length);
+  keep[0] = keep[pts.length - 1] = 1;
+  const stack = [[0, pts.length - 1]];
+  const e2 = eps * eps;
+  while (stack.length) {
+    const [s, e] = stack.pop();
+    const [ax, ay] = pts[s], [bx, by] = pts[e];
+    const dx = bx - ax, dy = by - ay, len = dx * dx + dy * dy;
+    let idx = -1, dmax = e2;
+    for (let i = s + 1; i < e; i++) {
+      const [px, py] = pts[i];
+      const t = len ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len)) : 0;
+      const qx = ax + t * dx - px, qy = ay + t * dy - py;
+      const d = qx * qx + qy * qy;
+      if (d > dmax) {
+        dmax = d;
+        idx = i;
+      }
+    }
+    if (idx >= 0) {
+      keep[idx] = 1;
+      stack.push([s, idx], [idx, e]);
+    }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+
+function simplify(pts, eps, closed) {
+  if (!closed || pts.length < 4) return rdp(pts, eps);
+  let far = 0, fd = -1;
+  for (let i = 1; i < pts.length; i++) {
+    const d = (pts[i][0] - pts[0][0]) ** 2 + (pts[i][1] - pts[0][1]) ** 2;
+    if (d > fd) {
+      fd = d;
+      far = i;
+    }
+  }
+  const a = rdp(pts.slice(0, far + 1), eps);
+  const b = rdp(pts.slice(far).concat([pts[0]]), eps);
+  return a.slice(0, -1).concat(b.slice(0, -1));
+}
+
+const lengthOf = (pts, closed) => {
+  let L = 0;
+  for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  return closed ? L + Math.hypot(pts[0][0] - pts.at(-1)[0], pts[0][1] - pts.at(-1)[1]) : L;
+};
+
+// Contour every `interval` metres from the floor up to, never including, 2,500 m.
+function contourField(E, nx, ny, P, ox = 0, oy = 0, top = RYSY) {
+  const lines = [];
+  for (let level = P.floor + P.interval; level < top; level += P.interval) {
+    const index = Math.round(level / P.interval) % 5 === 0;
+    for (const line of isolines(E, nx, ny, P.cell, level, ox, oy)) {
+      const pts = simplify(chaikin(line.pts, line.closed), P.tolerance, line.closed);
+      const L = lengthOf(pts, line.closed);
+      if (L < (line.closed ? 6 : 3) * P.cell) continue;
+      lines.push({ level, index, closed: line.closed, pts });
+    }
+  }
+  return lines;
+}
+
+// Plan view: the summit seen from above, as isohypses (contour lines).
+function planView(spec, P) {
+  const { W, H } = spec;
+  const A = W / H;
+  const sx = spec.summit[0] * A, sy = spec.summit[1];
+  const h = massif(spec.seed >>> 0, sx, sy, P);
+  const cell = P.cell;
+  const nx = Math.ceil(W / cell) + 1, ny = Math.ceil(H / cell) + 1;
+  const fade = (u, v) => (spec.fade === false ? 1 : smoothstep(0, P.fadeLeft, u) * smoothstep(0, P.fadeBottom, 1 - v));
+  const g = new Float64Array(nx * ny);
+  let best = 0;
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const k = j * nx + i;
+      g[k] = h((i * cell) / H, (j * cell) / H) * fade((i * cell) / W, (j * cell) / H);
+      if (g[k] > g[best]) best = k;
+    }
+  }
+  // The true summit may lie beyond the sheet (the 404 page); normalise to it either way.
+  const atSummit = h(sx, sy) * fade(spec.summit[0], spec.summit[1]);
+  const hmax = Math.max(g[best], atSummit);
+  const sorted = Float64Array.from(g).sort();
+  const h0 = sorted[Math.floor(P.valley * (sorted.length - 1))];
+  const E = g.map((v) => P.floor + Math.max(0, (v - h0) / (hmax - h0)) * (RYSY - P.floor));
+  const onSheet = g[best] >= atSummit;
+  return {
+    view: "plan",
+    W, H,
+    box: [0, 0, W, H],
+    lines: contourField(E, nx, ny, P),
+    summit: onSheet ? { x: (best % nx) * cell, y: Math.floor(best / nx) * cell, z: RYSY } : null,
+  };
+}
+
+// Apron: the radar is the summit seen from above, its four rings the top contours. The apron
+// draws the slopes falling away beyond the disc, in the disc's own units (centre 360, edge 350).
+function apronView(spec, P) {
+  const C = 360, R = 350, x0 = -180, size = 1080;
+  const r = rng(spec.seed >>> 0);
+  const n = makeNoise((spec.seed >>> 0) + 7);
+  const lobes = Array.from({ length: 5 }, () => ({ th: r() * Math.PI * 2, a: 0.4 + r() * 0.6, s: 0.18 + r() * 0.25 }));
+  const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+  const rim = 2300; // the Hold ring's edge, four 50 m steps below the summit
+  const cell = P.cell;
+  const nx = Math.ceil(size / cell) + 1;
+  const E = new Float64Array(nx * nx);
+  for (let j = 0; j < nx; j++) {
+    for (let i = 0; i < nx; i++) {
+      const x = x0 + i * cell, y = x0 + j * cell;
+      const s = Math.hypot(x - C, y - C) - R;
+      if (s <= 0) {
+        E[j * nx + i] = rim;
+        continue;
+      }
+      const th = Math.atan2(y - C, x - C);
+      let lobe = 0;
+      for (const l of lobes) lobe += l.a * Math.exp(-((angDiff(th, l.th) / l.s) ** 2));
+      const sEff = s * Math.max(0.35, 1 - 0.42 * lobe + P.warp * 0.7 * fbm(n, x / 260, y / 260, 3));
+      E[j * nx + i] = Math.max(P.floor, rim - P.interval * Math.pow(sEff / 38, 0.86));
+    }
+  }
+  return { view: "apron", W: size, H: size, box: [x0, x0, size, size], lines: contourField(E, nx, nx, P, x0, x0, rim), summit: null };
+}
+
+// Ascent: the route seen from the side, climbing through the stages to the summit. Each stage
+// shapes its own stretch from its own seed; neighbouring stretches blend, so slices join.
+function ascentView(spec, P) {
+  const { W, H } = spec; // one stage
+  const seeds = spec.stageSeeds;
+  const n = seeds.length;
+  const noises = seeds.map((s) => makeNoise(s >>> 0));
+  const hills = makeNoise((spec.seed >>> 0) + 11);
+  const us = spec.summitAt ?? 0.93;
+  const climb = (u) =>
+    u <= us ? P.start + (1 - P.start) * Math.pow(u / us, P.climb) : 1 - 0.32 * Math.pow((u - us) / (1 - us), 1.15);
+  const blend = (u) => {
+    const f = Math.min(n - 1, Math.max(0, u * n - 0.5));
+    const i0 = Math.min(n - 2, Math.floor(f));
+    const t = f - i0;
+    const s = t * t * (3 - 2 * t);
+    return [i0, 1 - s, i0 + 1, s];
+  };
+  const K = Math.max(1, Math.round(P.layers));
+  // Far layers are granite: jagged towers and notches. Near layers are the forested foothills in
+  // front of them: lower, rounder, with their own rhythm.
+  const heightAt = (u, k) => {
+    const [a, wa, b, wb] = blend(u);
+    const near = K > 1 ? k / (K - 1) : 0;
+    const freq = n * (3.2 - 1.6 * near);
+    const crag = (i) => {
+      const v = ridged(noises[i], u * freq + k * 5.3, k * 2.9 + 0.7, 4);
+      return Math.pow(v, 1.6 - 0.5 * near) - 0.35;
+    };
+    const detail = wa * crag(a) + wb * crag(b);
+    const c = climb(u);
+    const tip = k === 0 ? 1 - Math.exp(-(((u - us) / 0.035) ** 2)) : 1;
+    const z = c * (1 - 0.55 * near) + P.rock * (1.5 - 0.8 * near) * detail * (0.3 + 0.7 * c) * tip;
+    const roll = near * 0.08 * fbm(hills, u * 6 + k * 3.7, k * 1.3, 3);
+    return k === 0 ? Math.min(z, 1 - 0.015 * (1 - Math.exp(-(((u - us) / 0.012) ** 2)))) : z + roll;
+  };
+  const step = 2;
+  const slices = [];
+  for (let s = 0; s < n; s++) {
+    const xs = [];
+    for (let x = 0; x < W; x += step) xs.push(x);
+    xs.push(W);
+    const xSummit = us * n * W - s * W;
+    if (xSummit > 0 && xSummit < W) xs.push(xSummit), xs.sort((p, q) => p - q);
+    const layers = [];
+    for (let k = K - 1; k >= 0; k--) {
+      const pts = xs.map((x) => [x, H - Math.max(0, heightAt((s * W + x) / (n * W), k)) * H * 0.9]);
+      layers.push({ depth: k, pts: rdp(pts, P.tolerance * 0.35) });
+    }
+    slices.push({ view: "ascent", W, H, box: [0, 0, W, H], layers: layers.reverse(), stage: s });
+  }
+  return slices;
+}
+
+function mix(paper, ink, share) {
+  const c = (hex, i) => parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16);
+  return "#" + [0, 1, 2].map((i) => Math.round(c(paper, i) + (c(ink, i) - c(paper, i)) * share).toString(16).padStart(2, "0")).join("");
+}
+
+// Colours come from the site's tokens. Nothing is darker than ultramarine pale, so text on top
+// keeps its WCAG contrast; vermilion is only the author's summit mark.
+function artPalette(tokens, voice) {
+  const ink = voice === "author" ? tokens.rule : tokens.ultraPale;
+  return {
+    paper: tokens.paper,
+    contour: mix(tokens.paper, ink, 0.62),
+    index: ink,
+    mark: tokens.red,
+    screens: [0.5, 0.66, 0.83, 1].map((s) => mix(tokens.paper, tokens.ultraPale, s)),
+  };
+}
+
+const numbers = (a) => a.map((v, i) => (i && v >= 0 ? " " : "") + v).join("");
+function pathData(lines) {
+  let d = "";
+  for (const { pts, closed } of lines) {
+    let px = Math.round(pts[0][0]), py = Math.round(pts[0][1]);
+    const rel = [];
+    for (let i = 1; i < pts.length; i++) {
+      const x = Math.round(pts[i][0]), y = Math.round(pts[i][1]);
+      if (x === px && y === py) continue;
+      rel.push(x - px, y - py);
+      px = x;
+      py = y;
+    }
+    if (rel.length) d += `M${Math.round(pts[0][0])} ${Math.round(pts[0][1])}l${numbers(rel)}${closed ? "z" : ""}`;
+  }
+  return d;
+}
+const f1 = (v) => String(Math.round(v * 10) / 10);
+
+function toSVG(geom, palette, note = "") {
+  const [bx, by, bw, bh] = geom.box;
+  const head = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${bx} ${by} ${bw} ${bh}" width="${bw}" height="${bh}"${geom.view === "ascent" ? ' preserveAspectRatio="none"' : ""}>${note ? `<!-- ${note} -->` : ""}`;
+  if (geom.view === "ascent") {
+    const parts = geom.layers.map((l, i) => {
+      const top = l.pts.map((p, j) => `${j ? "L" : "M"}${f1(p[0])} ${f1(p[1])}`).join("");
+      const fill = palette.screens[Math.min(palette.screens.length - 1, Math.round((i / Math.max(1, geom.layers.length - 1)) * (palette.screens.length - 1)))];
+      const body = `<path fill="${fill}" d="${top}L${bw} ${bh}L0 ${bh}Z"/>`;
+      return i ? body + `<path fill="none" stroke="${palette.paper}" stroke-width="1.25" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="${top}"/>` : body;
+    });
+    return `${head}${parts.join("")}</svg>\n`;
+  }
+  const regular = pathData(geom.lines.filter((l) => !l.index));
+  const index = pathData(geom.lines.filter((l) => l.index));
+  let mark = "";
+  if (geom.summit && geom.mark) {
+    // A Polish trail blaze: one stripe of colour between two white ones, painted where the red
+    // route reaches the top.
+    const w = 22, h = 13, x = Math.round(geom.summit.x - w / 2), y = Math.round(geom.summit.y - h / 2);
+    mark = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${palette.paper}" stroke="${palette.index}" stroke-width="1" vector-effect="non-scaling-stroke"/><rect x="${x}" y="${y + Math.round(h / 3)}" width="${w}" height="${h - 2 * Math.round(h / 3)}" fill="${palette.mark}"/>`;
+  }
+  return `${head}<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="${palette.contour}" stroke-width=".75" vector-effect="non-scaling-stroke" d="${regular}"/><path stroke="${palette.index}" stroke-width="1.3" vector-effect="non-scaling-stroke" d="${index}"/></g>${mark}</svg>\n`;
+}
+
+// The ascent's stage seeds: one per stage id, derived from the ascent seed unless set.
+function stageSeeds(ascent, stageIds) {
+  return stageIds.map((id) => ascent.stageSeeds?.[id] ?? (hashSeed(`${ascent.seed}/${id}`) % 99999) + 1);
+}
+
+// One area of the site, from its entry in site-data/art.json.
+function drawArea(area, config) {
+  const P = { ...ART_DEFAULTS, interval: config.interval ?? ART_DEFAULTS.interval, floor: config.floor ?? ART_DEFAULTS.floor, ...(area.params || {}) };
+  if (area.view === "apron") return [apronView(area, P)];
+  if (area.view === "ascent") return ascentView(area, P);
+  return [{ ...planView({ W: area.size[0], H: area.size[1], summit: area.summit, seed: area.seed, fade: area.fade }, P), mark: Boolean(area.mark) }];
+}
+/* </core> */
+
+/* <data> */
+const SITE_ART = {"description":"Seeds and settings for the mountain art drawn by scripts/art.mjs (Contour Lineage). Change a seed or a summit position, then run node scripts/build.mjs. Explore seeds first in art/viewer.html.","interval":50,"floor":1000,"areas":{"404":{"view":"plan","seed":16021,"size":[1600,900],"summit":[1.08,-0.12]},"home":{"view":"plan","seed":2499,"size":[1600,800],"summit":[0.8,0.2],"voice":"author","mark":true},"map":{"view":"plan","seed":68664,"size":[1600,360],"summit":[0.8,0.3]},"radar":{"view":"apron","seed":98939},"library":{"view":"plan","seed":95556,"size":[1600,360],"summit":[0.8,0.3]},"notes":{"view":"plan","seed":77991,"size":[1600,560],"summit":[0.8,0.24]},"about":{"view":"plan","seed":66754,"size":[900,1200],"summit":[0.62,0.16]}},"ascent":{"seed":30212,"size":[300,84],"summitAt":0.93},"stageIds":["purpose","design","launch","scale","operate","govern"],"stageSeeds":[37878,60987,1306,53991,15342,22073],"tokens":{"paper":"#fcfcfa","ultraPale":"#c9d2ee","rule":"#d8dadf","red":"#c2361c"}};
+/* </data> */
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // PARAMETERS
+        // ═══════════════════════════════════════════════════════════════════════
+
+        const AREA_ORDER = ['home', 'map', 'radar', 'library', 'notes', 'about', '404', 'ascent'];
+        const AREA_LABEL = { home: 'Home', map: 'Map', radar: 'Radar', library: 'Library', notes: 'Notes', about: 'About', '404': '404', ascent: 'Ascent (stages)' };
+        const T = SITE_ART.tokens;
+        const RING = ['#f0f2f9', '#e5e9f6', '#d8def2', '#c9d2ee']; // the radar's ring fills, for context only
+        let area = 'home';
+        let params = {};
+        let defaultParams = {};
+        let geoms = [];
+
+        function paramsForArea(name) {
+            const a = name === 'ascent' ? { ...SITE_ART.ascent, view: 'ascent' } : SITE_ART.areas[name];
+            const P = { ...ART_DEFAULTS, interval: SITE_ART.interval, floor: SITE_ART.floor, ...(a.params || {}) };
+            return {
+                seed: a.seed,
+                view: a.view,
+                interval: P.interval, floor: P.floor, width: P.width, spurs: P.spurs, rock: P.rock, warp: P.warp, valley: P.valley,
+                sx: a.summit ? a.summit[0] : 0.8, sy: a.summit ? a.summit[1] : 0.2,
+                bearingSeeded: P.bearing == null, bearing: P.bearing ?? 0,
+                start: P.start, climb: P.climb, layers: P.layers,
+                voice: a.voice || 'reference', mark: Boolean(a.mark),
+                size: a.size || [1600, 800], summitAt: a.summitAt
+            };
+        }
+
+        function areaSpec() {
+            const p = params;
+            const spec = {
+                view: p.view, seed: p.seed, size: p.view === 'ascent' ? SITE_ART.ascent.size : p.size, summit: [p.sx, p.sy],
+                voice: p.voice, mark: p.mark, summitAt: p.summitAt ?? SITE_ART.ascent.summitAt,
+                params: { width: p.width, spurs: p.spurs, rock: p.rock, warp: p.warp, valley: p.valley, bearing: p.bearingSeeded ? null : p.bearing, start: p.start, climb: p.climb, layers: p.layers }
+            };
+            if (p.view === 'ascent') {
+                spec.W = spec.size[0]; spec.H = spec.size[1];
+                const overrides = area === 'ascent' && p.seed === SITE_ART.ascent.seed ? SITE_ART.ascent : { seed: p.seed };
+                spec.stageSeeds = stageSeeds(overrides, SITE_ART.stageIds);
+            }
+            return spec;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // P5.JS: DRAWING THE GEOMETRY
+        // ═══════════════════════════════════════════════════════════════════════
+
+        const GAP = 3, BAND = 44;
+
+        function setup() {
+            const canvas = createCanvas(1200, 600);
+            canvas.parent('canvas-container');
+            pixelDensity(2);
+            noLoop();
+            buildPresets();
+            const start = decodeURIComponent(location.hash.slice(1));
+            loadArea(AREA_ORDER.includes(start) ? start : 'home');
+            window.addEventListener('hashchange', () => {
+                const name = decodeURIComponent(location.hash.slice(1));
+                if (AREA_ORDER.includes(name)) loadArea(name);
+            });
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        function initializeSystem() {
+            const spec = areaSpec();
+            geoms = drawArea(spec, { interval: params.interval, floor: params.floor });
+            if (params.view === 'ascent') {
+                const w = (1200 - GAP * (geoms.length - 1)) / geoms.length;
+                resizeCanvas(1200, Math.round(w * geoms[0].H / geoms[0].W + GAP + BAND + 48));
+            } else {
+                const [, , bw, bh] = geoms[0].box;
+                resizeCanvas(1200, Math.round(1200 * bh / bw));
+            }
+            redraw();
+        }
+
+        function draw() {
+            background(T.paper);
+            if (!geoms.length) return;
+            const pal = artPalette(T, params.voice);
+            if (params.view === 'ascent') return drawAscent(pal);
+            const g = geoms[0];
+            const s = width / g.box[2];
+            push();
+            translate(-g.box[0] * s, -g.box[1] * s);
+            scale(s);
+            noFill();
+            strokeJoin(ROUND);
+            strokeCap(ROUND);
+            for (const line of g.lines) {
+                stroke(line.index ? pal.index : pal.contour);
+                strokeWeight((line.index ? 1.3 : 0.75) / s);
+                beginShape();
+                for (const [x, y] of line.pts) vertex(x, y);
+                endShape(line.closed ? CLOSE : undefined);
+            }
+            if (g.view === 'apron') drawDisc(s);
+            if (g.summit && params.mark) drawBlaze(g.summit, pal, s);
+            pop();
+        }
+
+        function drawDisc(s) {
+            noStroke();
+            [350, 308, 253, 175].forEach((r, i) => { fill(RING[i]); circle(360, 360, r * 2); });
+            noFill();
+            stroke(T.paper); strokeWeight(2 / s);
+            [308, 253, 175].forEach((r) => circle(360, 360, r * 2));
+            stroke('#16171b'); strokeWeight(1 / s);
+            circle(360, 360, 700);
+            noStroke(); fill(T.paper);
+            rect(10, 347, 700, 26);
+            rect(357, 10, 6, 700);
+        }
+
+        function drawBlaze(p, pal, s) {
+            const w = 22, h = 13, x = Math.round(p.x - w / 2), y = Math.round(p.y - h / 2), third = Math.round(h / 3);
+            stroke(pal.index); strokeWeight(1 / s); fill(pal.paper);
+            rect(x, y, w, h);
+            noStroke(); fill(pal.mark);
+            rect(x, y + third, w, h - 2 * third);
+        }
+
+        function drawAscent(pal) {
+            const n = geoms.length;
+            const w = (width - GAP * (n - 1)) / n;
+            const s = w / geoms[0].W;
+            const h = geoms[0].H * s;
+            geoms.forEach((g, i) => {
+                push();
+                translate(i * (w + GAP), 0);
+                scale(s);
+                g.layers.forEach((l, k) => {
+                    const fillHex = pal.screens[Math.min(pal.screens.length - 1, Math.round((k / Math.max(1, g.layers.length - 1)) * (pal.screens.length - 1)))];
+                    noStroke(); fill(fillHex);
+                    beginShape();
+                    for (const [x, y] of l.pts) vertex(x, y);
+                    vertex(g.W, g.H); vertex(0, g.H);
+                    endShape(CLOSE);
+                    if (k) {
+                        noFill(); stroke(pal.paper); strokeWeight(1.25 / s); strokeJoin(ROUND);
+                        beginShape();
+                        for (const [x, y] of l.pts) vertex(x, y);
+                        endShape();
+                    }
+                });
+                pop();
+                noStroke();
+                fill(i === n - 1 ? '#16171b' : '#2340a0');
+                rect(i * (w + GAP), h + GAP, w, BAND);
+                fill('#c9d2ee');
+                textFont('Poppins'); textSize(13); textStyle(BOLD);
+                text(String(i + 1) + '  ' + SITE_ART.stageIds[i].toUpperCase(), i * (w + GAP) + 12, h + GAP + 27);
+                fill('#b0aea5'); textStyle(NORMAL); textSize(11);
+                text('seed ' + (areaSpec().stageSeeds[i]), i * (w + GAP), h + GAP + BAND + 20);
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // UI CONTROL HANDLERS
+        // ═══════════════════════════════════════════════════════════════════════
+
+        const NUMERIC = ['interval', 'floor', 'width', 'spurs', 'rock', 'warp', 'valley', 'sx', 'sy', 'bearing', 'start', 'climb', 'layers'];
+
+        function syncControls() {
+            for (const id of NUMERIC) {
+                document.getElementById(id).value = params[id];
+                const out = document.getElementById(id + '-value');
+                if (out) out.textContent = params[id];
+            }
+            document.getElementById('view').value = params.view;
+            document.getElementById('voice').value = params.voice;
+            document.getElementById('mark').checked = params.mark;
+            document.getElementById('bearingSeeded').checked = params.bearingSeeded;
+            document.getElementById('bearing').disabled = params.bearingSeeded;
+            document.querySelectorAll('#presets .button').forEach((b) => b.classList.toggle('is-on', b.dataset.area === area));
+            updateSeedDisplay();
+        }
+
+        function updateParam(paramName, value) {
+            if (NUMERIC.includes(paramName)) {
+                params[paramName] = Number(value);
+                const out = document.getElementById(paramName + '-value');
+                if (out) out.textContent = value;
+            } else {
+                params[paramName] = value;
+            }
+            if (paramName === 'bearingSeeded') document.getElementById('bearing').disabled = value;
+            if (paramName === 'view' && value === 'ascent') params.size = SITE_ART.ascent.size;
+            initializeSystem();
+        }
+
+        function buildPresets() {
+            const box = document.getElementById('presets');
+            for (const name of AREA_ORDER) {
+                const b = document.createElement('button');
+                b.className = 'button secondary';
+                b.dataset.area = name;
+                b.textContent = AREA_LABEL[name];
+                b.onclick = () => { history.replaceState(null, '', '#' + name); loadArea(name); };
+                box.appendChild(b);
+            }
+        }
+
+        function loadArea(name) {
+            area = name;
+            params = paramsForArea(name);
+            defaultParams = { ...params };
+            syncControls();
+            initializeSystem();
+        }
+
+        function downloadPNG() {
+            saveCanvas('contour-lineage-' + area + '-' + params.seed, 'png');
+        }
+
+        function downloadSVG() {
+            const pal = artPalette(T, params.voice);
+            let svg;
+            if (params.view === 'ascent') {
+                const parts = geoms.map((g, i) => toSVG(g, pal).replace('<svg ', '<svg x="' + i * (g.W + 3) + '" '));
+                svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (geoms.length * (geoms[0].W + 3) - 3) + ' ' + geoms[0].H + '">' + parts.join('') + '</svg>';
+            } else {
+                svg = toSVG({ ...geoms[0], mark: params.mark }, pal, 'Contour Lineage · ' + area + ' · seed ' + params.seed);
+            }
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+            a.download = 'contour-lineage-' + area + '-' + params.seed + '.svg';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // SEED CONTROL FUNCTIONS - ALWAYS KEEP THESE
+        // ═══════════════════════════════════════════════════════════════════════
+
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            let input = document.getElementById('seed-input');
+            let newSeed = parseInt(input.value);
+            if (newSeed && newSeed > 0) {
+                params.seed = newSeed;
+                initializeSystem();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = Math.max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function nextSeed() {
+            params.seed = params.seed + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = Math.floor(Math.random() * 999999) + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function resetParameters() {
+            params = { ...defaultParams };
+            syncControls();
+            initializeSystem();
+        }
+    </script>
+</body>
+</html>

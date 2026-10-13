@@ -19,9 +19,13 @@
   h1 { font: 500 clamp(2rem, 1.4rem + 2.4vw, 3rem)/1.05 "Futura", "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; }
   a { color: #2340a0; text-underline-offset: 0.2em; }
   a:focus-visible { outline: 2px solid #2340a0; outline-offset: 3px; }
+  /* Off the map: the slopes of a summit that lies beyond the sheet (scripts/art.mjs). */
+  .ground { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; object-position: right top; pointer-events: none; }
+  @media print, (forced-colors: active) { .ground { display: none; } }
 </style>
 </head>
 <body>
+<img class="ground" src="/assets/art/404.svg?v=55618109" alt="" aria-hidden="true" width="1600" height="900" decoding="async">
 <div class="wrap">
   <a class="name" id="name" href="/">Rafael Gorski</a>
   <ol class="band" aria-hidden="true"><li></li><li></li><li class="gap"></li><li></li><li></li><li></li></ol>

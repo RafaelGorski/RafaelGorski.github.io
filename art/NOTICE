@@ -1,0 +1,5 @@
+This folder contains art/viewer.html, which is built from the viewer template of the
+"algorithmic-art" skill in anthropics/skills (https://github.com/anthropics/skills/tree/main/skills/algorithmic-art),
+Copyright Anthropic, licensed under the Apache License, Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0). The viewer keeps the template's layout, styling
+and seed controls; the algorithm, parameters and site presets are original to this repository.

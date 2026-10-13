@@ -19,9 +19,14 @@ site-data/                     site copy
   takes.json                   home page lab notes (Testing now, Using more effectively, Watch out for)
   plate.json                   map title, caption, per-stage tests, short titles
   notes.json                   notes registry: id, stage, title, status
+  art.json                     seeds and settings for the mountain art
 scripts/
   build.mjs                    renders site/index.html, site/map/, site/radar/ and site/library/
+  art.mjs                      draws the mountain art (Contour Lineage) as SVG; build.mjs runs it
   check-links.mjs              fails if any internal link or #fragment does not resolve
+art/                           design tools for the mountain art (not published)
+  philosophy.md                the algorithmic philosophy and its hidden parameters
+  viewer.html                  p5.js seed explorer (open it in a browser)
 site/                          published root
   index.html                   the home page (generated)
   map/index.html               the map (generated)
@@ -31,6 +36,7 @@ site/                          published root
   about/index.html             about this site: method and colophon (hand-written)
   assets/site.css              the whole design system
   assets/radar.js              radar hover and focus linking (progressive enhancement only)
+  assets/art/                  the mountain art, one SVG per area and stage (generated)
   assets/fonts/                self-hosted Jost (OFL)
   404.html
 .github/workflows/pages.yml    builds, checks links and deploys site/ on every push to main
@@ -54,10 +60,35 @@ python -m http.server 8000 --directory site
 Then open <http://localhost:8000>. The generated pages are committed, so the site also previews
 without running the build.
 
-The build also stamps every link to `assets/site.css` and `assets/radar.js` with a short content
-hash (`site.css?v=1a2b3c4d`), in generated and hand-written pages alike. Browsers holding an old
-copy fetch the new file as soon as it changes. Run the build after editing either asset, even when
-no content changed.
+The build also stamps every link to `assets/site.css`, `assets/radar.js` and the art in
+`assets/art/` with a short content hash (`site.css?v=1a2b3c4d`), in generated and hand-written
+pages alike. Browsers holding an old copy fetch the new file as soon as it changes. Run the build
+after editing any of them, even when no content changed.
+
+## Mountain art
+
+Górski means "of the mountains", so each part of the site carries its own generative summit:
+contour lines seen from above behind the page heads, an apron of slopes around the radar disc, and
+one ridge seen from the side that the map's six stages climb in order. `scripts/art.mjs` draws them
+as static SVG into `site/assets/art/` (one file per area: `home`, `map`, `radar`, `library`,
+`notes`, `about`, `404`, and `stage-<id>` for each stage). The build runs it first, so CI always
+redraws them; it is deterministic, so the same seed gives the same file. Run it alone with
+`node scripts/art.mjs` to print each file's size.
+
+To change the art:
+
+1. Open `art/viewer.html` in a browser. **Site areas** loads each area's current seed and settings;
+   step through seeds, adjust parameters, and download a PNG or SVG if you want to compare.
+2. Put the seed you like in `site-data/art.json`: `areas.<area>.seed` for a page, `ascent.seed`
+   for the six stages together, or `ascent.stageSeeds.<stage-id>` for one stage. Parameters you
+   changed in the viewer go under the area's `"params"`; `summit` is `[across, down]` as shares of
+   the sheet.
+3. Run `node scripts/build.mjs` and `node scripts/check-links.mjs`.
+
+Where the art appears and the rules it keeps (never behind data, never darker than ultramarine
+pale, still, hidden in print) are in `DESIGN.md` under Mountain art. The algorithm's philosophy and
+its hidden parameters are in `art/philosophy.md`. A new note can reuse `assets/art/notes.svg`, or
+add its own entry to `site-data/art.json` and point its head image at that file.
 
 ## Publish
 

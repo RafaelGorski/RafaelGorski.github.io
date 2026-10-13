@@ -8,6 +8,7 @@ import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { generateArt } from "./art.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const content = (f) => path.join(root, "content", f);
@@ -19,16 +20,35 @@ async function loadJson(file) {
   return { file: path.relative(root, file), data: JSON.parse(await readFile(file, "utf8")) };
 }
 
+// The mountain art (scripts/art.mjs, seeds in site-data/art.json) is drawn first, so its SVGs are
+// versioned with everything else below.
+const art = await generateArt({ root });
+const artSize = Object.fromEntries(
+  await Promise.all(
+    art.map(async (a) => {
+      const m = (await readFile(site(`assets/${a.file}`), "utf8")).match(/viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"/);
+      return [a.name, m ? [Number(m[1]), Number(m[2])] : [16, 9]];
+    })
+  )
+);
+
 // Cache-busting: every page links its assets with a short content hash, so a browser holding an
 // old copy fetches the new one as soon as the file changes. Line endings are normalised so the
 // hash is the same on Windows checkouts and in CI.
-const ASSETS = ["site.css", "radar.js"];
+const ASSETS = ["site.css", "radar.js", ...art.map((a) => a.file)];
 const assetVersion = {};
 for (const f of ASSETS) {
   const text = (await readFile(site(`assets/${f}`), "utf8")).replace(/\r\n/g, "\n");
   assetVersion[f] = createHash("sha256").update(text).digest("hex").slice(0, 8);
 }
 const asset = (rel, f) => `${rel}assets/${f}?v=${assetVersion[f]}`;
+
+// Decorative art: empty alt and hidden from assistive technology; CSS places it and hides it in
+// print and forced colours.
+const artImg = (rel, name, cls, { lazy = false } = {}) => {
+  const [w, h] = artSize[name];
+  return `<img class="art ${cls}" src="${asset(rel, `art/${name}.svg`)}" alt="" aria-hidden="true" width="${w}" height="${h}" decoding="async"${lazy ? ' loading="lazy"' : ""}>`;
+};
 
 const KINDS = {
   standard: { label: "Standard", family: "rule" },
@@ -640,6 +660,7 @@ ${sec
           </ul></div>`
         : "";
       return `      <li class="stage${s.id === "govern" ? " is-govern" : ""}" id="stage-${esc(s.id)}" style="--c:${c}">
+        ${artImg(rel, `stage-${s.id}`, "ridge")}
         <h3 class="band"><a href="${rel}library/#${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
         <p class="q">${esc(s.question)}</p>
         <div class="pins">
@@ -653,7 +674,8 @@ ${sec
     })
     .join("\n");
 
-  const main = `<div class="plate-head">
+  const main = `<div class="plate-head has-art">
+  ${artImg(rel, "map", "art-sheet")}
   <div class="ph-title">
     <h1>${esc(plate.title)}</h1>
     <p class="caption">${esc(plate.caption)}</p>
@@ -741,6 +763,7 @@ ${prim
       <p class="q">${esc(s.question)}</p>
       ${test ? `<p class="test"><b>${esc(test.label)}</b> ${esc(test.text)}</p>` : ""}
       ${noteList}
+      ${artImg(rel, `stage-${s.id}`, "ridge", { lazy: true })}
     </div>
     <div class="ls-body">
     ${list}
@@ -751,7 +774,8 @@ ${prim
     })
     .join("\n");
 
-  const main = `<div class="page-head lib-head">
+  const main = `<div class="page-head lib-head has-art">
+  ${artImg(rel, "library", "art-sheet")}
   <div class="ph-title">
     <h1>Library</h1>
     <p class="caption">${entries.length} sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
@@ -892,7 +916,10 @@ ${rings}
     <p class="caption">The map shows when something matters in the life of an AI system. The radar shows how far to rely on it. Each of the ${blips.length} blips sits in one ring and is backed by sources in the library.</p>
   </div>
   <figure class="disc">
-    ${discSvg()}
+    <div class="disc-ground">
+      ${artImg(rel, "radar", "art-apron")}
+      ${discSvg()}
+    </div>
     <figcaption>
       <span class="vh">The radar drawn as a disc: ${blips.length} numbered blips in four quadrants and four rings, from ${esc(ringById.adopt.name)} at the centre to ${esc(ringById.hold.name)} at the edge. Every blip is listed below with its ring, quadrant and evidence.</span>
       <span class="disc-read" aria-hidden="true">Each number matches an entry in the list. Select a blip to go to it.</span>
@@ -1036,6 +1063,7 @@ function renderHome() {
       )
       .join("");
     return `<div class="guide">
+          <div class="mini-ridge" aria-hidden="true">${stages.map((s) => artImg(rel, `stage-${s.id}`, "ridge", { lazy: true })).join("")}</div>
           <ol class="mini-band" aria-label="The ${stages.length} stages on the map">${band}</ol>
           <dl class="guide-l">
             <div><dt><a href="${rel}map/">Map</a></dt><dd>${stages.length} stages, from ${esc(stageRange)}, with ${entries.length} sources pinned where each matters most.</dd></div>
@@ -1069,7 +1097,8 @@ function renderHome() {
     .join("\n");
 
   const main = `<div class="home">
-  <div class="home-head hm">
+  <div class="home-head hm has-art">
+    ${artImg(rel, "home", "art-sheet")}
     <h1>${thesis}</h1>
     <p class="lede">${inline(home.lede)}</p>
     <aside class="who" aria-label="Who writes this">
@@ -1163,7 +1192,7 @@ for (const file of await htmlFiles(site(""))) {
   const html = await readFile(file, "utf8");
   let next = html;
   for (const f of ASSETS) {
-    const re = new RegExp(`(assets/${f.replace(".", "\\.")})(\\?v=[0-9a-f]*)?(")`, "g");
+    const re = new RegExp(`(assets/${f.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")})(\\?v=[0-9a-f]*)?(")`, "g");
     next = next.replace(re, `$1?v=${assetVersion[f]}$3`);
   }
   if (next !== html) {
@@ -1175,5 +1204,6 @@ for (const file of await htmlFiles(site(""))) {
 console.log(
   `Built home, map, radar and library: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
-console.log(`Asset versions: ${ASSETS.map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
+console.log(`Asset versions: ${["site.css", "radar.js"].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
+console.log(`Art: ${art.length} SVGs in site/assets/art/, ${(art.reduce((s, a) => s + a.bytes, 0) / 1024).toFixed(1)} KB in all, largest ${art.reduce((m, a) => (a.bytes > m.bytes ? a : m)).name} at ${(Math.max(...art.map((a) => a.bytes)) / 1024).toFixed(1)} KB${art.some((a) => a.changed) ? ` (redrawn: ${art.filter((a) => a.changed).map((a) => a.name).join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));
