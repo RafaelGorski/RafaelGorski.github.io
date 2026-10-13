@@ -9,6 +9,7 @@ not edit them. Nothing in this folder is published HTML.
 |------|---------|
 | `stages.json` | The six stages of an AI programme (purpose, design, launch, scale, operate, govern), each with the question it answers. The ids are fixed: the site hardcodes them. |
 | `library.json` | The curated library: primary sources for launching and scaling AI systems, including agentic systems. |
+| `radar.json` | A readiness radar: techniques, protocols, measures and controls placed in Adopt, Trial, Assess or Hold, each citing library entries as evidence. A draft for the owner's review. |
 | `editorial-plan.md` | Eight proposed future notes, each built on library entries. A proposal for the owner's review, not settled positions. |
 
 ## `library.json` schema
@@ -45,6 +46,67 @@ not edit them. Nothing in this folder is published HTML.
   currently included).
 - `verified`: the date the URL was fetched and the title, publisher and year were checked
   against the source.
+
+## `radar.json` schema
+
+> **Status: draft for the owner's review.** Ring placements are editorial judgement attributed
+> to Rafael Gorski once he confirms them. Until then the file carries `"status": "draft"`.
+
+The map shows *when* in the lifecycle something matters; the radar shows *how ready* it is.
+Blips are things to use or avoid (techniques, protocols, measures, controls), not documents.
+Each blip cites the library entries that justify its placement.
+
+```json
+{
+  "edition": "2026-10",
+  "status": "draft",
+  "quadrants": [
+    {"id": "techniques", "name": "Techniques", "scope": "Methods and practices"},
+    {"id": "platforms", "name": "Platforms and protocols", "scope": "Shared infrastructure, interfaces and wire protocols"},
+    {"id": "measures", "name": "Measures", "scope": "Metrics, evaluations and signals"},
+    {"id": "governance", "name": "Governance", "scope": "Standards, regulation and controls"}
+  ],
+  "rings": [
+    {"id": "adopt", "name": "Adopt", "meaning": "One sentence, max 20 words."},
+    {"id": "trial", "name": "Trial", "meaning": "..."},
+    {"id": "assess", "name": "Assess", "meaning": "..."},
+    {"id": "hold", "name": "Hold", "meaning": "..."}
+  ],
+  "blips": [
+    {
+      "id": "kebab-case-unique",
+      "name": "Short name",
+      "quadrant": "techniques",
+      "ring": "adopt",
+      "stages": ["operate"],
+      "summary": "Max 30 words.",
+      "evidence": ["library-entry-id"],
+      "movement": "new"
+    }
+  ]
+}
+```
+
+- `quadrants` and `rings`: ids, names and order are fixed; the site codes against them.
+- `edition`: `YYYY-MM` of the radar edition. `status` is `draft` until the owner approves it.
+- `stages`: one or two ids from `stages.json`, linking the blip back to the map.
+- `evidence`: one to four library entry ids. Every placement must be defensible from these
+  sources: their maturity, standards status and documented failure modes.
+- `movement`: change since the previous edition. Every blip is `new` in the first edition.
+- Hold blips name a practice to stop or avoid, and the summary gives the reason from the
+  evidence.
+- No vendor products are named. Open specifications and protocols are named (MCP, A2A,
+  OpenTelemetry, OAuth).
+
+Placement rules applied in this draft:
+
+- **Adopt:** the cited evidence is stable and either drawn from production experience or
+  consistent across independent sources; or the source is a published standard, consensus guide
+  or law in force.
+- **Trial:** sound, but the standard is still evolving, or the evidence is a single study or not
+  yet shown at production scale.
+- **Assess:** new protocols, measures and practices with little evidence of production value yet.
+- **Hold:** the cited evidence shows the practice fails, misleads or hides risk.
 
 ## Curation criteria
 
