@@ -69,7 +69,8 @@ after editing any of them, even when no content changed.
 
 Górski means "of the mountains", so each part of the site carries its own generative summit:
 contour lines seen from above behind the page heads, an apron of slopes around the radar disc, and
-one ridge seen from the side that the map's six stages climb in order. `scripts/art.mjs` draws them
+one ridge seen from the side that the six stages climb in order, above the map's stage columns and
+the library's stage index. `scripts/art.mjs` draws them
 as static SVG into `site/assets/art/` (one file per area: `home`, `map`, `radar`, `library`,
 `notes`, `about`, `404`, and `stage-<id>` for each stage). The build runs it first, so CI always
 redraws them; it is deterministic, so the same seed gives the same file. Run it alone with

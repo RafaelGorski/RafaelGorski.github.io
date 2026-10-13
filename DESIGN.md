@@ -436,8 +436,10 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
   - Map: the ascent, `.ridge`. Each stage column opens with its own stretch of one route seen from
     the side, standing on its band with 3px of paper between, so the six join into one ridge that
     climbs to the summit above Govern. Each stage shapes its stretch from its own seed. The same
-    six images stand at the foot of each library stage head and above the home page's mini band
-    (hidden there below 48rem, where the band wraps).
+    six images climb above the library's stage index (`.lib-ascent`, on the index's own grid and
+    3px off its bands; the row scrolls away and only the bands stick; hidden below 40rem, where the
+    index wraps to two rows), stand at the foot of each library stage head, and run above the home
+    page's mini band (hidden there below 48rem, where the band wraps).
   - 404: the slopes of a summit that lies beyond the sheet, full page behind the text.
 - **Rules.**
   - Ground, never figure: never behind data (units, pins, blips, bands; where a head has a key, the

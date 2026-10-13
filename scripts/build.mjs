@@ -786,6 +786,7 @@ ${prim
     ${sampleNotice(rel)}
   </div>
 </div>
+<div class="lib-ascent" aria-hidden="true">${stages.map((s) => artImg(rel, `stage-${s.id}`, "ridge")).join("")}</div>
 <nav class="stage-index" aria-label="Stages">
   <ol>
       ${index}
