@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// Zero-dependency build: renders the map (site/index.html), the radar
-// (site/radar/index.html) and the library (site/library/index.html) from
-// content/*.json. Run: node scripts/build.mjs
+// Zero-dependency build: renders the home page (site/index.html) from
+// site-data/home.json and site-data/takes.json, and the map (site/map/index.html),
+// the radar (site/radar/index.html) and the library (site/library/index.html)
+// from content/*.json. Run: node scripts/build.mjs
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -97,6 +98,8 @@ const notesSrc = await loadJson(siteData("notes.json"));
 const plateSrc = await loadJson(siteData("plate.json"));
 // RADAR_FILE works like LIBRARY_FILE, for previews and stress tests.
 const radarSrc = await loadJson(process.env.RADAR_FILE || content("radar.json"));
+const homeSrc = await loadJson(siteData("home.json"));
+const takesSrc = await loadJson(siteData("takes.json"));
 
 const rawStages = Array.isArray(stagesSrc.data) ? stagesSrc.data : stagesSrc.data.stages;
 const stages = rawStages.map((s, i) => ({
@@ -178,6 +181,73 @@ const radar = radarSrc.data;
   const holds = blips.filter((b) => b.ring === "hold").length;
   if (holds < 3) rWarn(`hold has ${holds} blips (expected at least 3)`);
 }
+
+// ---------- Home: load and validate ----------
+// Group ids and their order are fixed; names and captions can change.
+const TAKE_GROUPS = ["testing", "using", "watch"];
+const home = homeSrc.data;
+const takes = takesSrc.data;
+const noteById = Object.fromEntries(notes.map((n) => [n.id, n]));
+// A link is exactly one of: a radar blip, a library entry, a note, a map stage or an absolute URL.
+const LINK_KINDS = ["radar", "library", "note", "stage", "href"];
+function checkLinks(at, links, err) {
+  if (links == null) return;
+  if (!Array.isArray(links)) return err(`${at}: links must be a list`);
+  for (const l of links) {
+    const kinds = LINK_KINDS.filter((k) => l?.[k] != null);
+    if (kinds.length !== 1) {
+      err(`${at}: each link needs exactly one of ${LINK_KINDS.join(", ")}`);
+      continue;
+    }
+    const k = kinds[0];
+    if (k === "radar" && !(radar.blips || []).some((b) => b.id === l.radar)) err(`${at}: radar blip "${l.radar}" is not in ${radarSrc.file}`);
+    if (k === "library" && !seen.has(l.library)) err(`${at}: library entry "${l.library}" is not in the library`);
+    if (k === "note" && !noteById[l.note]) err(`${at}: note "${l.note}" is not in site-data/notes.json`);
+    if (k === "stage" && !stageById[l.stage]) err(`${at}: unknown stage "${l.stage}"`);
+    if (k === "href") {
+      if (!/^https?:\/\//.test(l.href)) err(`${at}: href "${l.href}" must be absolute http(s)`);
+      if (!l.label) err(`${at}: href "${l.href}" needs a label`);
+    }
+  }
+}
+{
+  const tErr = (m) => errors.push(`${takesSrc.file}: ${m}`);
+  const tWarn = (m) => warnings.push(`${takesSrc.file}: ${m}`);
+  const gIds = (takes.groups || []).map((g) => g.id).join(",");
+  if (gIds !== TAKE_GROUPS.join(",")) tErr(`groups must be ${TAKE_GROUPS.join(", ")} in that order, got ${gIds || "none"}`);
+  for (const g of takes.groups || []) if (!g.name) tErr(`group ${g.id}: name is missing`);
+  const ids = new Set();
+  for (const t of takes.entries || []) {
+    const at = `entry ${t.id || t.title || "?"}`;
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(t.id || "")) tErr(`${at}: id must be kebab-case`);
+    if (ids.has(t.id)) tErr(`${at}: duplicate id`);
+    ids.add(t.id);
+    if (!TAKE_GROUPS.includes(t.group)) tErr(`${at}: group must be one of ${TAKE_GROUPS.join(", ")}`);
+    if (!t.title) tErr(`${at}: title is missing`);
+    if (!t.body) tErr(`${at}: body is missing`);
+    else if (words(t.body) > 50) tErr(`${at}: body has ${words(t.body)} words (max 50)`);
+    if (!/^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$/.test(t.date || "")) tErr(`${at}: date must be YYYY-MM-DD or YYYY-MM, got "${t.date}"`);
+    if (typeof t.confirmed !== "boolean") tWarn(`${at}: confirmed should be true or false (shown as Draft until true)`);
+    checkLinks(at, t.links, tErr);
+  }
+  for (const g of TAKE_GROUPS) if (!(takes.entries || []).some((t) => t.group === g)) tWarn(`group ${g} has no entries`);
+
+  const hErr = (m) => errors.push(`${homeSrc.file}: ${m}`);
+  const hWarn = (m) => warnings.push(`${homeSrc.file}: ${m}`);
+  for (const k of ["title", "description", "thesis", "lede", "own"]) if (!home[k]) hErr(`${k} is missing`);
+  const pIds = new Set();
+  for (const p of home.take?.positions || []) {
+    const at = `position ${p.id || p.title || "?"}`;
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.id || "")) hErr(`${at}: id must be kebab-case`);
+    if (pIds.has(p.id)) hErr(`${at}: duplicate id`);
+    pIds.add(p.id);
+    if (!p.title || !p.body) hErr(`${at}: title and body are required`);
+    else if (words(p.body) > 80) hWarn(`${at}: body has ${words(p.body)} words (aim for 80 or fewer)`);
+    checkLinks(at, p.links, hErr);
+  }
+  for (const w of home.work?.items || []) checkLinks(`work ${w.id}`, w.links, hErr);
+}
+
 if (errors.length) {
   console.error("Content errors:\n  " + errors.join("\n  "));
   process.exit(1);
@@ -414,10 +484,10 @@ function cropSvg(q) {
 
 // ---------- Shared pieces ----------
 const CONTRACT = `<!--
-THESIS: The home page is an atlas plate of the AI lifecycle. Six stages run
+THESIS: The map is an atlas plate of the AI lifecycle. Six stages run
   across; every curated source is one counted unit pinned below the stage where
   it matters, and its fill says whether that ground is stable, evolving or
-  draft. Refuses the personal-site hero and post list, and the RFC sheet.
+  draft. Refuses the post list and the RFC sheet.
 OWN-WORLD: White plate paper, ultramarine stage band and units, vermilion only
   for the author's own notes, black structure and hairline grid. Isotype unit
   glyphs: square rule, circle practice, triangle evidence; solid, hatched or
@@ -456,7 +526,7 @@ const yearLabel = (e) => (e.year == null ? "living" : String(e.year));
 const byline = (e) => `${esc(shortPublisher(e.publisher))} · ${yearLabel(e)}`;
 const isVerified = (e) => Boolean(e.verified) && e.verified !== "false";
 
-function page({ rel, current, title, description, bodyClass, main, foot = "", contract = CONTRACT, script = "" }) {
+function page({ rel, current, title, description, bodyClass, main, foot = "", contract = CONTRACT, script = "", head = "" }) {
   const cur = (k) => (k === current ? ' aria-current="page"' : "");
   return `<!doctype html>
 <html lang="en">
@@ -469,17 +539,17 @@ function page({ rel, current, title, description, bodyClass, main, foot = "", co
 <link rel="icon" href="${rel}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="${rel}assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${asset(rel, "site.css")}">
-${script ? `<script src="${asset(rel, script)}" defer></script>\n` : ""}${contract}
+${script ? `<script src="${asset(rel, script)}" defer></script>\n` : ""}${head}${contract}
 ${GENERATED}
 </head>
 <body class="${bodyClass}">
 <a class="skip" href="#content">Skip to content</a>
 ${SPRITE}
 <header class="margin">
-  <a class="name" href="${rel}">Rafael Gorski</a>
+  <a class="name" href="${rel}"${cur("home")}>Rafael Gorski</a>
   <nav class="site-nav" aria-label="Site">
     <ul>
-      <li><a href="${rel}"${cur("map")}>Map</a></li>
+      <li><a href="${rel}map/"${cur("map")}>Map</a></li>
       <li><a href="${rel}radar/"${cur("radar")}>Radar</a></li>
       <li><a href="${rel}library/"${cur("library")}>Library</a></li>
       <li><a href="${rel}about/"${cur("about")}>About</a></li>
@@ -490,7 +560,7 @@ ${SPRITE}
 ${main}
 </main>
 <footer class="foot">
-  <p>© 2026 Rafael Gorski. Views are the author's own.</p>
+  <p>© 2026 Rafael Gorski. Views are my own, not my employer's.</p>
   ${foot}<p><a href="https://github.com/RafaelGorski">github.com/RafaelGorski</a></p>
 </footer>
 </body>
@@ -539,7 +609,7 @@ function notePin(n, rel) {
 }
 
 function renderMap() {
-  const rel = "./";
+  const rel = "../";
   const cols = stages
     .map((s, c) => {
       const prim = primaryAt(s.id);
@@ -606,7 +676,7 @@ ${cols}
   return page({
     rel,
     current: "map",
-    title: `Rafael Gorski — ${plate.title}: a map from first decision to accountable operation`,
+    title: `Map: ${plate.title} — Rafael Gorski`,
     description: `A map of launching and scaling AI systems in ${stages.length} stages, from ${stageRange}, with original notes and curated sources pinned to the stage where each matters.`,
     bodyClass: "is-map",
     main,
@@ -778,7 +848,7 @@ function renderRadar() {
       })
       .join("");
     const where = b.stages
-      .map((s) => `<li><a href="${rel}#stage-${esc(s)}"><span class="band-n">${stageById[s].n}</span>${esc(stageById[s].name)}</a></li>`)
+      .map((s) => `<li><a href="${rel}map/#stage-${esc(s)}"><span class="band-n">${stageById[s].n}</span>${esc(stageById[s].name)}</a></li>`)
       .join("");
     return `        <li class="blip" id="blip-${esc(b.id)}" data-b="${esc(b.id)}" data-say="${esc(say)}">
           <span class="b-n" aria-hidden="true">${b.n}</span>
@@ -843,7 +913,7 @@ ${rings}
   <div class="ledger">
 ${sections}
   </div>
-  <p class="radar-close">Read the same ground by lifecycle stage on <a href="${rel}">the map</a>, or source by source in <a href="${rel}library/">the library</a>.</p>
+  <p class="radar-close">Read the same ground by lifecycle stage on <a href="${rel}map/">the map</a>, or source by source in <a href="${rel}library/">the library</a>.</p>
 </div>`;
 
   return page({
@@ -858,9 +928,223 @@ ${sections}
   });
 }
 
+// ---------- Home ----------
+const HOME_CONTRACT = `<!--
+THESIS: The home page is the author's annotated page: his take set as plain
+  positions in the reading column, every one annotated in the margin with the
+  radar blip, library source or note that backs it, then a dated lab-notes plate.
+  Refuses the personal-site hero, headshot, skills grid and post-card list.
+OWN-WORLD: The atlas plate, inverted. Vermilion (his voice) owns the bands,
+  margin remarks, note chips and trace ids; ultramarine appears only where his
+  voice points into the reference (blip discs, unit glyphs, stage chips). Paper,
+  ink rules, Jost lettering, system sans reading.
+STORY: Visitors learn what he holds to about building agents and why, see what
+  he is testing and what he would stop, follow a margin note into the field
+  guide, and know how to reach him.
+FIRST VIEWPORT: Margin line; the thesis as a two-line h1 across the page; lede
+  left, who-and-where facts right; three vermilion bands indexing the lab notes.
+FORM: Grounded structure 5 of 7 (essay with marginalia), after a re-roll on
+  factual grounds; stagings declined; seed a1f6f0ec.
+-->`;
+
+// Copy in site-data/*.json may carry [text](url) links; everything else is escaped.
+const inline = (s) => esc(s).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => `<a href="${u}">${t}</a>`);
+
+// One line of the margin: what a point links to, drawn in the reference's own marks.
+function xref(l, rel) {
+  if (l.radar) {
+    const b = blips.find((x) => x.id === l.radar);
+    return `<li><a class="x-blip" href="${rel}radar/#blip-${esc(b.id)}"><span class="x-n" aria-hidden="true">${b.n}</span><span class="x-t"><span class="vh">On the radar: </span>${esc(b.name)} <span class="x-m">· ${esc(ringById[b.ring].name)}</span></span></a></li>`;
+  }
+  if (l.library) {
+    const e = entries.find((x) => x.id === l.library);
+    return `<li><a class="x-src" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e)}<span class="x-t"><span class="vh">In the library: </span>${esc(shortTitle(e))} <span class="x-m">· ${yearLabel(e)}</span></span></a></li>`;
+  }
+  if (l.note) {
+    const n = noteById[l.note];
+    return `<li><a class="x-note" href="${rel}notes/${esc(n.slug)}/"><span class="x-sq" aria-hidden="true"></span><span class="x-t"><span class="x-id">${esc(n.id)}</span> ${esc(n.short || n.title)}<span class="vh">, original note</span></span></a></li>`;
+  }
+  if (l.stage) {
+    const s = stageById[l.stage];
+    return `<li><a class="x-stage" href="${rel}map/#stage-${esc(s.id)}"><span class="x-sn" aria-hidden="true">${s.n}</span><span class="x-t"><span class="vh">On the map: </span>${esc(s.name)} <span class="x-m">· ${esc(s.question)}</span></span></a></li>`;
+  }
+  return `<li><a class="x-ext" href="${esc(l.href)}"><span class="x-arrow" aria-hidden="true">↗</span><span class="x-t">${esc(l.label)}</span></a></li>`;
+}
+const xrefs = (links, rel) => (links?.length ? `<ul class="xref">${links.map((l) => xref(l, rel)).join("")}</ul>` : "");
+
+function renderHome() {
+  const rel = "./";
+  // Newest first within a group; file order breaks ties.
+  const takesIn = (g) =>
+    (takes.entries || [])
+      .map((t, i) => ({ t, i }))
+      .filter(({ t }) => t.group === g)
+      .sort((a, b) => b.t.date.localeCompare(a.t.date) || a.i - b.i)
+      .map(({ t }) => t);
+  const thesis = String(home.thesis)
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => `<span class="h1-l">${esc(s)}</span>`)
+    .join(" ");
+
+  const who = (home.who || [])
+    .map((w) => `<div><dt>${esc(w.label)}</dt><dd>${inline(w.text)}</dd></div>`)
+    .join("\n      ");
+  const labIndex = takes.groups
+    .map(
+      (g) =>
+        `<li><a href="#${esc(g.id)}"><span class="li-name">${esc(g.name)}</span><span class="li-c">${takesIn(g.id).length}<span class="vh"> notes</span></span></a></li>`
+    )
+    .join("\n      ");
+
+  const margin = (label, say, inner) =>
+    say || inner ? `<aside class="mn" aria-label="${esc(label)}">${say ? `<p class="mn-say">${inline(say)}</p>` : ""}${inner || ""}</aside>` : "";
+
+  const positions = (home.take?.positions || [])
+    .map(
+      (p) => `    <li class="pos hm" id="p-${esc(p.id)}">
+      <div class="pos-main">
+        <h3 class="pos-t">${esc(p.title)}</h3>
+        <p>${inline(p.body)}</p>
+      </div>
+      ${margin(`Evidence for: ${p.title}`, p.say, xrefs(p.links, rel))}
+    </li>`
+    )
+    .join("\n");
+
+  const takeEntry = (t) => `          <li class="take" id="take-${esc(t.id)}">
+            <h4 class="tk-t">${esc(t.title)}</h4>
+            <p class="tk-m"><time datetime="${esc(t.date)}">${esc(formatDate(t.date))}</time>${t.confirmed === true ? "" : ' · <span class="tk-draft">Draft</span>'}</p>
+            <p class="tk-b">${inline(t.body)}</p>
+            ${xrefs(t.links, rel)}
+          </li>`;
+  const groups = takes.groups
+    .map((g) => {
+      const list = takesIn(g.id);
+      return `      <section class="lab-g" id="${esc(g.id)}" aria-labelledby="${esc(g.id)}-h">
+        <h3 class="lab-band" id="${esc(g.id)}-h"><span>${esc(g.name)}</span><span class="lb-c">${list.length}<span class="vh"> notes</span></span></h3>
+        <p class="lab-q">${esc(g.caption || "")}</p>
+        ${list.length ? `<ol class="takes">\n${list.map(takeEntry).join("\n")}\n        </ol>` : `<p class="empty">Nothing here yet.</p>`}
+      </section>`;
+    })
+    .join("\n");
+
+  const guide = () => {
+    const band = stages
+      .map(
+        (s) =>
+          `<li${s.id === "govern" ? ' class="is-govern"' : ""}><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></li>`
+      )
+      .join("");
+    return `<div class="guide">
+          <ol class="mini-band" aria-label="The ${stages.length} stages on the map">${band}</ol>
+          <dl class="guide-l">
+            <div><dt><a href="${rel}map/">Map</a></dt><dd>${stages.length} stages, from ${esc(stageRange)}, with ${entries.length} sources pinned where each matters most.</dd></div>
+            <div><dt><a href="${rel}radar/">Radar</a></dt><dd>${blips.length} practices placed from ${esc(ringById.adopt.name)} to ${esc(ringById.hold.name)}, each backed by sources.</dd></div>
+            <div><dt><a href="${rel}library/">Library</a></dt><dd>Every source, with why it matters and what to check.</dd></div>
+          </dl>
+        </div>`;
+  };
+  const chain = (w) =>
+    `<figure class="chain">
+          <ol>${w.chain
+            .map(
+              (c, i) =>
+                `<li style="--d:${i}"><span class="c-id">${esc(c.id)}</span><span class="c-k">${esc(c.kind)}</span><span class="c-x">${esc(c.text)}</span></li>`
+            )
+            .join("")}</ol>
+          ${w.chainCaption ? `<figcaption>${inline(w.chainCaption)}</figcaption>` : ""}
+        </figure>`;
+  const work = (home.work?.items || [])
+    .map((w) => {
+      const pins = w.guide ? `<div class="mn-notes">${notes.map((n) => notePin(n, rel)).join("")}</div>` : "";
+      return `    <article class="work hm" id="w-${esc(w.id)}" aria-labelledby="w-${esc(w.id)}-h">
+      <div class="pos-main">
+        <h3 class="pos-t" id="w-${esc(w.id)}-h">${esc(w.title)}</h3>
+        <p>${inline(w.body)}</p>
+        ${w.chain ? chain(w) : ""}${w.guide ? guide() : ""}
+      </div>
+      ${margin(`More on ${w.title}`, w.say, pins + xrefs(w.links, rel))}
+    </article>`;
+    })
+    .join("\n");
+
+  const main = `<div class="home">
+  <div class="home-head hm">
+    <h1>${thesis}</h1>
+    <p class="lede">${inline(home.lede)}</p>
+    <aside class="who" aria-label="Who writes this">
+      <dl>
+      ${who}
+      </dl>
+      <p class="own">${esc(home.own)}</p>
+    </aside>
+    <nav class="lab-index" aria-label="Lab notes">
+      <ol>
+      ${labIndex}
+      </ol>
+    </nav>
+  </div>
+
+  <section class="sec" id="take" aria-labelledby="take-h">
+    <div class="sec-head hm">
+      <div>
+        <h2 id="take-h">${esc(home.take?.heading || "My take")}</h2>
+        ${home.take?.intro ? `<p class="sec-cap">${inline(home.take.intro)}</p>` : ""}
+      </div>
+    </div>
+    <ol class="positions">
+${positions}
+    </ol>
+  </section>
+
+  <section class="sec" id="lab" aria-labelledby="lab-h">
+    <div class="sec-head hm">
+      <div>
+        <h2 id="lab-h">${esc(home.lab?.heading || "Lab notes")}</h2>
+        ${home.lab?.intro ? `<p class="sec-cap">${inline(home.lab.intro)}</p>` : ""}
+      </div>
+    </div>
+    <div class="lab-plate">
+${groups}
+    </div>
+  </section>
+
+  <section class="sec" id="work" aria-labelledby="work-h">
+    <div class="sec-head hm">
+      <div><h2 id="work-h">${esc(home.work?.heading || "What I build")}</h2></div>
+    </div>
+${work}
+  </section>
+
+  <section class="sec talk" id="conversations" aria-labelledby="talk-h">
+    <div class="sec-head hm">
+      <div>
+        <h2 id="talk-h">${esc(home.conversations?.heading || "Conversations")}</h2>
+        <p class="talk-p">${inline(home.conversations?.body || "")}</p>
+      </div>
+    </div>
+  </section>
+</div>`;
+
+  // Links to the map's old home, /#stage-…, still land on the right column.
+  const legacy = `<script>if (/^#stage-[a-z]+$/.test(location.hash)) location.replace("map/" + location.hash);</script>\n`;
+  return page({
+    rel,
+    current: "home",
+    title: home.title,
+    description: home.description,
+    bodyClass: "is-home",
+    main,
+    contract: HOME_CONTRACT,
+    head: legacy,
+  });
+}
+
+await mkdir(site("map"), { recursive: true });
 await mkdir(site("library"), { recursive: true });
 await mkdir(site("radar"), { recursive: true });
-await writeFile(site("index.html"), renderMap());
+await writeFile(site("index.html"), renderHome());
+await writeFile(site("map/index.html"), renderMap());
 await writeFile(site("radar/index.html"), renderRadar());
 await writeFile(site("library/index.html"), renderLibrary());
 
@@ -889,7 +1173,7 @@ for (const file of await htmlFiles(site(""))) {
 }
 
 console.log(
-  `Built map, radar and library: ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
+  `Built home, map, radar and library: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
 console.log(`Asset versions: ${ASSETS.map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));

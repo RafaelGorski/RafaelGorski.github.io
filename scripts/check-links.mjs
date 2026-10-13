@@ -33,15 +33,14 @@ let checked = 0;
 
 for (const file of files) {
   const rel = path.relative(siteDir, file);
-  // 404.html is served at arbitrary paths; its root-relative links are fixed up at runtime.
+  // 404.html is served at arbitrary paths, so its links are root-relative; resolve them from the site root.
   const is404 = rel === "404.html";
   const html = await readFile(file, "utf8");
   const refs = [...html.matchAll(/\s(?:href|src)="([^"]*)"/g)].map((m) => m[1]);
   for (const ref of refs) {
     if (/^(https?:|mailto:|tel:|data:)/i.test(ref)) continue;
-    if (is404 && ref.startsWith("/")) continue;
     checked++;
-    if (ref.startsWith("/")) {
+    if (ref.startsWith("/") && !is404) {
       problems.push(`${rel}: root-relative link "${ref}" breaks under a project path`);
       continue;
     }
@@ -50,7 +49,7 @@ for (const file of files) {
     const p = withQuery.split("?")[0];
     let target = file;
     if (p) {
-      target = path.resolve(path.dirname(file), p);
+      target = p.startsWith("/") ? path.join(siteDir, p) : path.resolve(path.dirname(file), p);
       if (p.endsWith("/") || (existsSync(target) && (await stat(target)).isDirectory())) target = path.join(target, "index.html");
       if (!existsSync(target)) {
         problems.push(`${rel}: "${ref}" → missing ${path.relative(siteDir, target)}`);
@@ -59,6 +58,15 @@ for (const file of files) {
     }
     if (frag && target.endsWith(".html") && !(await idsOf(target)).has(decodeURIComponent(frag))) {
       problems.push(`${rel}: "${ref}" → no id="${frag}" in ${path.relative(siteDir, target)}`);
+    }
+  }
+  // The map moved from / to /map/. A link whose text names the map must not land on the home page.
+  for (const m of html.matchAll(/<a\s[^>]*?href="([^"#?]*)[^"]*"[^>]*>([\s\S]*?)<\/a>/g)) {
+    const text = m[2].replace(/<[^>]+>/g, " ");
+    if (!m[1] || !/\bmap\b/i.test(text) || /^(https?:|mailto:)/i.test(m[1])) continue;
+    const target = m[1].startsWith("/") ? path.join(siteDir, m[1]) : path.resolve(path.dirname(file), m[1] || ".");
+    if (path.resolve(target) === siteDir || path.resolve(target) === path.join(siteDir, "index.html")) {
+      problems.push(`${rel}: link "${text.replace(/\s+/g, " ").trim()}" points at the home page, not the map at map/`);
     }
   }
 }

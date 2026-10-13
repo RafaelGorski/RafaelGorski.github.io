@@ -1,0 +1,113 @@
+{
+  "title": "Rafael Gorski — Agents are software. Build them like it.",
+  "description": "Rafael Gorski on building agents and AI systems: what he holds to, what he is testing, and what he would stop before production, with every point linked to its evidence.",
+  "thesis": "Agents are software. Build them like it.",
+  "lede": "I build agents and the software around them. This page is my take on doing that well: what I hold to, what I'm testing, and what I'd stop before it reaches production. The [map](map/), [radar](radar/) and [library](library/) are the reference.",
+  "who": [
+    { "label": "Role", "text": "Engineering Manager at Microsoft" },
+    { "label": "Based in", "text": "Brazil" },
+    { "label": "Paper", "text": "[Problem-Based Software Requirements Specification](https://doi.org/10.21529/RESI.2016.1502002), with Paulo Cézar Stadzisz, 2016" },
+    { "label": "Open source", "text": "[Problem-Based SRS](https://github.com/RafaelGorski/Problem-Based-SRS), an agent skill I maintain" },
+    { "label": "Elsewhere", "text": "[GitHub](https://github.com/RafaelGorski) · [LinkedIn](https://www.linkedin.com/in/rafaelgorski) · [X](https://x.com/GorskiRafael)" }
+  ],
+  "own": "Views are my own, not my employer's.",
+  "take": {
+    "heading": "My take",
+    "intro": "What I hold to when building agents and the systems around them, with the evidence beside each point.",
+    "positions": [
+      {
+        "id": "problem-first",
+        "title": "Start from the problem, not the model.",
+        "body": "A model can't fix a problem nobody wrote down. I start with who has the problem, what it costs them and how we'll know it's solved. Then every feature has to trace back to it. Agents make this matter more, because they will happily build what nobody asked for.",
+        "say": "My own method sits in Trial on the radar, not Adopt. One paper and one open-source skill are not settled evidence.",
+        "links": [
+          { "radar": "problem-based-requirements" },
+          { "library": "problem-based-srs" },
+          { "stage": "purpose" }
+        ]
+      },
+      {
+        "id": "evals",
+        "title": "Evaluations are the spec you can run.",
+        "body": "I don't trust a prompt, skill or model change I can't test. Deterministic checks run on every push. A model grading outputs earns trust only after it agrees with people grading the same ones. A benchmark score says a model managed someone else's task once, not that my system will, every time.",
+        "say": "My skill's evals publish to a dashboard on every push, so anyone can check the claim.",
+        "links": [
+          { "href": "https://rafaelgorski.github.io/Problem-Based-SRS/skills-health.html", "label": "Skills Health dashboard" },
+          { "radar": "calibrated-llm-judges" },
+          { "radar": "repeated-trial-reliability" },
+          { "radar": "benchmark-scores-as-launch-evidence" }
+        ]
+      },
+      {
+        "id": "trace",
+        "title": "If I can't see what an agent did, I can't own it.",
+        "body": "One request to an agent becomes a tree of decisions, model calls and tool calls that nobody wrote down in advance. I want that whole tree as one connected trace, in an open format, before the agent reaches production. Cost, quality and risk all come out of the same record.",
+        "say": "My first note is about exactly this.",
+        "links": [
+          { "note": "GN-0001" },
+          { "radar": "otel-genai-conventions" },
+          { "radar": "w3c-trace-context-propagation" }
+        ]
+      },
+      {
+        "id": "controls",
+        "title": "Put the controls outside the model.",
+        "body": "A prompt is not a permission. Each agent gets its own identity and only the access it needs. Limits on spend and loops live in the platform, not in the instructions. People stop reading approval prompts long before an agent stops sending them, so approval can't be the only safeguard. The team that ships it stays accountable.",
+        "links": [
+          { "radar": "per-agent-identity" },
+          { "radar": "controls-outside-the-model" },
+          { "radar": "human-approval-as-only-safeguard" },
+          { "library": "ironies-of-automation" }
+        ]
+      },
+      {
+        "id": "bottleneck",
+        "title": "Coding agents move the bottleneck. They don't remove it.",
+        "body": "With coding agents, writing code stops being the slow part. Deciding what to build and reviewing what comes back become the work. That makes written intent, small branches and fast checks worth more than before. It's the same discipline that keeps a team spread across time zones moving: write the decision down clearly enough that nobody has to be in the room.",
+        "say": "This site was built that way: several agent sessions in parallel, each on its own branch, behind a build and a link check.",
+        "links": [
+          { "href": "https://github.com/RafaelGorski/RafaelGorski.github.io", "label": "Source of this site" },
+          { "radar": "workflows-before-agents" }
+        ]
+      }
+    ]
+  },
+  "lab": {
+    "heading": "Lab notes",
+    "intro": "Short and dated: what I'm testing, what I'm getting better at, and what I'd stop before it reaches production. These change more often than the rest of the site."
+  },
+  "work": {
+    "heading": "What I build",
+    "items": [
+      {
+        "id": "problem-based-srs",
+        "title": "Problem-Based SRS",
+        "body": "A way to write requirements that starts from the customer's problem instead of the requested feature. Paulo Cézar Stadzisz and I published it in 2016. In 2026 I turned it into an open-source agent skill for GitHub Copilot and Claude Code, so a coding agent has to trace every requirement back to a problem before it builds anything.",
+        "chain": [
+          { "id": "CP.01", "kind": "Customer problem", "text": "Sales teams waste valuable time searching for customer information across multiple disconnected systems." },
+          { "id": "CN.01.1", "kind": "Customer need", "text": "Centralized customer database" },
+          { "id": "FR.01.1.1", "kind": "Functional requirement", "text": "Contact and company management" }
+        ],
+        "chainCaption": "From the CRM example that ships with the skill. Each identifier names its parent, so the chain reads forward to what gets built and backward to why.",
+        "links": [
+          { "href": "https://doi.org/10.21529/RESI.2016.1502002", "label": "The 2016 paper (RESI)" },
+          { "href": "https://github.com/RafaelGorski/Problem-Based-SRS", "label": "Source on GitHub, MIT licence" },
+          { "href": "https://rafaelgorski.github.io/Problem-Based-SRS/", "label": "Project site" },
+          { "href": "https://rafaelgorski.github.io/Problem-Based-SRS/skills-health.html", "label": "Skills Health dashboard" },
+          { "radar": "problem-based-requirements" }
+        ]
+      },
+      {
+        "id": "field-guide",
+        "title": "A field guide to launching and scaling AI systems",
+        "body": "The rest of this site is the reference, and it is written to be impersonal. The map follows an AI system through six stages, the radar says how far to rely on each practice, and the library keeps every source with why it matters and what to check.",
+        "guide": true,
+        "say": "Notes are where I write at length. Each one is pinned to a stage on the map."
+      }
+    ]
+  },
+  "conversations": {
+    "heading": "Conversations",
+    "body": "I'm open to conversations with teams designing or scaling agentic and AI systems. The best way to reach me is a message on [LinkedIn](https://www.linkedin.com/in/rafaelgorski)."
+  }
+}

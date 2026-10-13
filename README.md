@@ -1,9 +1,11 @@
 # rafaelgorski.com
 
-A map of launching and scaling AI systems, from Purpose to Govern, with original notes and curated
-sources pinned to the stage where each matters, and a radar that places techniques, platforms,
-measures and governance practices from Adopt to Hold. The site is static HTML served by GitHub
-Pages. A zero-dependency Node script generates the map, the radar and the library from JSON.
+Rafael Gorski's personal site. The home page is his own take on building agents and AI systems,
+with dated lab notes. Behind it sits a field guide: a map of launching and scaling AI systems, from
+Purpose to Govern, with original notes and curated sources pinned to the stage where each matters,
+and a radar that places techniques, platforms, measures and governance practices from Adopt to
+Hold. The site is static HTML served by GitHub Pages. A zero-dependency Node script generates the
+home page, the map, the radar and the library from JSON.
 
 ## Layout
 
@@ -13,17 +15,20 @@ content/                       curated data (owned by curation; do not edit from
   library.json                 curated sources
   radar.json                   radar edition: quadrants, rings and blips
 site-data/                     site copy
+  home.json                    home page: thesis, lede, who, positions, work, conversations
+  takes.json                   home page lab notes (Testing now, Using more effectively, Watch out for)
   plate.json                   map title, caption, per-stage tests, short titles
   notes.json                   notes registry: id, stage, title, status
 scripts/
-  build.mjs                    renders site/index.html, site/radar/index.html, site/library/index.html
+  build.mjs                    renders site/index.html, site/map/, site/radar/ and site/library/
   check-links.mjs              fails if any internal link or #fragment does not resolve
 site/                          published root
-  index.html                   the map (generated)
+  index.html                   the home page (generated)
+  map/index.html               the map (generated)
   radar/index.html             the radar (generated)
   library/index.html           the library (generated)
   notes/<slug>/index.html      one folder per note (hand-written)
-  about/index.html             about page (bio is a placeholder)
+  about/index.html             about this site: method and colophon (hand-written)
   assets/site.css              the whole design system
   assets/radar.js              radar hover and focus linking (progressive enhancement only)
   assets/fonts/                self-hosted Jost (OFL)
@@ -70,13 +75,80 @@ When ready to serve from `rafaelgorski.com`:
    (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and `www` as a
    `CNAME` to `rafaelgorski.github.io`.
 
+## Editing the home page
+
+The home page at `/` is generated from two files in `site-data/`. Run `node scripts/build.mjs`
+after editing either, then `node scripts/check-links.mjs`.
+
+### Lab notes: `site-data/takes.json`
+
+```json
+{
+  "groups": [
+    { "id": "testing", "name": "Testing now", "caption": "Trying it, not settled on it." },
+    { "id": "using", "name": "Using more effectively", "caption": "…" },
+    { "id": "watch", "name": "Watch out for", "caption": "…" }
+  ],
+  "entries": [
+    {
+      "id": "kebab-id",
+      "group": "testing",
+      "title": "Short title",
+      "body": "At most 50 words, first person.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "otel-genai-conventions" },
+        { "library": "otel-genai-semconv" },
+        { "note": "GN-0001" },
+        { "stage": "operate" },
+        { "href": "https://github.com/RafaelGorski/Problem-Based-SRS", "label": "Problem-Based SRS on GitHub" }
+      ],
+      "confirmed": false
+    }
+  ]
+}
+```
+
+- To add a note, add an entry. Within a group, entries are shown newest first by `date`
+  (`YYYY-MM-DD` or `YYYY-MM`), then in file order.
+- `group` is `testing`, `using` or `watch`. The group ids and their order are fixed; names and
+  captions can change.
+- Each link is exactly one of: `radar` (a blip id from `content/radar.json`), `library` (an entry id
+  from `content/library.json`), `note` (an id from `site-data/notes.json`), `stage` (a stage id) or
+  `href` (an absolute URL, with a `label`). Internal links get the reference's own mark: a numbered
+  disc, a unit glyph, a note square or a stage chip.
+- An entry shows "Draft" after its date until `confirmed` is `true`. Set it when you have read the
+  entry and stand behind it.
+- Bodies may carry `[text](url)` links.
+
+The build stops if an id is unknown or duplicated, a group or date is malformed, a link does not
+resolve, or a body runs over 50 words.
+
+### Take, work and contact: `site-data/home.json`
+
+- `thesis` is the page's h1. Each sentence goes on its own line.
+- `lede`, `who` (the label and text rows beside the lede) and `own` (the "views are my own" line).
+- `take.positions`: each has an `id`, a `title`, a `body` (aim for 80 words or fewer), an optional
+  `say` (a short remark in the margin, set in vermilion) and `links` in the same form as lab notes.
+- `work.items`: Problem-Based SRS (with its trace `chain`) and the field guide (`"guide": true`
+  draws the stage band and the counts).
+- `conversations.body`: the one sentence about getting in touch. Keep it to an invitation to talk;
+  the site does not list services, prices or availability.
+
+Any text in `home.json` may carry `[text](url)` links. Internal links are relative to the site root
+(`map/`, `radar/`, `library/`).
+
 ## Adding a note
 
 1. Copy `site/notes/agentic-observability/` to a new folder.
 2. Give the note the next ID (`GN-0002`), and set its stage in the locator band (the
    `aria-current="location"` segment) and in the "Charted at" aside.
 3. Add it to `site-data/notes.json` with the same stage, then run `node scripts/build.mjs`. The
-   note appears as a vermilion block on the map and in that stage's library section.
+   note appears as a vermilion block on the map, in that stage's library section and beside the
+   field guide on the home page. Lab notes in `site-data/takes.json` can link to it as
+   `{ "note": "GN-0002" }`.
+4. Link to the map as `../../map/` from a note, never `../../`: the home page is not the map. The
+   link check fails on a link whose text names the map but lands on the home page.
 
 ## Editing the radar
 
@@ -122,4 +194,10 @@ without touching `content/`.
 
 Every library entry cited by a blip shows "On the radar", each library stage section lists the
 blips charted at that stage, and each map column ends with their numbered discs. Blips link back
-to their evidence in the library and to their stages on the map.
+to their evidence in the library and to their stages on the map (`map/#stage-<id>`).
+
+## The map's address
+
+The map moved from `/` to `/map/` when the home page arrived. Old links to `/#stage-<id>` are
+forwarded to `map/#stage-<id>` by one inline line of script on the home page; everything else on
+the home page reads without JavaScript.

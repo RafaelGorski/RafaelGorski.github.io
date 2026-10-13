@@ -1,0 +1,204 @@
+{
+  "groups": [
+    { "id": "testing", "name": "Testing now", "caption": "Trying it, not settled on it." },
+    { "id": "using", "name": "Using more effectively", "caption": "It works. I'm learning to use it better." },
+    { "id": "watch", "name": "Watch out for", "caption": "I'd stop these before production. Each one is on Hold on the radar." }
+  ],
+  "entries": [
+    {
+      "id": "skill-traces-features",
+      "group": "testing",
+      "title": "A skill that makes the agent trace every feature to a problem",
+      "body": "I'm testing whether an agent skill can keep a coding agent honest about why it builds something. Problem-Based SRS walks it from customer problems to needs to requirements and checks that nothing is left without a parent. It's open source under MIT, for GitHub Copilot and Claude Code.",
+      "date": "2026-10-13",
+      "links": [
+        { "href": "https://github.com/RafaelGorski/Problem-Based-SRS", "label": "Problem-Based SRS on GitHub" },
+        { "radar": "problem-based-requirements" },
+        { "library": "problem-based-srs" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "evals-every-push",
+      "group": "testing",
+      "title": "Evals on every push, for prompts and skills",
+      "body": "Every push to the Problem-Based SRS repository runs plugin validation, unit tests, deterministic skill evals and a visual suite, then publishes a Skills Health dashboard. I want a prompt change that breaks a skill to fail the same way a code change that breaks the build does.",
+      "date": "2026-10-13",
+      "links": [
+        { "href": "https://rafaelgorski.github.io/Problem-Based-SRS/skills-health.html", "label": "Skills Health dashboard" },
+        { "radar": "versioned-evaluation-harness" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "parallel-agent-sessions",
+      "group": "testing",
+      "title": "Several coding agents, one site, separate branches",
+      "body": "This site was built by coding-agent sessions running in parallel: one curating sources, one on design directions, one on the radar, each on its own branch. What I'm watching is where the sessions drift apart, and how much of the work turns into review.",
+      "date": "2026-10-13",
+      "links": [
+        { "href": "https://github.com/RafaelGorski/RafaelGorski.github.io", "label": "Source of this site" },
+        { "radar": "multi-agent-decomposition" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "otel-genai-in-trial",
+      "group": "testing",
+      "title": "One open trace format for agents",
+      "body": "I put the OpenTelemetry GenAI conventions in Trial, not Adopt. They name every part of an agent run, from workflow to tool call, but every document is still marked Development. GN-0001 sets out what I'd require now, including pinning the version so renames don't break dashboards.",
+      "date": "2026-10-13",
+      "links": [
+        { "note": "GN-0001" },
+        { "radar": "otel-genai-conventions" },
+        { "library": "otel-genai-semconv" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "problem-before-prompt",
+      "group": "using",
+      "title": "The problem before the prompt",
+      "body": "Give a coding agent a feature request and it builds the feature. Give it the problem and who has it, and its output has something to be checked against. Without that, it fills the gap with plausible features. Naming the problem is the cheapest fix for agent output I know.",
+      "date": "2026-10-13",
+      "links": [
+        { "library": "problem-based-srs" },
+        { "stage": "purpose" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "workflows-first",
+      "group": "using",
+      "title": "Workflows before autonomous agents",
+      "body": "Most tasks I'd hand to an agent work better as a fixed workflow with one or two model calls. I reach for an open-ended agent loop only when the steps can't be known in advance, and then with a budget on calls.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "workflows-before-agents" },
+        { "library": "building-effective-agents" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "baseline-first",
+      "group": "using",
+      "title": "A baseline before the model",
+      "body": "Before any model work I want a simple baseline on real data: a rule, a lookup, a heuristic. If the model can't beat it, we stop early. If it can, we know by how much, and the failures get written down, not only the average.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "baseline-before-model" },
+        { "library": "rules-of-ml" },
+        { "stage": "design" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "cost-per-task",
+      "group": "using",
+      "title": "Cost per completed task, not per call",
+      "body": "I look at cost and at the number of model and tool calls per completed task. An agent that retries its way to an answer looks cheap per call and expensive per task. The GenAI conventions carry the token counts to do this per agent.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "cost-and-calls-per-task" },
+        { "note": "GN-0001" },
+        { "library": "finops-for-ai" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "small-branches-fast-checks",
+      "group": "using",
+      "title": "Small branches and checks that run in seconds",
+      "body": "Coding agents produce more change than anyone can review carefully in one sitting. So keep their work on short branches, one concern each, behind checks that run in seconds. On this site that is a zero-dependency build and a link checker that refuses broken anchors.",
+      "date": "2026-10-13",
+      "links": [
+        { "href": "https://github.com/RafaelGorski/RafaelGorski.github.io/blob/main/scripts/check-links.mjs", "label": "The link checker" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "vendor-console-telemetry",
+      "group": "watch",
+      "title": "Telemetry that lives only in a vendor's console",
+      "body": "If the only place to see what your agents did is one vendor's dashboard, you can't join it to the rest of your traces, and you can't leave. Put it in the contract: open conventions, exported to a backend you control.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "vendor-console-only-telemetry" },
+        { "note": "GN-0001" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "uncalibrated-judges",
+      "group": "watch",
+      "title": "LLM judges nobody calibrated",
+      "body": "A model grading another model's output is cheap and fast, and it can be wrong in ways that look confident. Before a judge gates anything, check it against people grading the same samples, and check again when prompts or models change.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "uncalibrated-llm-judges" },
+        { "library": "who-validates-the-validators" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "benchmarks-as-evidence",
+      "group": "watch",
+      "title": "Benchmark scores as launch evidence",
+      "body": "A leaderboard result says a model did well on someone else's tasks, once. It says little about your data, your tools or repeated runs. Launch on results from your own tasks, run several times, with the failures written down.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "benchmark-scores-as-launch-evidence" },
+        { "library": "ai-agents-that-matter" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "unbudgeted-retries",
+      "group": "watch",
+      "title": "Retries with no budget",
+      "body": "Automatic retries feel like resilience until a slow dependency turns every request into several, and the overload spreads. Retries need a budget, backoff and a stop, enforced by the platform rather than left to each agent.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "unbudgeted-retries" },
+        { "library": "sre-cascading-failures" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "default-content-capture",
+      "group": "watch",
+      "title": "Capturing prompts and outputs by default",
+      "body": "Prompts, outputs and tool arguments often carry personal data. Capturing them makes debugging easier and turns your telemetry into a sensitive data store. Keep capture off unless a written policy turns it on for a named environment, with an owner and a retention period.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "default-content-capture" },
+        { "note": "GN-0001" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "approval-only-safeguard",
+      "group": "watch",
+      "title": "A person approving every step as the only safeguard",
+      "body": "Approval prompts feel safe, but people stop reading them long before the agent stops asking. Keep approval for the decisions that need judgement, and enforce the rest with permissions, limits and checks outside the model.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "human-approval-as-only-safeguard" },
+        { "library": "ironies-of-automation" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "blaming-the-model",
+      "group": "watch",
+      "title": "Blaming the model",
+      "body": "When an agent gets it wrong, \"the model did it\" is not an answer. A Canadian tribunal held an airline responsible for what its chatbot told a customer. Whoever deploys the system owns what it says and does, so name that owner before launch.",
+      "date": "2026-10-13",
+      "links": [
+        { "radar": "shifting-accountability-to-ai" },
+        { "library": "moffatt-v-air-canada" }
+      ],
+      "confirmed": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: Rafael Gorski — Launching and scaling AI systems
-description: An atlas plate of the AI lifecycle, from Purpose to Govern, with every note and curated source pinned to the stage where it matters.
+description: An atlas plate of the AI lifecycle, from Purpose to Govern, with every note and curated source pinned to the stage where it matters, and on the home page the author's own take and lab notes in vermilion.
 colors:
   paper: "#fcfcfa"
   ink: "#16171b"
@@ -13,6 +13,7 @@ colors:
   ultramarine-mid: "#6b82c4"
   vermilion: "#c2361c"
   vermilion-deep: "#a82e17"
+  vermilion-pale: "#fde8e3"
   ring-adopt: "#c9d2ee"
   ring-trial: "#d8def2"
   ring-assess: "#e5e9f6"
@@ -24,6 +25,32 @@ typography:
     fontWeight: 500
     lineHeight: 1
     letterSpacing: "-0.025em"
+  thesis:
+    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(2.55rem, 1rem + 5.4vw, 5.4rem)"
+    fontWeight: 500
+    lineHeight: 0.98
+    letterSpacing: "-0.03em"
+  position:
+    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
+    fontSize: "clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem)"
+    fontWeight: 500
+    lineHeight: 1.15
+  essay:
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.58
+  lab-note-title:
+    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
+    fontSize: "1.14rem"
+    fontWeight: 500
+    lineHeight: 1.22
+  margin-note:
+    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
+    fontSize: "0.88rem"
+    fontWeight: 500
+    lineHeight: 1.3
   stage:
     fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
     fontSize: "clamp(0.98rem, 0.8rem + 0.5vw, 1.3rem)"
@@ -107,6 +134,20 @@ components:
     backgroundColor: "{colors.ultramarine-tint}"
     textColor: "{colors.ultramarine}"
     typography: "{typography.label}"
+  lab-band:
+    backgroundColor: "{colors.vermilion}"
+    textColor: "{colors.paper}"
+    typography: "{typography.stage}"
+    rounded: "{rounded.none}"
+    padding: "0.9rem 0.9rem 0.85rem"
+  lab-band-hover:
+    backgroundColor: "{colors.vermilion-deep}"
+  margin-remark:
+    textColor: "{colors.vermilion}"
+    typography: "{typography.margin-note}"
+  trace-chain-id:
+    textColor: "{colors.vermilion}"
+    typography: "{typography.unit}"
 ---
 
 # Design System: Rafael Gorski — Launching and scaling AI systems
@@ -116,9 +157,14 @@ components:
 **Creative north star: the atlas plate.** The site is a statistical atlas of the AI lifecycle in the
 Isotype and Bertin tradition: a plate you read across for the route and down for the evidence.
 Executive presence is shown by holding the whole territory at once, not by describing the author.
-The home page is the map. Six stages run left to right as an ultramarine band, each headed by the
-question it must answer. Every curated source is one counted unit pinned below the stage where it
-matters most, and the author's own notes are the only vermilion on the page.
+The map, at `/map/`, is the plate. Six stages run left to right as an ultramarine band, each headed
+by the question it must answer. Every curated source is one counted unit pinned below the stage
+where it matters most, and the author's own notes are the only vermilion on the page.
+
+The home page is the one place the author speaks for himself: his take on building agents and AI
+systems, and his dated lab notes. It is the same atlas with its colour logic inverted. Vermilion,
+his voice, owns the bands and the margin remarks; ultramarine appears only where his voice points
+into the reference. See Home below.
 
 The radar is the plate's second reading. The map says when something matters in the lifecycle; the
 radar says how far to rely on it: adopt, trial, assess or hold. It is drawn as a polar plate in the
@@ -127,13 +173,15 @@ Thoughtworks form (quadrants, four rings, numbered blips, a list per quadrant) w
 or palette.
 
 It is light only, because readers open shared links on laptops and phones in daylight offices. The
-pages read in full without JavaScript. The only script is `site/assets/radar.js`, which adds hover
-and focus linking to the radar as progressive enhancement. The 404 page uses root-relative links
-because the site is served from a domain root.
-There is no tracking and there are no third-party requests.
+pages read in full without JavaScript. The only external script is `site/assets/radar.js`, which
+adds hover and focus linking to the radar as progressive enhancement. The home page carries one
+inline line of script that forwards old links to the map's former home (`/#stage-…`) to
+`map/#stage-…`. The 404 page uses root-relative links because the site is served from a domain
+root. There is no tracking and there are no third-party requests.
 
-Anti-references: the RFC or specification sheet (the previous iteration), the personal-brand hero,
-post-card grids, metro-map "journey" slides, and dark gradient tech aesthetics.
+Anti-references: the RFC or specification sheet (the previous iteration), the personal-brand hero
+("Hi, I'm…", headshot, skills grid, logo wall, testimonials), post-card grids, metro-map "journey"
+slides, and dark gradient tech aesthetics.
 
 ## Colors
 
@@ -150,10 +198,12 @@ original writing.
   The deep variant `#1a2f78` is used for hover. The pale variant `#c9d2ee` is for numerals on the
   band (6:1). The tint `#e9edf7` is for targets, callouts, code and the locator band.
 - **Ultramarine mid `#6b82c4`**: exhibits only (model-inference bars, 3.6:1 against paper).
-- **Vermilion `#c2361c`**: the author's notes (note pins, note chips and the current locator
-  segment), with white text at 5.5:1. Inside an exhibit it also marks the error span, always
-  paired with a text label. The radar uses none: its placements are editorial judgement, not
-  original notes.
+- **Vermilion `#c2361c`**: the author's own voice. On the map and in the library it marks his
+  notes (note pins, note chips and the current locator segment), with white text at 5.5:1. On the
+  home page it owns the lab-note bands, the margin remarks (5.3:1 on paper), the note squares in
+  cross-references and the ids of the trace chain. The pale variant `#fde8e3` is for counts on a
+  vermilion band (4.6:1). Inside an exhibit it also marks the error span, always paired with a text
+  label. The radar uses none: its placements are editorial judgement, not original writing.
 - **Ring fills** `#c9d2ee` → `#d8def2` → `#e5e9f6` → `#f0f2f9`: radar only. Four ultramarine value
   steps, darkest at Adopt, lightest at Hold (a Bertin value scale for an ordered variable). Ring
   names in ink secondary hold 5:1 on the darkest step. The ring is always also written in text.
@@ -172,7 +222,9 @@ original writing.
   tracking of 0.09em. They always label content directly below them, and never sit above a
   heading as an eyebrow.
 - **Display:** h1 is set at weight 500 and line-height 1, with tracking of -0.025em and balanced
-  wrapping.
+  wrapping. The home page's thesis is the one larger h1 (up to 5.4rem, line-height 0.98, tracking
+  -0.03em), one sentence per line. Positions on the home page are Jost 500, and the essay
+  paragraphs beside them step up to 1.125rem from 64rem.
 - **Disc lettering** is set in SVG user units, so it scales with the disc: quadrant names 15
   (uppercase, 0.07em), blip numerals 13.5, counts 12.5, the ring scale 11.5 (uppercase, 0.08em).
   At the smallest desktop disc a numeral renders near 10px.
@@ -227,8 +279,9 @@ sprite in each page:
 
 ## Components
 
-- **Margin line:** name at left, nav at right (Map, Radar, Library, About). The current page
-  carries a 3px ultramarine underline. A 1px ink rule spans the gutters.
+- **Margin line:** name at left, nav at right (Map, Radar, Library, About). The name is the link
+  home and carries `aria-current="page"` there. The current page carries a 3px ultramarine
+  underline. A 1px ink rule spans the gutters.
 - **Key:** a `dl` of Shape, Fill and Red, using the same glyphs as the plate. It appears on the
   map, the library and About.
 - **Stage band:** an `h3` link to the library section, with a pale numeral and an uppercase name.
@@ -250,7 +303,59 @@ sprite in each page:
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.
-- **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace.
+- **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace. No page
+  uses it at present.
+
+### Home
+
+Rendered by `scripts/build.mjs` from `site-data/home.json` (thesis, lede, who, positions, work,
+conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
+
+- **Grid:** content is held to `76rem`, left-aligned with the margin line. From 64rem up, each
+  passage is two columns: the reading column (`1fr`, prose at `66ch`) and the margin
+  (`16rem`–`23rem`). Below 64rem the margin follows its paragraph after a dashed hairline.
+- **Head:** the thesis as the h1 across both columns, one sentence per line (the build splits it at
+  sentence ends). Below it the lede at left and, at right, the **who** list: a `dl` on a 2px ink
+  rule with small uppercase labels (Role, Based in, Paper, Open source, Elsewhere), then "Views are
+  my own, not my employer's." in Jost.
+- **Lab index:** three vermilion bands across the full width, one per lab-note group, each with its
+  count in pale vermilion. They link to the groups and stack one per row at 40rem and below.
+- **Sections:** a 2px ink rule and a Jost 600 h2 (My take, Lab notes, What I build, Conversations),
+  then an ink-secondary caption. No section numbers and no eyebrow labels.
+- **Position:** an h3 in the position style and a paragraph in the essay style. Its margin holds an
+  optional **remark** in vermilion Jost (his aside), then the cross-references.
+- **Cross-reference (`.xref`):** one line per link, each led by the reference's own mark: a
+  numbered ultramarine disc for a radar blip (with its ring), the unit glyph for a library source
+  (with its year), a vermilion square for a note (with its id), a tint square with the stage numeral
+  for a map stage (with the stage question), and an ultramarine ↗ for an outside link. Screen
+  readers hear "On the radar", "In the library" or "On the map" before the name.
+- **Lab plate:** at 72rem and wider, three columns on a subgrid (band, caption, notes), divided by
+  hairlines with 3px of paper between the bands, read across for groups and down for notes. Below
+  that, the groups stack. Each note: Jost title, a meta line (date, then "Draft" until the note is
+  confirmed), a body of at most 50 words, and its cross-references. Notes are newest first within a
+  group. `:target` takes the tint highlight.
+- **Trace chain:** under Problem-Based SRS, the real CP → CN → FR chain from the skill's CRM
+  example. Ids in vermilion Jost, the kind as a small label, each level indented and joined to its
+  parent by an ink elbow, on a 2px ink rule, with a caption.
+- **Mini band:** under the field guide, the six stage segments (Govern in ink) linking to the map
+  columns, then a `dl` of Map, Radar and Library with counts the build computes. The margin carries
+  every note as a note pin.
+- **Close:** Conversations in Jost 500 at a larger size, one plain inline link to LinkedIn. It is
+  not a button.
+
+#### Voice on the home page
+
+- First person, plain words, short sentences. Opinions with a reason attached, and honesty about
+  what is not settled (his own method is in Trial, not Adopt, and the page says so).
+- No hype words, no exclamation marks, no self-descriptors (expert, leader, visionary, seasoned,
+  passionate) and no "Hi, I'm" opener.
+- Every lab note rests on something public and checkable: his paper, his open-source skill and its
+  dashboard, this site and its source, his notes, or a radar placement. No invented experiments,
+  results, numbers, clients or employer-internal material.
+- Consulting stays a single sentence: open to conversations, reach him on LinkedIn. No service menu,
+  prices, packages, availability or hire-me action.
+- The rest of the site stays impersonal. "I" appears on the home page, in About's Two voices and
+  Colophon, and in notes only where the author speaks.
 
 ### Radar
 
@@ -301,8 +406,8 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
 Do:
 
 - Keep the map's six stage ids and order fixed. Content comes from `content/*.json` (owned by
-  curation) and `site-data/*.json` (site copy and notes registry). Regenerate with
-  `node scripts/build.mjs`.
+  curation) and `site-data/*.json` (site copy, the notes registry and the home page's take and lab
+  notes). Regenerate with `node scripts/build.mjs`.
 - Pin every new note to exactly one stage in `site-data/notes.json`. It appears as a vermilion
   block on the map and in the library section for that stage.
 - Show maturity honestly through fill. If a source is in revision, it is hatched.
@@ -311,15 +416,19 @@ Do:
   `content/radar.json`; the build validates ids, stage and evidence references and the 30-word
   summary limit, and refuses a cell too full to draw.
 - Respect `prefers-reduced-motion`. The only authored motions are units stamping in column by
-  column on the map, radar blips stamping in ring by ring from Adopt outward, and trace bars
-  drawing on note pages.
+  column on the map, radar blips stamping in ring by ring from Adopt outward, trace bars drawing on
+  note pages, and the three lab bands on the home page being laid down left to right (a clip-path
+  wipe).
 
 Don't:
 
-- Use vermilion for anything other than the author's notes (or error spans in exhibits).
+- Use vermilion for anything other than the author's own voice: his notes, and on the home page
+  the lab bands, margin remarks and trace-chain ids (plus error spans in exhibits).
 - Add cards, shadows, rounded corners, gradients, icons or eyebrow labels.
 - Add self-descriptors such as expert or leader, or a portrait, logos or testimonials.
 - Use monospace as a "technical" costume. It is for code and data only.
-- Edit `site/index.html`, `site/radar/index.html` or `site/library/index.html` by hand. They are
-  generated.
+- Edit `site/index.html`, `site/map/index.html`, `site/radar/index.html` or
+  `site/library/index.html` by hand. They are generated.
+- Link to the map as `/` or `../`. The map is at `map/`; `scripts/check-links.mjs` fails on a link
+  whose text names the map but lands on the home page.
 - Colour radar blips by quadrant or ring. Position and text carry both.
