@@ -8,20 +8,32 @@
 <meta name="color-scheme" content="light">
 <!-- GitHub Pages serves this file at any missing path, so styles are inline and
      links are root-relative (the site is served from a domain root). -->
+<link rel="preload" href="/assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
 <style>
+  @font-face { font-family: "Barlow Condensed"; src: url("/assets/fonts/barlow-condensed-light.woff2?v=bfca2719") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
   body { margin: 0; background: #fcfcfa; color: #16171b; font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-  .wrap { max-width: 46rem; margin: 0 auto; padding: 1.1rem 1.25rem 3rem; }
+  .wrap { max-width: 100rem; margin: 0 auto; padding: 1.1rem clamp(1.25rem, 0.4rem + 2.6vw, 2.75rem) 3rem; }
   .name { font: 600 1.05rem/1.4 "Futura", "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif; color: #16171b; text-decoration: none; }
-  .band { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin: 1.1rem 0 0; padding: 1rem 0 0; border-top: 1px solid #16171b; list-style: none; }
+  .band { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; max-width: 46rem; margin: 1.1rem 0 0; padding: 1rem 0 0; border-top: 1px solid #16171b; list-style: none; }
   .band li { height: 0.6rem; background: #2340a0; }
   .band li:last-child { background: #16171b; }
   .band li.gap { background: transparent; outline: 1.5px dashed #c2361c; outline-offset: -1.5px; }
-  h1 { font: 500 clamp(2rem, 1.4rem + 2.4vw, 3rem)/1.05 "Futura", "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; }
+  main { display: grid; gap: 1rem 3rem; margin-top: 2.5rem; }
+  h1 { font: 300 clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem)/0.98 "Barlow Condensed", "Arial Narrow", "Helvetica Neue", system-ui, sans-serif; margin: 0; max-width: 12ch; text-wrap: balance; }
+  main p { margin: 0; max-width: 38ch; }
+  /* The summit of this sheet lies beyond its top-right corner, so the title is lettered there,
+     against the edge nearest it, and the text is set beside it. */
+  @media (min-width: 48rem) {
+    main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+    h1 { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; }
+    main p { grid-column: 1; grid-row: 1; }
+  }
   a { color: #2340a0; text-underline-offset: 0.2em; }
   a:focus-visible { outline: 2px solid #2340a0; outline-offset: 3px; }
   /* Off the map: the slopes of a summit that lies beyond the sheet (scripts/art.mjs). */
   .ground { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; object-position: right top; pointer-events: none; }
   @media print, (forced-colors: active) { .ground { display: none; } }
+  @media (forced-colors: active) { h1 { color: CanvasText; } }
 </style>
 </head>
 <body>

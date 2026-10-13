@@ -20,17 +20,50 @@ colors:
   ring-hold: "#f0f2f9"
 typography:
   display:
-    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
-    fontSize: "clamp(2.3rem, 1.2rem + 3.4vw, 4.1rem)"
-    fontWeight: 500
-    lineHeight: 1
-    letterSpacing: "-0.025em"
-  thesis:
-    fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
-    fontSize: "clamp(2.55rem, 1rem + 5.4vw, 5.4rem)"
-    fontWeight: 500
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2.75rem, 1.7rem + 3.4vw, 4.75rem)"
+    fontWeight: 300
     lineHeight: 0.98
-    letterSpacing: "-0.03em"
+    letterSpacing: "0"
+  thesis:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(3rem, 7.4cqi, 6rem)"
+    fontWeight: 300
+    lineHeight: 0.95
+    letterSpacing: "-0.005em"
+  range:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 4.2cqi, 3.6rem)"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "computed to span the ridge"
+  range-short:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2.5rem, 4.2cqi, 3.6rem)"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "0.32em"
+  note-title:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2.6rem, 1.6rem + 2.8vw, 4.4rem)"
+    fontWeight: 300
+    lineHeight: 1.02
+  section-title:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2.2rem, 1.6rem + 1.9vw, 3.2rem)"
+    fontWeight: 300
+    lineHeight: 1
+  stage-head:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 1.5rem + 1.4vw, 2.75rem)"
+    fontWeight: 300
+    lineHeight: 1
+    letterSpacing: "0.16em"
+  prose-title:
+    fontFamily: "Barlow Condensed, Arial Narrow, Roboto Condensed, Helvetica Neue, system-ui, sans-serif"
+    fontSize: "clamp(1.85rem, 1.45rem + 1.1vw, 2.4rem)"
+    fontWeight: 300
+    lineHeight: 1.08
   position:
     fontFamily: "Jost, Futura, Century Gothic, Avenir Next, Segoe UI, system-ui, sans-serif"
     fontSize: "clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem)"
@@ -217,10 +250,18 @@ original writing.
 
 ## Typography
 
+- **Barlow Condensed Light** (self-hosted, `site/assets/fonts/barlow-condensed-light.woff2`, one
+  static weight, 300, Latin subset, about 19 KB, OFL in `OFL-barlow-condensed.txt`) letters the
+  titles and nothing else: the h1 on every page, the home section titles, the library stage heads
+  and the section heads of notes and About. It is a slightly rounded condensed grotesk with a true
+  light weight, chosen beside Jost and the contour art over Big Shoulders Display, Saira Condensed
+  and Extra Condensed and Antonio. Titles keep weight 300 at every size: hierarchy comes from size,
+  space and placement, never from weight. It is not Alumni Sans.
 - **Jost** (self-hosted variable font, `site/assets/fonts/jost-var.woff2`, Latin subset, weights
-  300–700, OFL) does all the plate lettering: titles, stage names, questions, unit titles, labels,
-  numerals and navigation. It is a geometric face in the Futura line, the lettering tradition of
-  Isotype charts.
+  300–700, OFL) does all the plate lettering: stage names, questions, unit titles, labels,
+  numerals, bands and navigation, and every data mark on the stage, radar and library. It is a
+  geometric face in the Futura line, the lettering tradition of Isotype charts. A stage numeral
+  inside a lettered stage head stays in Jost, because it is data.
 - **System sans** sets everything you read: captions, prose, the why and check lines. It keeps body
   copy native and fast.
 - **Monospace** appears only for code, attribute names and span names in exhibits.
@@ -228,19 +269,63 @@ original writing.
 - **Small labels** (`Move on when`, `Why it matters`, `Shape`) are uppercase at 0.7rem with
   tracking of 0.09em. They always label content directly below them, and never sit above a
   heading as an eyebrow.
-- **Display:** h1 is set at weight 500 and line-height 1, with tracking of -0.025em and balanced
-  wrapping. The home page's thesis is the one larger h1 (up to 5.4rem, line-height 0.98, tracking
-  -0.03em), one sentence per line. Positions on the home page are Jost 500, and the essay
+- **Display:** the plain h1 is Barlow Condensed 300 at up to 4.75rem, line-height 0.98, no
+  tracking, balanced wrapping. The home page's thesis is the one larger h1 (up to 6rem,
+  line-height 0.95), one sentence per line. Positions on the home page are Jost 500, and the essay
   paragraphs beside them step up to 1.125rem from 64rem.
 - **Disc lettering** is set in SVG user units, so it scales with the disc: quadrant names 15
   (uppercase, 0.07em), blip numerals 13.5, counts 12.5, the ring scale 11.5 (uppercase, 0.08em).
   At the smallest desktop disc a numeral renders near 10px.
 
+### Titles: map lettering
+
+No page head reads "bold title over a grey subtitle". Each title is lettered into the page's
+drawing, as names are lettered into a map, and stays a real `<h1>`, first in reading order:
+h1, then the legend or margin text, then the content.
+
+- **Home (summit label):** the thesis sits beside the author's summit, and its last line runs on a
+  1px ink leader, straight, at its x-height, to the vermilion trail blaze. The art is placed from
+  the thesis (CSS sets the sheet's top so the blaze lands on the leader's line, at any width), so
+  the two never drift apart. The lede is a margin note in ink at body size, on a 2px rule, beside
+  the who list.
+- **Map (range name):** the title is lettered in light spaced capitals across the six-stage ridge,
+  in the ridge's own grid row. The build measures the title in the title face
+  (`ADVANCE` in `scripts/build.mjs`) and CSS spaces it to the sheet's exact width, so it spans the
+  climb on one line; on very wide screens it stops at the `100rem` sheet. Titles of 36 characters or
+  more fall back to the plain title. The caption joins the key as legend text, beside a contour
+  corner.
+- **Radar (summit label):** the title sits in the margin; a 1px ink elbow leader runs up the disc's
+  vertical paper axis from the centre (the summit), clear of every blip, and across above the disc
+  to the title. It belongs to the title, so as the page scrolls it slides up the axis.
+  The intro sentence joins the ring legend, which precedes the disc in reading order: the legend
+  stands under its own 2px neatline, and the intro is its opening line, set in the key's text
+  column at legend size.
+- **Library:** "Library" is lettered on the ascent above the stage index, at the range name's size
+  and with 0.32em spacing, but not across the full width.
+- **Note:** a readable light display title (no range lettering), the meta in the margin rail
+  above the contents, then the lede and abstract as a standfirst in ink under a 2px rule.
+- **About and 404:** About's title ends at the summit of its own sheet (62% across, 16% down), with
+  the caption and prose beside the sheet. The 404 sheet's summit lies beyond its top-right corner,
+  so the title is lettered there, against that edge, with the text beside it.
+- **Section titles** (My take, Lab notes, What I build, Conversations, the library stage heads,
+  note and About sections) are the light face at a smaller size. Bands and their numerals stay
+  Jost: they are data.
+- **States:** below 64rem the map's ridge splits into two rows, so its title is set plain; below
+  40rem every leader is dropped, range lettering becomes the plain title and margin notes return
+  under the title as a standfirst in ink. Print sets every title plain and hides leaders and art;
+  forced colours hide the leaders and set titles in the system text colour. Nothing moves and no
+  title needs JavaScript.
+- **Never:** eyebrow or kicker labels, italic serif accent words, gradient text, a single bold word
+  in a light title, a centred hero, buttons or title cards, or a decorative arrow for a leader.
+  Leaders are 1px hairlines in ink or ultramarine pale.
+
 ## Layout
 
-- **Plate:** six equal columns inside a `100rem` max width with fluid gutters. Each stage is a
-  `subgrid` of four rows (band, question, pins, test), so questions and tests align across the
-  route.
+- **Plate:** six equal columns inside a `100rem` max width with fluid gutters. One grid holds the
+  head and the route: rows for the title, the legend, the Govern bracket, the ridge, then the
+  stage's four rows (band, question, pins, test) and the loop. The route and each stage are
+  `subgrid`s of it, so questions and tests align across the route and the title can share the
+  ridge's row.
   - Band segments are separated by 3px of paper. Below the band, columns are divided by 1px
     hairlines.
   - The test row sits on a 2px ink rule that runs the full width of the plate.
@@ -254,15 +339,17 @@ original writing.
 - **Library:** sticky stage-index band (anchor filter), then one section per stage. A sticky stage
   head on the left; entries on the right as glyph, identity, then why and check in two columns.
 - **Radar:** at 72rem and wider, two columns. The disc sits at left (at least `34rem`) and stays
-  still (sticky) at up to the viewport height; the right column holds the title and caption, the
-  key and edition, the quadrant index, then the ledger. Below 72rem it is one column: head, disc
-  (up to `44rem`, centred), key, index, ledger, and each quadrant opens with its own quarter of the
-  disc (up to `26rem`) so the drawing stays beside the reading. At 40rem and below the whole disc
-  becomes a dots-only overview under the caption (numerals and lettering hidden), and the quarter
-  crops carry the numerals at full size.
-- **Note:** a full-width locator band, then a two-column head (title and lede left, abstract
-  right). Below that, a sticky contents rail and the prose, held at `68ch`. Exhibits, the signals
-  table and the ninety-day phases break out to `62rem`.
+  still (sticky) at up to the viewport height, dropped just below the leader's line; the right
+  column holds the title, the legend (intro, key and edition), the quadrant index, then the
+  ledger. Below 72rem it is one column: title, disc (up to `44rem`, centred), legend, index,
+  ledger (the legend comes before the disc in reading order and after it on screen), and each
+  quadrant opens with its own quarter of the disc (up to `26rem`) so the drawing stays beside the
+  reading. At 40rem and below the whole disc becomes a dots-only overview under the title
+  (numerals and lettering hidden), and the quarter crops carry the numerals at full size.
+- **Note:** a full-width locator band, then the head: the title, with the meta in a `13.5rem`
+  margin rail at left (from 75rem), and the lede and abstract as a standfirst under a 2px rule.
+  Below that, a sticky contents rail and the prose, held at `68ch`. Exhibits, the signals table and
+  the ninety-day phases break out to `62rem`.
 
 ## Elevation & Depth
 
@@ -321,14 +408,18 @@ conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
 - **Grid:** content is held to `76rem`, left-aligned with the margin line. From 64rem up, each
   passage is two columns: the reading column (`1fr`, prose at `66ch`) and the margin
   (`16rem`–`23rem`). Below 64rem the margin follows its paragraph after a dashed hairline.
-- **Head:** the thesis as the h1 across both columns, one sentence per line (the build splits it at
-  sentence ends). Below it the lede at left and, at right, the **who** list: a `dl` on a 2px ink
-  rule with small uppercase labels (Role, Based in, Paper, Open source, Elsewhere), then "Views are
-  my own, not my employer's." in Jost.
+- **Head:** the thesis as the h1, one sentence per line (the build splits it at sentence ends),
+  lettered as the summit's label with a leader to the trail blaze (see Titles: map lettering).
+  Below it, from 64rem, the lede as a margin note in ink on a 2px rule, set against the margin
+  column, and in the margin the **who** list: a `dl` on a 2px ink rule with small uppercase labels
+  (Role, Based in, Paper, Open source, Elsewhere), then "Views are my own, not my employer's." in
+  Jost. Below 64rem the lede follows the title as a standfirst in ink.
 - **Lab index:** three vermilion bands across the full width, one per lab-note group, each with its
   count in pale vermilion. They link to the groups and stack one per row at 40rem and below.
-- **Sections:** a 2px ink rule and a Jost 600 h2 (My take, Lab notes, What I build, Conversations),
-  then an ink-secondary caption. No section numbers and no eyebrow labels.
+- **Sections:** a 2px ink rule and a light title-face h2 (My take, Lab notes, What I build,
+  Conversations). A section's caption is never a grey subtitle: from 64rem it is a margin note in
+  ink beside the title, under the same rule, and below 64rem a standfirst in ink after it. The
+  first item of a section has no hairline of its own. No section numbers and no eyebrow labels.
 - **Position:** an h3 in the position style and a paragraph in the essay style. Its margin holds an
   optional **remark** in vermilion Jost (his aside), then the cross-references.
 - **Cross-reference (`.xref`):** one line per link, each led by the reference's own mark: a
@@ -388,7 +479,8 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
   edge. The ledger always writes the movement in words.
 - **Ring glyph:** a quarter disc with four bands, the ring's band solid ultramarine and the rest
   tint. It names the ring by position, not colour, in the key and on every ring heading.
-- **Key:** Ring (glyph, name, meaning from `radar.json`) and Mark (the four movement marks).
+- **Key:** under a 2px ink neatline, the intro sentence in the key's text column, then Ring (glyph,
+  name, meaning from `radar.json`) and Mark (the four movement marks).
   Edition, status and ring counts follow on the quiet `.edition` line.
 - **Quadrant index:** four bands in a two-by-two grid, in the same positions as the quadrants on the
   disc, each with its count. Governance is the ink band.
@@ -422,14 +514,16 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
   2,499 m; contours every 50 m from a 1,000 m valley floor, every fifth (each 250 m) an index line
   drawn heavier. Same seed, same drawing, on any machine.
 - **Where it appears.**
-  - Page heads (home, map, library, note): a sheet corner, `.art-sheet`, behind the head. Its top
-    and right edges are neatlines at the margin rule and the right gutter; its left and bottom fall
+  - Page heads (map, library, note): a sheet corner, `.art-sheet`, behind the head. Its top and
+    right edges are neatlines at the margin rule and the right gutter; its left and bottom fall
     away to the valley floor, so the title stands on open ground. On the map and the library it
-    keeps to the open band above the key (`height: 50%`).
-  - Home: the author's summit, in rule grey, with a vermilion Polish trail blaze (a colour stripe
-    between two white ones) on the summit, in the empty corner beside the thesis. Hidden below
-    40rem, where the thesis fills the width.
-  - About: a portrait margin plate, `.art-margin`, in the empty right margin beside the prose.
+    keeps to the last two columns of the legend row, beside the key and never behind it.
+  - Home: the author's summit, `.art-summit`, in rule grey, with a vermilion Polish trail blaze (a
+    colour stripe between two white ones) on the summit, beside the thesis. It is placed from the
+    thesis so the blaze sits at the end of the thesis's leader, runs to the end of the margin line,
+    and is clipped at the foot of the head. Hidden below 40rem, where the thesis fills the width.
+  - About: a portrait margin plate, `.art-margin`, in the right margin beside the prose; the title
+    is lettered at its summit.
   - Radar: the apron, `.art-apron`. The disc is the summit seen from above and its four rings are
     the top contours (2,450 to 2,300 m); the apron draws the slopes falling away beyond the edge,
     in the disc's own units, clipped to the figure. Inside the disc the ring fills cover it.

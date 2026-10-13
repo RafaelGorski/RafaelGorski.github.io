@@ -7,8 +7,9 @@
 <meta name="description" content="A radar of 40 techniques, platforms, measures and governance practices for AI systems, each placed from adopt to hold and backed by sources in the library.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="../assets/fonts/jost-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=d3bc1597">
+<link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css?v=2aa63db4">
 <script src="../assets/radar.js?v=774f0765" defer></script>
 <!--
 THESIS: The radar is the plate's second reading. The map says when something
@@ -21,8 +22,9 @@ OWN-WORLD: Paper ground; four rings stepped in ultramarine value from Adopt out
   Governance in ink. Jost lettering, system sans reading.
 STORY: The reader sees every placement at once, reads why each sits where it
   does, and follows a blip to its evidence in the library or its stage on the map.
-FIRST VIEWPORT: Margin line; the whole disc at left; title, caption, ring key and
-  edition at right, then the quadrant index.
+FIRST VIEWPORT: Margin line; the whole disc at left; at right the title as the
+  summit's label, a hairline leader running to it from the disc's centre, then
+  the legend (intro, ring key, edition) and the quadrant index.
 FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
   stagings declined; seed abd273c0.
 -->
@@ -59,7 +61,14 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
 <div class="radar">
   <div class="radar-head">
     <h1>Adopt, trial, assess, hold</h1>
+  </div>
+  <div class="radar-legend">
     <p class="caption">The map shows when something matters in the life of an AI system. The radar shows how far to rely on it. Each of the 40 blips sits in one ring and is backed by sources in the library.</p>
+    <dl class="key radar-key">
+      <div><dt>Ring</dt><dd><ol class="rk-rings"><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-on"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Adopt</b> <span class="k-sub">Use by default, because the evidence is consistent and the practice holds up at production scale.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-on"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Trial</b> <span class="k-sub">Use on a real workload with an owner and an exit plan; sound, but not yet settled.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-on"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Assess</b> <span class="k-sub">Study it and test it in isolation; it may matter, but evidence does not yet justify production use.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-on"/></svg><span><b>Hold</b> <span class="k-sub">Avoid, and plan to retire where present; the evidence shows it fails, misleads or hides risk.</span></span></li></ol></dd></div>
+      <div><dt>Mark</dt><dd><ul class="rk-marks"><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-c" r="12.5"/></svg><span><b>No change</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-mk" r="15.5"/><circle class="bp-c" r="12.5"/></svg><span><b>New</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M-6.6 14A15.5 15.5 0 0 1 -6.6 -14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved in</b> <span class="k-sub">toward Adopt</span></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M6.6 -14A15.5 15.5 0 0 1 6.6 14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved out</b> <span class="k-sub">toward Hold</span></span></li></ul></dd></div>
+    </dl>
+    <p class="edition">Edition October 2026 · draft · 17 adopt, 12 trial, 4 assess, 7 hold. Placements are editorial judgement; the marks will show how they move between editions.</p>
   </div>
   <figure class="disc">
     <div class="disc-ground">
@@ -71,13 +80,6 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
       <span class="disc-read" aria-hidden="true">Each number matches an entry in the list. Select a blip to go to it.</span>
     </figcaption>
   </figure>
-  <div class="radar-legend">
-    <dl class="key radar-key">
-      <div><dt>Ring</dt><dd><ol class="rk-rings"><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-on"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Adopt</b> <span class="k-sub">Use by default, because the evidence is consistent and the practice holds up at production scale.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-on"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Trial</b> <span class="k-sub">Use on a real workload with an owner and an exit plan; sound, but not yet settled.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-on"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Assess</b> <span class="k-sub">Study it and test it in isolation; it may matter, but evidence does not yet justify production use.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-on"/></svg><span><b>Hold</b> <span class="k-sub">Avoid, and plan to retire where present; the evidence shows it fails, misleads or hides risk.</span></span></li></ol></dd></div>
-      <div><dt>Mark</dt><dd><ul class="rk-marks"><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-c" r="12.5"/></svg><span><b>No change</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-mk" r="15.5"/><circle class="bp-c" r="12.5"/></svg><span><b>New</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M-6.6 14A15.5 15.5 0 0 1 -6.6 -14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved in</b> <span class="k-sub">toward Adopt</span></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M6.6 -14A15.5 15.5 0 0 1 6.6 14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved out</b> <span class="k-sub">toward Hold</span></span></li></ul></dd></div>
-    </dl>
-    <p class="edition">Edition October 2026 · draft · 17 adopt, 12 trial, 4 assess, 7 hold. Placements are editorial judgement; the marks will show how they move between editions.</p>
-  </div>
   <nav class="q-index" aria-label="Quadrants">
     <ol>
       <li><a href="#q-techniques"><span class="qi-name">Techniques</span><span class="qi-c">10<span class="vh"> blips</span></span></a></li>
