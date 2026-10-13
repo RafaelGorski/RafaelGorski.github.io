@@ -7,7 +7,7 @@ not edit them. Nothing in this folder is published HTML.
 
 | File | Purpose |
 |------|---------|
-| `stages.json` | The six stages of an AI programme (frame, pilot, launch, scale, operate, govern), each with the question it answers. The ids are fixed: the site hardcodes them. |
+| `stages.json` | The six stages of an AI programme (purpose, pilot, launch, scale, operate, govern), each with the question it answers. The ids are fixed: the site hardcodes them. |
 | `library.json` | The curated library: primary sources for launching and scaling AI systems, including agentic systems. |
 | `editorial-plan.md` | Eight proposed future notes, each built on library entries. A proposal for the owner's review, not settled positions. |
 
@@ -62,6 +62,9 @@ not edit them. Nothing in this folder is published HTML.
 5. **Honest about maturity.** Drafts, revisions in progress and phased obligations are flagged in
    `maturity` and, where it matters, in `why`.
 6. **Voice.** Plain English, British spelling, no hype words, no exclamation marks.
+7. **Disclosure.** `problem-based-srs` is the site owner's own paper. It is listed first, as the
+   method for the purpose stage, at the owner's request. It was verified the same way as every
+   other entry.
 
 ## Conventions
 

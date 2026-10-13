@@ -1,5 +1,5 @@
 [
- {"id":"frame","name":"Frame","question":"Is this worth building, and what would prove it?"},
+ {"id":"purpose","name":"Purpose","question":"Is this worth building, and what would prove it?"},
  {"id":"pilot","name":"Pilot","question":"Does it work on real data, measured honestly?"},
  {"id":"launch","name":"Launch","question":"Can we ship it safely to real users?"},
  {"id":"scale","name":"Scale","question":"Can it grow in users, agents and cost without losing control?"},
