@@ -1,0 +1,59 @@
+{
+  "description": "The v3 story: the site as one expedition. Launching and scaling an AI system is a climb; the six stages are camps on the route, the valleys are the failure modes, the radar is the gear check, the field guide is the guidebook, the trail log is his notes from the climb, and he is the guide. Narrative copy for the home page and the page intros lives here. {blips}, {sources}, {entries} and {notes} are filled in by the build.",
+  "nav": { "map": "Route", "radar": "Radar", "library": "Field guide", "log": "Trail log", "about": "About" },
+  "home": {
+    "route": {
+      "heading": "The route",
+      "intro": "Six camps, from the first decision to accountable operation. At each one the team answers a question before it moves on.",
+      "go": "This stretch on the route",
+      "camps": {
+        "purpose": "Don't leave base camp with a feature request. Leave with a problem, the person who has it, and a way to know it's solved.",
+        "design": "Most routes change here, once real data arrives. Turning back at this camp is cheap. Turning back after launch is not.",
+        "launch": "Go up in small groups, with a way back down that someone has already tested.",
+        "scale": "Higher up, every step costs more. Track the cost of a completed task, and let the platform enforce the limits, not the prompt.",
+        "operate": "Most of the time on the mountain is spent here, after launch. Read the traces, not only the dashboards.",
+        "govern": "The summit is not a moment. It's being able to name the owner of every system and show what it did."
+      }
+    },
+    "valleys": {
+      "heading": "The valleys",
+      "intro": "Every route has places where climbs stall. These are the failure modes I'd stop before production, in the order a team meets them. Each one is on Hold on the radar, with its evidence beside it."
+    },
+    "gear": {
+      "heading": "Gear check",
+      "intro": "Before each stretch, check what you carry. The radar sorts {blips} techniques, platforms, measures and governance practices into four rings, and backs each placement with sources.",
+      "hold": "Every valley above sits in this ring.",
+      "go": "Open the radar"
+    },
+    "log": {
+      "heading": "Trail log",
+      "intro": "Notes from the climb, short and dated. Here is the newest from each group; the trail log keeps every entry.",
+      "go": "Read the whole trail log"
+    },
+    "guide": {
+      "heading": "The guide",
+      "intro": "I don't carry the team up the mountain. I know the route, name the hazards early, and make sure the checks happen."
+    }
+  },
+  "rings": {
+    "adopt": "Take on the climb",
+    "trial": "Test on the approach",
+    "assess": "Scout ahead",
+    "hold": "Leave behind"
+  },
+  "pages": {
+    "radar": {
+      "title": "Gear check for the climb",
+      "caption": "The route shows when something matters. The radar shows what to carry: Adopt is what to take on the climb, Trial what to test on the approach, Assess what to scout ahead, and Hold what to leave behind. Each of the {blips} blips is backed by sources in the field guide."
+    },
+    "library": {
+      "title": "Field guide",
+      "caption": "The guidebook for the route: {sources} sources, each pinned to the stretch where it matters most. The first line is for the person who decides; the second is for the person who builds."
+    },
+    "log": {
+      "title": "Trail log",
+      "notesHeading": "Notes",
+      "notesIntro": "Longer notes, each pinned to the camp on the route where it matters."
+    }
+  }
+}

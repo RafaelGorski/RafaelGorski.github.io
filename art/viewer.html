@@ -905,10 +905,10 @@ function apronView(spec, P) {
   return { view: "apron", W: size, H: size, box: [x0, x0, size, size], lines: contourField(E, nx, nx, P, x0, x0, rim), summit: null };
 }
 
-// Ascent: the route seen from the side, climbing through the stages to the summit. Each stage
-// shapes its own stretch from its own seed; neighbouring stretches blend, so slices join.
-function ascentView(spec, P) {
-  const { W, H } = spec; // one stage
+// The ascent's height field: heightAt(u, k) is the height of ridgeline k (0 is the skyline, K − 1
+// the nearest foothills) at u, the share of the way along the whole route, as a share of the
+// summit. Each stage shapes its own stretch from its own seed; neighbouring stretches blend.
+function ascentField(spec, P) {
   const seeds = spec.stageSeeds;
   const n = seeds.length;
   const noises = seeds.map((s) => makeNoise(s >>> 0));
@@ -941,6 +941,14 @@ function ascentView(spec, P) {
     const roll = near * 0.08 * fbm(hills, u * 6 + k * 3.7, k * 1.3, 3);
     return k === 0 ? Math.min(z, 1 - 0.015 * (1 - Math.exp(-(((u - us) / 0.012) ** 2)))) : z + roll;
   };
+  return { heightAt, us, n, K };
+}
+
+// Ascent: the route seen from the side, climbing through the stages to the summit, cut into one
+// slice per stage so the slices join when they stand side by side.
+function ascentView(spec, P) {
+  const { W, H } = spec; // one stage
+  const { heightAt, us, n, K } = ascentField(spec, P);
   const step = 2;
   const slices = [];
   for (let s = 0; s < n; s++) {
@@ -957,6 +965,101 @@ function ascentView(spec, P) {
     slices.push({ view: "ascent", W, H, box: [0, 0, W, H], layers: layers.reverse(), stage: s });
   }
   return slices;
+}
+
+// Climb: the same ascent as one panorama, the home page's route. The ridgelines are the ascent's,
+// from its seeds, and the route keeps to the skyline ridge (ridgeline 0): a little below its
+// crest, so it stays on the rock, and above the next ridgeline, so nothing in front hides it. It
+// follows the ridge's rises and dips, so the route has peaks and valleys of its own. Camps sit on
+// the high points nearest even steps from the first camp, at the start, to the summit. The
+// sheet runs `pad` units below its frame so nearer ridges can shift up without showing an edge.
+function climbView(spec, P) {
+  const { W, H } = spec;
+  const pad = spec.pad ?? 32;
+  const { heightAt, us, K } = ascentField(spec, P);
+  const lift = spec.lift ?? 0.86;
+  const yOf = (z) => H - Math.max(0, z) * H * lift;
+  const step = 2;
+  const xs = [];
+  for (let x = 0; x < W; x += step) xs.push(x);
+  xs.push(W);
+  const xSummit = us * W;
+  xs.push(xSummit);
+  xs.sort((p, q) => p - q);
+  const layers = [];
+  for (let k = 0; k < K; k++) {
+    const pts = xs.map((x) => [x, yOf(heightAt(x / W, k))]);
+    layers.push({ depth: k, pts: rdp(pts, P.tolerance * 0.5) });
+  }
+
+  // The route, sampled every 1/N of the way along: below a smoothed lower envelope of the skyline
+  // ridge, above a smoothed upper envelope of the ridge in front, then smoothed again so it reads
+  // as a walked line with a few clear rises and dips rather than the rock's every notch.
+  const N = 1200;
+  const u0 = spec.start ?? 0.03;
+  const at = (i) => u0 + ((us - u0) * i) / N;
+  const z0 = (u) => heightAt(u, 0);
+  const z1 = (u) => heightAt(u, 1);
+  const env = (f, w, pick) => {
+    const out = [];
+    for (let i = 0; i <= N; i++) {
+      let v = pick === "min" ? Infinity : -Infinity;
+      for (let d = -w; d <= w; d += w / 8) {
+        const z = f(Math.min(us, Math.max(0, at(i) + d)));
+        v = pick === "min" ? Math.min(v, z) : Math.max(v, z);
+      }
+      out.push(v);
+    }
+    return out;
+  };
+  const blur = (a, r) =>
+    a.map((_, i) => {
+      let s = 0, c = 0;
+      for (let j = Math.max(0, i - r); j <= Math.min(N, i + r); j++) s += a[j], c++;
+      return s / c;
+    });
+  const below = blur(env(z0, 0.014, "min"), 10);
+  const above = blur(env(z1, 0.01, "max"), 6);
+  const target = below.map((z, i) => {
+    const toTop = smoothstep(us - 0.12, us, at(i));
+    return Math.max(z - 0.022 * (1 - toTop), above[i] + 0.008 * (1 - toTop));
+  });
+  const zs = blur(target, 14);
+  const route = zs.map((z, i) => {
+    const u = at(i);
+    const toTop = smoothstep(us - 0.05, us, u);
+    return { u, z: toTop * z0(us) + (1 - toTop) * z };
+  });
+  let pts = route.map(({ u, z }) => [u * W, yOf(z)]);
+  pts = rdp(pts, 0.35);
+  pts = chaikin(pts, false);
+  const along = [0];
+  for (let i = 1; i < pts.length; i++) along.push(along[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const length = along.at(-1);
+
+  // Camps: the first at the start, the last on the summit, the others on the highest point of the
+  // route within `snap` of even steps between them.
+  const count = spec.camps ?? 6;
+  const snap = spec.snap ?? 0.035;
+  const idxAt = (x) => {
+    let best = 0;
+    for (let i = 1; i < pts.length; i++) if (Math.abs(pts[i][0] - x) < Math.abs(pts[best][0] - x)) best = i;
+    return best;
+  };
+  const camps = [];
+  for (let c = 0; c < count; c++) {
+    let i;
+    if (c === 0) i = 0;
+    else if (c === count - 1) i = pts.length - 1;
+    else {
+      const u = u0 + ((us - u0) * c) / (count - 1);
+      const a = idxAt((u - snap) * W), b = idxAt((u + snap) * W);
+      i = a;
+      for (let j = a; j <= b; j++) if (pts[j][1] < pts[i][1]) i = j;
+    }
+    camps.push({ x: pts[i][0], y: pts[i][1], f: along[i] / length });
+  }
+  return { view: "climb", W, H, pad, box: [0, 0, W, H + pad], layers, route: { pts, length, camps } };
 }
 
 function mix(paper, ink, share) {
@@ -1020,6 +1123,23 @@ function toSVG(geom, palette, note = "") {
   return `${head}<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="${palette.contour}" stroke-width=".75" vector-effect="non-scaling-stroke" d="${regular}"/><path stroke="${palette.index}" stroke-width="1.3" vector-effect="non-scaling-stroke" d="${index}"/></g>${mark}</svg>\n`;
 }
 
+// One depth band of the climb panorama: the ridgelines in `depths`, each a flat screen of
+// ultramarine pale (lighter the farther it is), with a paper hairline along every ridge in front
+// of the skyline, as on the ascent.
+function climbSVG(geom, palette, depths, note = "") {
+  const [, , bw, bh] = geom.box;
+  const last = geom.layers.length - 1;
+  const parts = geom.layers
+    .filter((l) => depths.includes(l.depth))
+    .map((l) => {
+      const top = l.pts.map((p, j) => `${j ? "L" : "M"}${f1(p[0])} ${f1(p[1])}`).join("");
+      const fill = palette.screens[Math.min(palette.screens.length - 1, Math.round((l.depth / Math.max(1, last)) * (palette.screens.length - 1)))];
+      const body = `<path fill="${fill}" d="${top}L${bw} ${bh}L0 ${bh}Z"/>`;
+      return l.depth ? body + `<path fill="none" stroke="${palette.paper}" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="${top}"/>` : body;
+    });
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${bw} ${bh}" width="${bw}" height="${bh}">${note ? `<!-- ${note} -->` : ""}${parts.join("")}</svg>\n`;
+}
+
 // The ascent's stage seeds: one per stage id, derived from the ascent seed unless set.
 function stageSeeds(ascent, stageIds) {
   return stageIds.map((id) => ascent.stageSeeds?.[id] ?? (hashSeed(`${ascent.seed}/${id}`) % 99999) + 1);
@@ -1030,12 +1150,13 @@ function drawArea(area, config) {
   const P = { ...ART_DEFAULTS, interval: config.interval ?? ART_DEFAULTS.interval, floor: config.floor ?? ART_DEFAULTS.floor, ...(area.params || {}) };
   if (area.view === "apron") return [apronView(area, P)];
   if (area.view === "ascent") return ascentView(area, P);
+  if (area.view === "climb") return [climbView(area, P)];
   return [{ ...planView({ W: area.size[0], H: area.size[1], summit: area.summit, seed: area.seed, fade: area.fade }, P), mark: Boolean(area.mark) }];
 }
 /* </core> */
 
 /* <data> */
-const SITE_ART = {"description":"Seeds and settings for the mountain art drawn by scripts/art.mjs (Contour Lineage). Change a seed or a summit position, then run node scripts/build.mjs. Explore seeds first in art/viewer.html.","interval":50,"floor":1000,"areas":{"404":{"view":"plan","seed":16021,"size":[1600,900],"summit":[1.08,-0.12]},"home":{"view":"plan","seed":2499,"size":[1600,800],"summit":[0.8,0.2],"voice":"author","mark":true},"map":{"view":"plan","seed":68664,"size":[1600,360],"summit":[0.8,0.3]},"radar":{"view":"apron","seed":98939},"library":{"view":"plan","seed":95556,"size":[1600,360],"summit":[0.8,0.3]},"notes":{"view":"plan","seed":77991,"size":[1600,560],"summit":[0.8,0.24]},"about":{"view":"plan","seed":66754,"size":[900,1200],"summit":[0.62,0.16]}},"ascent":{"seed":30212,"size":[300,84],"summitAt":0.93},"stageIds":["purpose","design","launch","scale","operate","govern"],"stageSeeds":[37878,60987,1306,53991,15342,22073],"tokens":{"paper":"#fcfcfa","ultraPale":"#c9d2ee","rule":"#d8dadf","red":"#c2361c"}};
+const SITE_ART = {"description":"Seeds and settings for the mountain art drawn by scripts/art.mjs (Contour Lineage). Change a seed or a summit position, then run node scripts/build.mjs. Explore seeds first in art/viewer.html. climb is the home page's panorama: the ascent drawn as one image in depth bands, with the route and its camps computed from it (no seed of its own).","interval":50,"floor":1000,"areas":{"404":{"view":"plan","seed":16021,"size":[1600,900],"summit":[1.08,-0.12]},"home":{"view":"plan","seed":2499,"size":[1600,800],"summit":[0.8,0.2],"voice":"author","mark":true},"map":{"view":"plan","seed":68664,"size":[1600,360],"summit":[0.8,0.3]},"radar":{"view":"apron","seed":98939},"library":{"view":"plan","seed":95556,"size":[1600,360],"summit":[0.8,0.3]},"notes":{"view":"plan","seed":77991,"size":[1600,560],"summit":[0.8,0.24]},"about":{"view":"plan","seed":66754,"size":[900,1200],"summit":[0.62,0.16]}},"ascent":{"seed":30212,"size":[300,84],"summitAt":0.93},"climb":{"size":[1600,440],"pad":36,"start":0.03,"snap":0.035,"bands":{"far":[0],"mid":[1,2],"near":[3]}},"stageIds":["purpose","design","launch","scale","operate","govern"],"stageSeeds":[37878,60987,1306,53991,15342,22073],"tokens":{"paper":"#fcfcfa","ultraPale":"#c9d2ee","rule":"#d8dadf","red":"#c2361c"}};
 /* </data> */
 
         // ═══════════════════════════════════════════════════════════════════════

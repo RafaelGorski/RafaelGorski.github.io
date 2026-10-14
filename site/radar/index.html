@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radar — Rafael Gorski</title>
-<meta name="description" content="A radar of 40 techniques, platforms, measures and governance practices for AI systems, each placed from adopt to hold and backed by sources in the library.">
+<title>Radar: gear check for the climb — Rafael Gorski</title>
+<meta name="description" content="The gear check for launching and scaling AI systems: a radar of 40 techniques, platforms, measures and governance practices, each placed from adopt to hold and backed by sources in the field guide.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=2aa63db4">
+<link rel="stylesheet" href="../assets/site.css?v=0c3af88f">
 <script src="../assets/radar.js?v=774f0765" defer></script>
 <!--
 THESIS: The radar is the plate's second reading. The map says when something
@@ -50,9 +50,10 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
   <a class="name" href="../">Rafael Gorski</a>
   <nav class="site-nav" aria-label="Site">
     <ul>
-      <li><a href="../map/">Map</a></li>
+      <li><a href="../map/">Route</a></li>
       <li><a href="../radar/" aria-current="page">Radar</a></li>
-      <li><a href="../library/">Library</a></li>
+      <li><a href="../library/">Field guide</a></li>
+      <li><a href="../log/">Trail log</a></li>
       <li><a href="../about/">About</a></li>
     </ul>
   </nav>
@@ -60,12 +61,12 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
 <main id="content">
 <div class="radar">
   <div class="radar-head">
-    <h1>Adopt, trial, assess, hold</h1>
+    <h1>Gear check for the climb</h1>
   </div>
   <div class="radar-legend">
-    <p class="caption">The map shows when something matters in the life of an AI system. The radar shows how far to rely on it. Each of the 40 blips sits in one ring and is backed by sources in the library.</p>
+    <p class="caption">The route shows when something matters. The radar shows what to carry: Adopt is what to take on the climb, Trial what to test on the approach, Assess what to scout ahead, and Hold what to leave behind. Each of the 40 blips is backed by sources in the field guide.</p>
     <dl class="key radar-key">
-      <div><dt>Ring</dt><dd><ol class="rk-rings"><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-on"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Adopt</b> <span class="k-sub">Use by default, because the evidence is consistent and the practice holds up at production scale.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-on"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Trial</b> <span class="k-sub">Use on a real workload with an owner and an exit plan; sound, but not yet settled.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-on"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Assess</b> <span class="k-sub">Study it and test it in isolation; it may matter, but evidence does not yet justify production use.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-on"/></svg><span><b>Hold</b> <span class="k-sub">Avoid, and plan to retire where present; the evidence shows it fails, misleads or hides risk.</span></span></li></ol></dd></div>
+      <div><dt>Ring</dt><dd><ol class="rk-rings"><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-on"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Adopt</b> <span class="k-sub"><span class="k-frame">Take on the climb.</span> Use by default, because the evidence is consistent and the practice holds up at production scale.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-on"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Trial</b> <span class="k-sub"><span class="k-frame">Test on the approach.</span> Use on a real workload with an owner and an exit plan; sound, but not yet settled.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-on"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-off"/></svg><span><b>Assess</b> <span class="k-sub"><span class="k-frame">Scout ahead.</span> Study it and test it in isolation; it may matter, but evidence does not yet justify production use.</span></span></li><li><svg class="rg" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 15.5A7.5 7.5 0 0 0 0.5 8V15.5Z" class="rg-off"/><path d="M11.3 15.5A10.8 10.8 0 0 0 0.5 4.7V8A7.5 7.5 0 0 1 8 15.5Z" class="rg-off"/><path d="M13.7 15.5A13.2 13.2 0 0 0 0.5 2.3V4.7A10.8 10.8 0 0 1 11.3 15.5Z" class="rg-off"/><path d="M15.5 15.5A15 15 0 0 0 0.5 0.5V2.3A13.2 13.2 0 0 1 13.7 15.5Z" class="rg-on"/></svg><span><b>Hold</b> <span class="k-sub"><span class="k-frame">Leave behind.</span> Avoid, and plan to retire where present; the evidence shows it fails, misleads or hides risk.</span></span></li></ol></dd></div>
       <div><dt>Mark</dt><dd><ul class="rk-marks"><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-c" r="12.5"/></svg><span><b>No change</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><circle class="bp-mk" r="15.5"/><circle class="bp-c" r="12.5"/></svg><span><b>New</b></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M-6.6 14A15.5 15.5 0 0 1 -6.6 -14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved in</b> <span class="k-sub">toward Adopt</span></span></li><li><svg class="mk" viewBox="-19 -19 38 38" aria-hidden="true" focusable="false"><path class="bp-mk bp-arc" d="M6.6 -14A15.5 15.5 0 0 1 6.6 14"/><circle class="bp-c" r="12.5"/></svg><span><b>Moved out</b> <span class="k-sub">toward Hold</span></span></li></ul></dd></div>
     </dl>
     <p class="edition">Edition October 2026 · draft · 17 adopt, 12 trial, 4 assess, 7 hold. Placements are editorial judgement; the marks will show how they move between editions.</p>
@@ -103,7 +104,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Measure a simple non-ML or single-call baseline first, and require any model or agent to beat it on the same task, metric and cost.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-rules-of-ml"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Rules of Machine Learning<span class="vh">, Guide, stable</span></span></a></li><li><a href="../library/#src-ai-agents-that-matter"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>AI Agents That Matter<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-workflows-before-agents" data-b="workflows-before-agents" data-say="2 · Workflows before autonomous agents · Adopt · Techniques">
@@ -113,7 +114,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Use the simplest design that works: a fixed workflow where steps are known, and open-ended agent control only where the task demonstrably needs it.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-building-effective-agents"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Building effective agents<span class="vh">, Guide, stable</span></span></a></li><li><a href="../library/#src-multi-agent-failures"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Why Do Multi-Agent LLM Systems Fail?<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-canary-model-releases" data-b="canary-model-releases" data-say="3 · Canary releases for model and prompt changes · Adopt · Techniques">
@@ -123,7 +124,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Expose each model, prompt or configuration change to a small share of traffic against a control, with quality, latency and cost thresholds agreed before rollout.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-sre-canarying-releases"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Canarying Releases<span class="vh">, Book, stable</span></span></a></li><li><a href="../library/#src-sre-reliable-launches"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Reliable Product Launches at Scale<span class="vh">, Book, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-blameless-ai-postmortems" data-b="blameless-ai-postmortems" data-say="4 · Blameless postmortems for AI incidents · Adopt · Techniques">
@@ -133,7 +134,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Treat quality regressions, harmful outputs and agents acting out of scope as incidents, with written, blameless reviews that end in owned fixes and new evaluations.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-sre-postmortem-culture"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Postmortem Culture<span class="vh">, Book, stable</span></span></a></li><li><a href="../library/#src-anthropic-quality-postmortem"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>A postmortem of three recent issues<span class="vh">, Postmortem, stable</span></span></a></li><li><a href="../library/#src-openai-sycophancy-postmortem"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Expanding on what we missed with sycophancy<span class="vh">, Postmortem, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -148,7 +149,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Derive requirements from named customer problems through customer needs, so every AI capability traces to a problem it solves and unneeded requirements are cut.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-problem-based-srs"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Problem-Based Software Requirements Specification<span class="vh">, Framework, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-feedback-loop-mapping" data-b="feedback-loop-mapping" data-say="6 · Feedback-loop mapping · Trial · Techniques">
@@ -158,7 +159,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Before scaling, draw the loops where a system's outputs return as its inputs, such as models trained on their own results, and name each delay and limit.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-thinking-in-systems"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Thinking in Systems<span class="vh">, Book, stable</span></span></a></li><li><a href="../library/#src-hidden-technical-debt"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Hidden Technical Debt in Machine Learning Systems<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-model-cascades" data-b="model-cascades" data-say="7 · Model cascades and routing · Trial · Techniques">
@@ -168,7 +169,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Send each request to the cheapest model that meets the quality bar and escalate only when needed; one study matched the best single model at up to 98% lower cost.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-frugalgpt"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>FrugalGPT<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-ai-agents-that-matter"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>AI Agents That Matter<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-injection-resistant-agent-patterns" data-b="injection-resistant-agent-patterns" data-say="8 · Injection-resistant agent design patterns · Trial · Techniques">
@@ -178,7 +179,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Constrain what an agent can do after reading untrusted content, for example plan-then-execute. The patterns give provable resistance to prompt injection at an explicit cost in utility.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-prompt-injection-design-patterns"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Design Patterns for Securing LLM Agents against Prompt Injections<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-nist-adversarial-ml-taxonomy"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Adversarial Machine Learning<span class="vh">, Guide, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -193,7 +194,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Splitting work across cooperating agents adds documented failure modes in system design, inter-agent misalignment and task verification. Test against a single agent or workflow before committing.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-multi-agent-failures"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Why Do Multi-Agent LLM Systems Fail?<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-building-effective-agents"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Building effective agents<span class="vh">, Guide, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -208,7 +209,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Agents and clients that retry without limits turn a slow dependency into overload. Cap retries with budgets and jittered backoff, and propagate deadlines through every step.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-sre-cascading-failures"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Addressing Cascading Failures<span class="vh">, Book, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -228,7 +229,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Propagate one trace identifier through every agent, tool call, MCP server and queue, so a single request can be reconstructed end to end.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-w3c-trace-context"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Trace Context<span class="vh">, Standard, stable</span></span></a></li><li><a href="../library/#src-dapper"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Dapper, a Large-Scale Distributed Systems Tracing Infrastructure<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-oauth-security-bcp" data-b="oauth-security-bcp" data-say="12 · OAuth to the current security BCP · Adopt · Platforms and protocols">
@@ -238,7 +239,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Delegate agent access through OAuth as RFC 9700 recommends: audience-restricted, sender-constrained tokens. MCP authorization builds on OAuth, so the same baseline applies.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-oauth-security-bcp"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Best Current Practice for OAuth 2.0 Security<span class="vh">, Standard, stable</span></span></a></li><li><a href="../library/#src-mcp-specification"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Model Context Protocol Specification<span class="vh">, Specification, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -253,7 +254,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">The open vocabulary for model, agent and tool telemetry. Instrument now, but every document is still in Development status: pin and record the version each service emits.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-otel-genai-semconv"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Semantic conventions for generative AI systems<span class="vh">, Specification, evolving</span></span></a></li><li><a href="../library/#src-w3c-trace-context"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Trace Context<span class="vh">, Standard, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-model-context-protocol" data-b="model-context-protocol" data-say="14 · Model Context Protocol · Trial · Platforms and protocols">
@@ -263,7 +264,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">One open protocol for connecting AI applications to tools and data, now under Linux Foundation governance. Revisions still change: pin one and review its authorization section.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-mcp-specification"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Model Context Protocol Specification<span class="vh">, Specification, evolving</span></span></a></li><li><a href="../library/#src-oauth-security-bcp"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Best Current Practice for OAuth 2.0 Security<span class="vh">, Standard, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-versioned-evaluation-harness" data-b="versioned-evaluation-harness" data-say="15 · Versioned open evaluation harness · Trial · Platforms and protocols">
@@ -273,7 +274,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Keep evaluations as versioned code in an open harness, so the same suite reruns unchanged on every model, prompt or vendor change and results stay comparable.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-inspect-evals"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Inspect<span class="vh">, Framework, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -288,7 +289,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">An open protocol for agents from different teams or vendors to discover each other and delegate tasks. Version 1.0 was released in March 2026; assess it where agents cross organisations.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-a2a-specification"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Agent2Agent (A2A) Protocol Specification<span class="vh">, Specification, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -303,7 +304,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Agent telemetry that cannot be exported in open formats leaves traces split by vendor and ties cost and quality reporting to one tool. GN-0001 requires open conventions instead.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-otel-genai-semconv"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Semantic conventions for generative AI systems<span class="vh">, Specification, evolving</span></span></a></li><li><a href="../library/#src-w3c-trace-context"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Trace Context<span class="vh">, Standard, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -323,7 +324,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Offline evaluations missed production regressions in two public postmortems. Run quality evaluations continuously against live endpoints, and add each incident's failure as a new test.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-anthropic-quality-postmortem"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>A postmortem of three recent issues<span class="vh">, Postmortem, stable</span></span></a></li><li><a href="../library/#src-openai-sycophancy-postmortem"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Expanding on what we missed with sycophancy<span class="vh">, Postmortem, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-cost-with-accuracy" data-b="cost-with-accuracy" data-say="19 · Cost reported with accuracy · Adopt · Measures">
@@ -333,7 +334,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Report every evaluation result with its cost per task. Accuracy alone has led to needlessly complex, costly agents and to wrong conclusions about what drives gains.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-ai-agents-that-matter"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>AI Agents That Matter<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-frugalgpt"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>FrugalGPT<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-tail-latency-per-step" data-b="tail-latency-per-step" data-say="20 · Tail latency per agent step · Adopt · Measures">
@@ -343,7 +344,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Track p99 latency for each model and tool call and for the whole run. Rare slow calls come to dominate performance as agents chain more steps.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-tail-at-scale"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>The Tail at Scale<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-sre-service-level-objectives"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Service Level Objectives<span class="vh">, Book, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-value-of-information-measurement" data-b="value-of-information-measurement" data-say="21 · Value-of-information measurement · Adopt · Measures">
@@ -353,7 +354,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Treat a measurement as reducing uncertainty for a named decision. Use the value of information to decide what to measure, including benefits called intangible.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-how-to-measure-anything"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>How to Measure Anything<span class="vh">, Book, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -368,7 +369,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Give each AI feature a quality indicator, such as graded acceptability on sampled traffic, with an explicit objective beside latency and availability.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-sre-service-level-objectives"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Service Level Objectives<span class="vh">, Book, stable</span></span></a></li><li><a href="../library/#src-anthropic-quality-postmortem"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>A postmortem of three recent issues<span class="vh">, Postmortem, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-repeated-trial-reliability" data-b="repeated-trial-reliability" data-say="23 · Repeated-trial reliability (pass^k) · Trial · Measures">
@@ -378,7 +379,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Run each task several times and report the chance that all attempts succeed. Single-run success overstates the consistency customers will experience.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-tau-bench"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>τ-bench<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-calibrated-llm-judges" data-b="calibrated-llm-judges" data-say="24 · LLM judges calibrated to human grades · Trial · Measures">
@@ -388,7 +389,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Strong models can approximate human preference ratings, but show position, verbosity and self-enhancement biases. Use them at scale only with a versioned human-graded sample to check agreement.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-llm-as-a-judge"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-who-validates-the-validators"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Who Validates the Validators?<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-cost-and-calls-per-task" data-b="cost-and-calls-per-task" data-say="25 · Cost and calls per completed task · Trial · Measures">
@@ -398,7 +399,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Attribute token cost to each agent and workflow, and watch the distribution of model and tool calls per invocation to catch runaway loops before the invoice does.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-otel-genai-semconv"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Semantic conventions for generative AI systems<span class="vh">, Specification, evolving</span></span></a></li><li><a href="../library/#src-finops-for-ai"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>FinOps for AI Overview<span class="vh">, Guide, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -413,7 +414,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Rates models by the length of task, in skilled human time, they complete half the time. Useful for scoping delegation; the measure is new and tied to software tasks.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-metr-time-horizons"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-evolving"/></svg><span>Measuring AI Ability to Complete Long Software Tasks<span class="vh">, Paper, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -428,7 +429,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Grading criteria drift as people review outputs, and LLM judges carry documented biases, including self-enhancement. Without a human-graded check, scores cannot be trusted to track quality.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-who-validates-the-validators"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Who Validates the Validators?<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-llm-as-a-judge"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-benchmark-scores-as-launch-evidence" data-b="benchmark-scores-as-launch-evidence" data-say="28 · Benchmark scores as launch evidence · Hold · Measures">
@@ -438,7 +439,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Public agent benchmarks often have inadequate holdouts and ignore cost, and single runs hide inconsistency; models with equally strong test scores can behave differently in deployment.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-ai-agents-that-matter"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>AI Agents That Matter<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-underspecification"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Underspecification Presents Challenges for Credibility in Modern…<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-tau-bench"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>τ-bench<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-design"><span class="band-n">2</span>Design</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -458,7 +459,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">A shared vocabulary for risk, legal and engineering: govern, map, measure and manage, with generative-AI risks such as confabulation. NIST has announced the framework is being revised.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-nist-ai-rmf"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>AI RMF 1.0<span class="vh">, Framework, stable</span></span></a></li><li><a href="../library/#src-nist-genai-profile"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>AI RMF Generative AI Profile<span class="vh">, Framework, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-eu-ai-act-classification" data-b="eu-ai-act-classification" data-say="30 · EU AI Act risk classification · Adopt · Governance">
@@ -468,7 +469,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Where the Act applies, classify each system against its risk tiers now: duties fall on deployers as well as providers, and obligations are phasing in.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-eu-ai-act"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>EU Artificial Intelligence Act<span class="vh">, Regulation, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-model-cards-and-datasheets" data-b="model-cards-and-datasheets" data-say="31 · Model cards and datasheets · Adopt · Governance">
@@ -478,7 +479,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Keep a short, standard record for every deployed model and dataset: intended use, how it was evaluated, known gaps and uses that are out of scope.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-model-cards"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Model Cards for Model Reporting<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-datasheets-for-datasets"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Datasheets for Datasets<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-per-agent-identity" data-b="per-agent-identity" data-say="32 · Per-agent identity and least privilege · Adopt · Governance">
@@ -488,7 +489,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Give each agent its own identity, the narrowest permissions its task needs and logged activity, as for any insider with access to important systems.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-models-as-insider-risks"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Models as Insider Risks in the Super Intelligence Era<span class="vh">, Guide, evolving</span></span></a></li><li><a href="../library/#src-governing-agentic-ai"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-evolving"/></svg><span>Practices for Governing Agentic AI Systems<span class="vh">, Paper, evolving</span></span></a></li><li><a href="../library/#src-oauth-security-bcp"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>Best Current Practice for OAuth 2.0 Security<span class="vh">, Standard, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-scale"><span class="band-n">4</span>Scale</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-owasp-launch-review" data-b="owasp-launch-review" data-say="33 · OWASP Top 10 launch review · Adopt · Governance">
@@ -498,7 +499,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Map each LLM risk, from prompt injection to unbounded consumption, to a named control or an accepted risk before launch. The agentic list is newer and still settling.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-owasp-llm-top-10-2025"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>OWASP Top 10 for LLM Applications 2025<span class="vh">, Guide, stable</span></span></a></li><li><a href="../library/#src-owasp-agentic-top-10-2026"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>OWASP Top 10 for Agentic Applications for 2026<span class="vh">, Guide, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-iso-iec-42001-management-system" data-b="iso-iec-42001-management-system" data-say="34 · ISO/IEC 42001 AI management system · Adopt · Governance">
@@ -508,7 +509,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">A certifiable management-system standard for AI, published 2023. Map existing controls to it first; certify where customers or regulators need independent assurance.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-iso-iec-42001"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>ISO/IEC 42001 AI management system<span class="vh">, Standard, stable</span></span></a></li><li><a href="../library/#src-nist-ai-rmf"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>AI RMF 1.0<span class="vh">, Framework, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-ai-impact-assessment" data-b="ai-impact-assessment" data-say="35 · AI impact assessment before build · Adopt · Governance">
@@ -518,7 +519,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Assess how a system may affect people and society before building it and again at each material change, and feed the results into the risk register.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-iso-iec-42005"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span>ISO/IEC 42005 AI system impact assessment<span class="vh">, Standard, stable</span></span></a></li><li><a href="../library/#src-nist-ai-rmf"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>AI RMF 1.0<span class="vh">, Framework, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-purpose"><span class="band-n">1</span>Purpose</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -533,7 +534,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Keep permissions, logging and a tested shutdown path in the harness around the model, not in its instructions, so an authorised person can always pause it mid-task.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-models-as-insider-risks"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Models as Insider Risks in the Super Intelligence Era<span class="vh">, Guide, evolving</span></span></a></li><li><a href="../library/#src-governing-agentic-ai"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-evolving"/></svg><span>Practices for Governing Agentic AI Systems<span class="vh">, Paper, evolving</span></span></a></li><li><a href="../library/#src-prompt-injection-design-patterns"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Design Patterns for Securing LLM Agents against Prompt Injections<span class="vh">, Paper, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -548,7 +549,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Disclose AI failures to those affected and share what failed, which controls broke and how to prevent it. The mechanisms for sharing across organisations are not yet established.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-models-as-insider-risks"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Models as Insider Risks in the Super Intelligence Era<span class="vh">, Guide, evolving</span></span></a></li><li><a href="../library/#src-sre-postmortem-culture"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span>Postmortem Culture<span class="vh">, Book, stable</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
@@ -563,7 +564,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">Automation erodes the skills and attention people need to supervise it and take over when it fails. Pair human review with controls and evidence that do not depend on it.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-ironies-of-automation"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Ironies of automation<span class="vh">, Paper, stable</span></span></a></li><li><a href="../library/#src-models-as-insider-risks"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Models as Insider Risks in the Super Intelligence Era<span class="vh">, Guide, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-shifting-accountability-to-ai" data-b="shifting-accountability-to-ai" data-say="39 · Shifting accountability to the model or provider · Hold · Governance">
@@ -573,7 +574,7 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">A tribunal held an airline liable for its chatbot's advice, and provider assurances do not transfer responsibility. Plan as though every AI output is the organisation's own statement.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-moffatt-v-air-canada"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span>Moffatt v. Air Canada, 2024 BCCRT 149<span class="vh">, Postmortem, stable</span></span></a></li><li><a href="../library/#src-models-as-insider-risks"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-evolving"/></svg><span>Models as Insider Risks in the Super Intelligence Era<span class="vh">, Guide, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-launch"><span class="band-n">3</span>Launch</a></li></ul></dd></div>
           </dl>
         </li>
         <li class="blip" id="blip-default-content-capture" data-b="default-content-capture" data-say="40 · Capturing prompts and outputs by default · Hold · Governance">
@@ -583,14 +584,14 @@ FORM: Grounded structure 4 of 7 (sticky disc beside a ring-by-ring ledger);
           <p class="b-s">The OpenTelemetry conventions make content capture opt-in and warn it is likely to contain personal data. Enable it only under a written policy with an owner, retention and access controls.</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev"><li><a href="../library/#src-otel-genai-semconv"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span>Semantic conventions for generative AI systems<span class="vh">, Specification, evolving</span></span></a></li></ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st"><li><a href="../map/#stage-govern"><span class="band-n">6</span>Govern</a></li><li><a href="../map/#stage-operate"><span class="band-n">5</span>Operate</a></li></ul></dd></div>
           </dl>
         </li>
       </ol>
     </div>
   </section>
   </div>
-  <p class="radar-close">Read the same ground by lifecycle stage on <a href="../map/">the map</a>, or source by source in <a href="../library/">the library</a>.</p>
+  <p class="radar-close">Read the same ground camp by camp on <a href="../map/">the route</a>, or source by source in <a href="../library/">the field guide</a>.</p>
 </div>
 </main>
 <footer class="foot">

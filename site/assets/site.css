@@ -105,8 +105,9 @@ a:hover { color: var(--ultra-deep); text-decoration-thickness: 2px; }
   font-weight: 600; font-size: 1.05rem; letter-spacing: 0.01em;
 }
 .name:hover { color: var(--ultra); text-decoration: none; }
-.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1.6rem; }
+.site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1.6rem; }
 .site-nav a {
+  white-space: nowrap;
   color: var(--ink); text-decoration: none;
   font-weight: 500; font-size: 0.98rem;
   padding-bottom: 0.2rem;
@@ -614,6 +615,7 @@ h1 {
 .radar-key .rk-rings b { font-weight: 600; }
 .radar-key .rk-marks { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 0.4rem 1.5rem; }
 .rk-marks .k-sub { font-family: var(--letter); }
+.radar-key .k-frame { font-family: var(--letter); font-weight: 500; color: var(--ink); }
 .rg { width: 1.05rem; height: 1.05rem; flex: none; display: block; }
 .rg-on { fill: var(--ultra); }
 .rg-off { fill: var(--ultra-tint); stroke: var(--ultra-pale); stroke-width: 0.6; }
@@ -1162,24 +1164,20 @@ code {
 .who dd { margin: 0; }
 .own { margin: 0.7rem 0 0; font-family: var(--letter); font-weight: 500; font-size: 0.92rem; }
 
-/* Three vermilion bands: the lab notes, indexed in the first screen. */
-.lab-index { grid-column: 1 / -1; margin-top: 0.6rem; }
-.lab-index ol {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px;
+/* The itinerary: the route card for the page, in the margin beside the lede. */
+.itin { min-width: 0; }
+.itin ol { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.itin li { border-bottom: 1px solid var(--rule); }
+.itin a {
+  display: grid; grid-template-columns: minmax(0, 7.6rem) minmax(0, 1fr); gap: 0 0.75rem; align-items: baseline;
+  padding: 0.5rem 0 0.45rem;
+  color: var(--ink); text-decoration: none;
 }
-.lab-index a {
-  height: 100%;
-  display: flex; align-items: baseline; gap: 0.6rem;
-  padding: 0.95rem var(--cell) 0.9rem;
-  background: var(--red); color: #fff; text-decoration: none;
-  font-family: var(--letter); font-weight: 600;
-  font-size: clamp(0.9rem, 0.78rem + 0.4vw, 1.12rem);
-  letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.1;
-}
-.lab-index a:hover { background: var(--red-deep); color: #fff; }
-.lab-index a:focus-visible, .lab-band:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
-.li-c, .lb-c { margin-left: auto; font-weight: 500; letter-spacing: 0; color: var(--red-pale); font-variant-numeric: tabular-nums; }
+.it-n { font-family: var(--letter); font-weight: 500; font-size: 0.98rem; line-height: 1.25; }
+.it-m { font-size: 0.86rem; line-height: 1.35; color: var(--ink-2); }
+.itin a:hover .it-n { color: var(--ultra-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+
+.lb-c { margin-left: auto; font-weight: 500; letter-spacing: 0; color: var(--red-pale); font-variant-numeric: tabular-nums; }
 
 /* Sections: the title on a 2px ink rule; its caption is never a grey subtitle. From 64rem it is a
    margin note in ink beside the title, under the same rule; below that, a standfirst in ink. */
@@ -1263,6 +1261,15 @@ code {
   font-size: clamp(0.98rem, 0.8rem + 0.5vw, 1.2rem);
   letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.1;
 }
+/* On the home page each band links to its group in the trail log. */
+.lab-band:has(> a) { padding: 0; }
+.lab-band > a {
+  flex: 1; display: flex; align-items: baseline; gap: 0.6rem;
+  padding: 0.9rem var(--cell) 0.85rem;
+  color: #fff; text-decoration: none;
+}
+.lab-band > a:hover { background: var(--red-deep); color: #fff; }
+.lab-band > a:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
 .lab-q {
   margin: 0; padding: 0.8rem 0 0.5rem;
   font-family: var(--letter); font-weight: 500; font-size: 1.05rem; line-height: 1.25;
@@ -1272,6 +1279,9 @@ code {
 .take { padding: 1rem 0 1.2rem; border-top: 1px solid var(--rule); scroll-margin-top: 1rem; }
 .take:first-child { border-top: 0; padding-top: 0.55rem; }
 .tk-t { margin: 0; font-family: var(--letter); font-weight: 500; font-size: 1.14rem; line-height: 1.22; text-wrap: balance; }
+.tk-t a { color: var(--ink); text-decoration: none; }
+.tk-t a:hover { color: var(--ultra-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.take > .note-pin { margin-bottom: 0.6rem; }
 .tk-m { margin: 0.25rem 0 0; font-family: var(--letter); font-size: 0.8rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .tk-b { margin: 0.5rem 0 0; font-size: 0.96rem; line-height: 1.5; max-width: 62ch; }
 .take .xref { margin-top: 0.75rem; }
@@ -1306,63 +1316,267 @@ code {
 .c-x { grid-column: 1 / -1; margin-top: 0.15rem; font-size: 0.98rem; line-height: 1.45; }
 .chain figcaption { margin-top: 0.9rem; max-width: 62ch; font-size: 0.86rem; line-height: 1.5; color: var(--ink-2); }
 
-.guide { margin-top: 1.5rem; max-width: 46rem; }
-.mini-ridge { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; align-items: end; margin-bottom: 3px; }
-.mini-band {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px;
+/* ---------- The guide: how he leads a climb, what he builds, how to reach him ---------- */
+.sub { margin-top: 0.6rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); align-items: start; scroll-margin-top: 1rem; }
+.sec-head + .sub { margin-top: 0; border-top: 0; }
+.sub-t {
+  margin: 0;
+  font-family: var(--title); font-weight: 300;
+  font-size: clamp(1.85rem, 1.45rem + 1.1vw, 2.4rem); line-height: 1.05; letter-spacing: 0;
 }
-.mini-band a {
-  display: flex; align-items: baseline; gap: 0.4rem;
-  padding: 0.65rem 0.55rem 0.6rem;
-  background: var(--ultra); color: #fff; text-decoration: none;
-  font-family: var(--letter); font-weight: 600; font-size: 0.72rem;
-  letter-spacing: 0.07em; text-transform: uppercase; line-height: 1;
-}
-.mini-band a:hover { background: var(--ultra-deep); color: #fff; }
-.mini-band a:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
-.mini-band .is-govern a { background: var(--ink); }
-.mini-band .is-govern a:hover { background: #000; }
-.mini-band .is-govern .band-n { color: #c4c6cc; }
-.guide-l { margin: 0.9rem 0 0; display: grid; border-top: 2px solid var(--ink); }
-.guide-l > div {
-  display: grid; grid-template-columns: 6.4rem minmax(0, 1fr); gap: 0 0.9rem; align-items: baseline;
-  padding: 0.6rem 0 0.55rem; border-bottom: 1px solid var(--rule);
-}
-.guide-l dt { font-family: var(--letter); font-weight: 600; font-size: 1.08rem; }
-.guide-l dd { margin: 0; font-size: 0.95rem; line-height: 1.45; }
+.sub-cap { margin: 1rem 0 0; max-width: 58ch; font-size: 1.0625rem; line-height: 1.55; }
+.sub .who { margin-top: 1.4rem; }
+@media (min-width: 64rem) { .sub .who { margin-top: 0.35rem; } }
+.sub + .work { border-top: 0; }
 
 /* Conversations: the close */
-.talk .sec-head { margin-bottom: 0; }
+.talk { margin-top: 1.2rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); scroll-margin-top: 1rem; }
 .talk-p {
-  margin: 0.9rem 0 0; max-width: 36ch;
+  margin: 1.1rem 0 0; max-width: 36ch;
   font-family: var(--letter); font-weight: 500;
   font-size: clamp(1.25rem, 1rem + 0.9vw, 1.7rem); line-height: 1.3;
   text-wrap: pretty;
 }
 
-@media (max-width: 48rem) {
-  .mini-band { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .mini-ridge { display: none; }
+/* A section's onward link: one plain line, never a button. */
+.sec-go { margin: 1.4rem 0 0; font-family: var(--letter); font-weight: 500; font-size: 1.05rem; }
+.sec-go-m { font-weight: 400; color: var(--ink-2); }
+
+/* ---------- Home: the climb ----------
+   The route's panorama holds still at the top of the screen while the six camps are read below
+   it. One number, --p (0 at the first camp, 1 on the summit), says how far along the reader is:
+   the route is drawn to it, camps appear as it reaches them, the guide's blaze stands on it and
+   the nearer ridges settle as it rises. At rest it is 1, so without motion, without scroll-driven
+   animation and without the script the route is drawn in full and the blaze is on the summit.
+   --line is the reading line, in vh: a camp is reached when its top crosses it. --k scales the
+   marks back up where the panorama is drawn small. */
+@property --p { syntax: "<number>"; inherits: true; initial-value: 1; }
+.home > .climb { max-width: none; }
+.climb { --line: 56; --k: 1; timeline-scope: --c0, --c1, --c2, --c3, --c4; }
+.climb > .sec-head, .camps { max-width: 76rem; }
+.climb-scene {
+  position: sticky; top: 0; z-index: 3;
+  margin-top: 1.4rem;
+  padding: 0.5rem 0 0.75rem;
+  background: var(--paper);
+}
+/* Clipped at the sides and foot (the nearer ridges run on below the frame), open above, so the
+   blaze can stand clear of the summit. */
+.climb-frame {
+  position: relative;
+  width: min(100%, 42svh * var(--ar));
+  aspect-ratio: var(--ar);
+  clip-path: inset(-4rem 0 0 0);
+}
+.climb-l { position: absolute; left: 0; top: 0; width: 100%; height: calc(var(--pad) * 100%); max-width: none; }
+.climb-mid { transform: translateY(calc((1 - var(--p, 1)) * -2.2%)); }
+.climb-near { transform: translateY(calc((1 - var(--p, 1)) * -4.4%)); }
+.climb-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; font-family: var(--letter); }
+
+.rt-plan {
+  fill: none; stroke: var(--ink-2); stroke-linecap: round;
+  stroke-width: calc(1.4px * var(--k));
+  stroke-dasharray: calc(0.5px * var(--k)) calc(5.5px * var(--k));
+}
+.rt-walk {
+  fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round;
+  stroke-width: calc(2.6px * var(--k));
+  stroke-dasharray: calc(var(--len) * 1px) calc(var(--len) * 1px);
+  stroke-dashoffset: calc((1 - var(--p, 1)) * var(--len) * 1px);
+}
+/* A camp appears, and settles a few units, as the route reaches it. */
+.cp {
+  opacity: clamp(0, (var(--p, 1) - var(--f)) * 40 + 1, 1);
+  transform: translateY(calc(clamp(0, (var(--f) - var(--p, 1)) * 40, 1) * 7px));
+}
+.cp-i { transform: scale(var(--k)); }
+.mk-i { transform: scale(var(--km, var(--k))); }
+.cp rect { fill: var(--ultra); stroke: var(--paper); stroke-width: 1.5px; }
+.cp-gov rect { fill: var(--ink); }
+.cp-n { fill: #fff; font-size: 12.5px; font-weight: 600; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.cp-l {
+  fill: var(--ink); font-size: 13.5px; font-weight: 600; letter-spacing: 0.08em; text-anchor: middle;
+  paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round;
+}
+/* The guide: a trail blaze on a staff, standing where the reader has reached. */
+.mk-s { stroke: var(--ink); stroke-width: 1.5px; }
+.mk-w { fill: #fff; stroke: var(--ink); stroke-width: 1px; }
+.mk-r { fill: var(--red); }
+@supports (offset-path: path("M0 0")) {
+  .mk { offset-path: var(--route); offset-distance: calc(var(--p, 1) * 100%); offset-rotate: 0deg; transform: none; }
+}
+
+/* The camps: contiguous, so each one's box hands the climb on to the next. */
+.camps { list-style: none; margin: 0; padding: 0; }
+.camp {
+  min-height: calc((100 - var(--line)) * 1svh);
+  padding: 1.5rem 0 2.25rem;
+  border-top: 1px solid var(--rule);
+  align-items: start;
+  scroll-margin-top: calc(var(--line) * 1svh - 1.5rem);
+}
+.camp:first-child { border-top: 0; }
+.camp-band {
+  margin: 0 0 1rem;
+  display: flex;
+  font-family: var(--letter); font-weight: 600;
+  font-size: clamp(0.98rem, 0.8rem + 0.5vw, 1.3rem);
+  letter-spacing: 0.07em; text-transform: uppercase; line-height: 1;
+}
+.camp-band a {
+  display: flex; align-items: baseline; gap: 0.55rem;
+  min-width: min(100%, 15rem);
+  padding: 0.9rem var(--cell) 0.85rem;
+  background: var(--ultra); color: #fff; text-decoration: none;
+}
+.camp-band a:hover { background: var(--ultra-deep); color: #fff; }
+.camp-band a:focus-visible { outline-color: var(--ink); outline-offset: 2px; }
+.is-govern .camp-band a { background: var(--ink); }
+.is-govern .camp-band a:hover { background: #000; }
+.is-govern .camp-band .band-n { color: #c4c6cc; }
+.camp .camp-q {
+  margin: 0; max-width: 30ch;
+  font-family: var(--letter); font-weight: 500;
+  font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem);
+  line-height: 1.15; letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.camp .camp-test { margin: 1rem 0 0; max-width: 58ch; font-size: 1rem; line-height: 1.5; }
+.camp-test b {
+  display: block; margin-bottom: 0.2rem;
+  font-family: var(--letter); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.camp .camp-go { margin: 0.9rem 0 0; font-family: var(--letter); font-weight: 500; font-size: 0.95rem; line-height: 1.5; }
+.camp .mn-say { font-size: 1.05rem; }
+/* A small label always names the list directly below it. */
+.mn-l {
+  margin: 1rem 0 0.45rem;
+  font-family: var(--letter); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.mn-say + .mn-l, .mn > .mn-l:first-child { margin-top: 0; }
+.camp .mn-notes { margin: 1rem 0 0; }
+
+/* Marks for his own entries in a margin: a vermilion square for a trail-log entry, a notch for a
+   valley. */
+.x-v {
+  width: 0.95rem; height: 0.7rem; margin: 0.22rem 0 0 0.12rem;
+  background: var(--red);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Scroll-driven: while camp i crosses the reading line, --p runs from camp i to camp i + 1 (the
+   keyframes are generated with the route, in the page head). Camp text settles in as it enters. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .climb-body {
+      animation: climb-0 linear backwards, climb-1 linear, climb-2 linear, climb-3 linear, climb-4 linear forwards;
+      animation-timeline: --c0, --c1, --c2, --c3, --c4;
+      animation-range: cover calc(100vh - var(--line) * 1vh) cover calc(100% - var(--line) * 1vh);
+    }
+    .camp-in {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+@keyframes settle { from { opacity: 0; transform: translateY(8px); } }
+/* The same, where climb.js drives --p instead. */
+@media (prefers-reduced-motion: no-preference) {
+  .climb-js .camp-in { transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .climb-js .camp:not(.is-in) .camp-in { opacity: 0; transform: translateY(8px); }
+}
+
+@media (max-width: 64rem) {
+  .climb { --k: 1.7; }
 }
 @media (max-width: 40rem) {
-  .lab-index ol { grid-template-columns: minmax(0, 1fr); }
-  .lab-band, .lab-index a { padding-inline: 0.75rem; }
-  .who dl > div, .guide-l > div { grid-template-columns: 5.6rem minmax(0, 1fr); }
+  .climb { --k: 2.8; --km: 2.1; --line: 36; }
+  .cp-l { display: none; }
+  .climb-scene { padding: 1.1rem 0 0.6rem; }
+  .camp { min-height: 52svh; }
+}
+/* Too short to hold the panorama and a camp at once: the panorama scrolls with the page. */
+@media (max-height: 30rem) {
+  .climb-scene { position: static; }
+  .camp { min-height: 0; scroll-margin-top: 1rem; }
+}
+
+/* ---------- Home: the valleys ---------- */
+.valley-list { list-style: none; margin: 0; padding: 0; }
+.valley { padding: 1.5rem 0 1.7rem; border-top: 1px solid var(--rule); scroll-margin-top: 1rem; }
+.valley:first-child { border-top: 0; }
+.valley:target { background: var(--ultra-tint); box-shadow: -0.75rem 0 0 var(--ultra-tint), 0.75rem 0 0 var(--ultra-tint); }
+.valley .v-where {
+  margin: 0 0 0.6rem; line-height: 1.3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.7rem;
+  font-family: var(--letter); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--red);
+}
+.v-also { color: var(--ink-2); }
+/* Where on the route: the six stages as a strip, the valley's stage in vermilion. */
+.v-loc { display: inline-grid; grid-template-columns: repeat(6, 0.8rem); gap: 2px; flex: none; }
+.v-loc i { height: 0.5rem; background: var(--ultra-tint); }
+.v-loc i.on { background: var(--red); }
+.v-loc i.also { background: var(--red-pale); outline: 1px solid var(--red); outline-offset: -1px; }
+.v-t {
+  margin: 0 0 0.6rem; max-width: 30ch;
+  font-family: var(--letter); font-weight: 500;
+  font-size: clamp(1.25rem, 1.05rem + 0.65vw, 1.6rem);
+  line-height: 1.18; letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* ---------- Home: the gear check ---------- */
+.gear-rings { list-style: none; margin: 1.1rem 0 0; padding: 0; }
+.gear-r {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.8rem 2.5rem;
+  padding: 1.1rem 0 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+.gear-r:first-child { border-top: 0; padding-top: 0.6rem; }
+@media (min-width: 64rem) {
+  .gear-r { grid-template-columns: minmax(16rem, 24rem) minmax(0, 1fr); align-items: start; }
+}
+.gr-t { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; font-family: var(--letter); line-height: 1.2; }
+.gr-t .rg { width: 1.15rem; height: 1.15rem; }
+.gr-name { font-weight: 600; font-size: 1rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.gr-frame { font-weight: 500; font-size: 1.12rem; }
+.gr-m { margin: 0.4rem 0 0; max-width: 46ch; font-size: 0.9rem; line-height: 1.45; color: var(--ink-2); }
+.gr-m a { font-family: var(--letter); font-weight: 500; }
+.gear-r .rdots { gap: 5px; padding-top: 0.15rem; }
+.gear-r .rdot { width: 1.75rem; height: 1.75rem; font-size: 0.78rem; }
+
+/* ---------- Trail log (its own page, and the excerpt on the home page) ---------- */
+.log { container-type: inline-size; max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) clamp(2.5rem, 1.5rem + 3vw, 4.5rem); }
+.log > * { max-width: 76rem; }
+.log > .log-head { max-width: none; padding-inline: 0; }
+.log-head > .art-sheet { right: 0; width: 100%; }
+.log-head h1 { margin-bottom: 0.9rem; }
+.log-head .caption { max-width: 50ch; font-size: 1.125rem; line-height: 1.55; }
+.log-head .edition { margin-top: 0; }
+.log-lab { margin-top: clamp(1.5rem, 1rem + 1.4vw, 2.5rem); }
+.log-lab .lab-plate { margin-top: 0; }
+.log-nl { list-style: none; margin: 0; padding: 0; }
+.log-n { padding: 1.3rem 0 1.5rem; scroll-margin-top: 1rem; }
+.log-n .pos-t a { color: var(--ink); text-decoration: none; }
+.log-n .pos-t a:hover { color: var(--ultra-deep); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.log-n .tk-m { margin: 0 0 0.45rem; }
+.log-n .mn .xref { margin-top: 0.7rem; }
+.log-n:target { background: var(--ultra-tint); }
+
+@media (max-width: 40rem) {
+  .site-nav ul { gap: 0.3rem 1.05rem; }
+  .lab-band, .lab-band > a { padding-inline: 0.75rem; }
+  .lab-band:has(> a) { padding: 0; }
+  .who dl > div { grid-template-columns: 5.6rem minmax(0, 1fr); }
+  .itin a { grid-template-columns: minmax(0, 6.6rem) minmax(0, 1fr); }
   .chain li { padding-left: calc(var(--d, 0) * 1.3rem); }
   .chain li + li::before { left: calc((var(--d) - 1) * 1.3rem + 0.35rem); width: 0.75rem; }
 }
 
-/* One authored moment: the three lab bands are laid down left to right, like ink on the plate. */
-@media (prefers-reduced-motion: no-preference) {
-  .lab-index li {
-    animation: lay 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    animation-delay: calc(180ms + var(--k, 0) * 90ms);
-  }
-  .lab-index li:nth-child(2) { --k: 1; }
-  .lab-index li:nth-child(3) { --k: 2; }
-  @keyframes lay { from { clip-path: inset(0 100% 0 0); } }
-}
 
 /* ---------- About ---------- */
 .page { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter) 4rem; }
@@ -1396,8 +1610,9 @@ code {
 /* ---------- Art: Contour Lineage ----------
    Generative mountains drawn by scripts/art.mjs (seeds in site-data/art.json, philosophy in
    art/). Decorative ground, never figure: every line is ultramarine pale or lighter (rule ink and
-   one vermilion trail blaze on the home page), so text over it keeps AA contrast. It never moves,
-   and it is left out of print and forced colours. */
+   one vermilion trail blaze on the home page), so text over it keeps AA contrast. It never moves on
+   its own: only the home page's route panorama responds to the reader's scroll, and only by a few
+   percent (see Home: the climb). It is left out of print and forced colours. */
 .art { display: block; pointer-events: none; user-select: none; }
 .ridge { width: 100%; height: auto; }
 /* Page heads: a sheet corner. Its top and right edges are neatlines; its left and bottom fall away
@@ -1459,16 +1674,18 @@ code {
 .foot p { margin: 0; }
 
 @media (forced-colors: active) {
-  .band, .note-pin, .stage-index a, .locator a, .n-chip, .tag, .lab-index a, .lab-band, .mini-band a { border: 1px solid CanvasText; }
-  .k-note, .x-sq { border: 1px solid CanvasText; }
-  .art { display: none; }
+  .band, .note-pin, .stage-index a, .locator a, .n-chip, .tag, .lab-band, .camp-band a { border: 1px solid CanvasText; }
+  .k-note, .x-sq, .x-v, .v-loc i { border: 1px solid CanvasText; }
+  .art, .climb-scene { display: none; }
   .leader, .radar-head h1::before { display: none; }
   h1, .sec-head h2, .ls-head h2, .prose h2 { color: CanvasText; }
 }
 
 @media print {
-  .skip, .site-nav, .stage-index, .lab-index, .art { display: none; }
-  .band, .stage-index a, .note-pin, .lab-band, .mini-band a { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .skip, .site-nav, .stage-index, .art, .climb-scene, .itin { display: none; }
+  .band, .stage-index a, .note-pin, .lab-band, .camp-band a, .v-loc i { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .camp { min-height: 0; break-inside: avoid; }
+  .camp-in { opacity: 1 !important; transform: none !important; }
   /* Titles print plain: no leaders, no range lettering. */
   .leader, .radar-head h1::before { display: none; }
   .range, .plate > .range, .lib-head > .range {

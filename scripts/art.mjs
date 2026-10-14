@@ -382,10 +382,10 @@ function apronView(spec, P) {
   return { view: "apron", W: size, H: size, box: [x0, x0, size, size], lines: contourField(E, nx, nx, P, x0, x0, rim), summit: null };
 }
 
-// Ascent: the route seen from the side, climbing through the stages to the summit. Each stage
-// shapes its own stretch from its own seed; neighbouring stretches blend, so slices join.
-function ascentView(spec, P) {
-  const { W, H } = spec; // one stage
+// The ascent's height field: heightAt(u, k) is the height of ridgeline k (0 is the skyline, K − 1
+// the nearest foothills) at u, the share of the way along the whole route, as a share of the
+// summit. Each stage shapes its own stretch from its own seed; neighbouring stretches blend.
+function ascentField(spec, P) {
   const seeds = spec.stageSeeds;
   const n = seeds.length;
   const noises = seeds.map((s) => makeNoise(s >>> 0));
@@ -418,6 +418,14 @@ function ascentView(spec, P) {
     const roll = near * 0.08 * fbm(hills, u * 6 + k * 3.7, k * 1.3, 3);
     return k === 0 ? Math.min(z, 1 - 0.015 * (1 - Math.exp(-(((u - us) / 0.012) ** 2)))) : z + roll;
   };
+  return { heightAt, us, n, K };
+}
+
+// Ascent: the route seen from the side, climbing through the stages to the summit, cut into one
+// slice per stage so the slices join when they stand side by side.
+function ascentView(spec, P) {
+  const { W, H } = spec; // one stage
+  const { heightAt, us, n, K } = ascentField(spec, P);
   const step = 2;
   const slices = [];
   for (let s = 0; s < n; s++) {
@@ -434,6 +442,101 @@ function ascentView(spec, P) {
     slices.push({ view: "ascent", W, H, box: [0, 0, W, H], layers: layers.reverse(), stage: s });
   }
   return slices;
+}
+
+// Climb: the same ascent as one panorama, the home page's route. The ridgelines are the ascent's,
+// from its seeds, and the route keeps to the skyline ridge (ridgeline 0): a little below its
+// crest, so it stays on the rock, and above the next ridgeline, so nothing in front hides it. It
+// follows the ridge's rises and dips, so the route has peaks and valleys of its own. Camps sit on
+// the high points nearest even steps from the first camp, at the start, to the summit. The
+// sheet runs `pad` units below its frame so nearer ridges can shift up without showing an edge.
+function climbView(spec, P) {
+  const { W, H } = spec;
+  const pad = spec.pad ?? 32;
+  const { heightAt, us, K } = ascentField(spec, P);
+  const lift = spec.lift ?? 0.86;
+  const yOf = (z) => H - Math.max(0, z) * H * lift;
+  const step = 2;
+  const xs = [];
+  for (let x = 0; x < W; x += step) xs.push(x);
+  xs.push(W);
+  const xSummit = us * W;
+  xs.push(xSummit);
+  xs.sort((p, q) => p - q);
+  const layers = [];
+  for (let k = 0; k < K; k++) {
+    const pts = xs.map((x) => [x, yOf(heightAt(x / W, k))]);
+    layers.push({ depth: k, pts: rdp(pts, P.tolerance * 0.5) });
+  }
+
+  // The route, sampled every 1/N of the way along: below a smoothed lower envelope of the skyline
+  // ridge, above a smoothed upper envelope of the ridge in front, then smoothed again so it reads
+  // as a walked line with a few clear rises and dips rather than the rock's every notch.
+  const N = 1200;
+  const u0 = spec.start ?? 0.03;
+  const at = (i) => u0 + ((us - u0) * i) / N;
+  const z0 = (u) => heightAt(u, 0);
+  const z1 = (u) => heightAt(u, 1);
+  const env = (f, w, pick) => {
+    const out = [];
+    for (let i = 0; i <= N; i++) {
+      let v = pick === "min" ? Infinity : -Infinity;
+      for (let d = -w; d <= w; d += w / 8) {
+        const z = f(Math.min(us, Math.max(0, at(i) + d)));
+        v = pick === "min" ? Math.min(v, z) : Math.max(v, z);
+      }
+      out.push(v);
+    }
+    return out;
+  };
+  const blur = (a, r) =>
+    a.map((_, i) => {
+      let s = 0, c = 0;
+      for (let j = Math.max(0, i - r); j <= Math.min(N, i + r); j++) s += a[j], c++;
+      return s / c;
+    });
+  const below = blur(env(z0, 0.014, "min"), 10);
+  const above = blur(env(z1, 0.01, "max"), 6);
+  const target = below.map((z, i) => {
+    const toTop = smoothstep(us - 0.12, us, at(i));
+    return Math.max(z - 0.022 * (1 - toTop), above[i] + 0.008 * (1 - toTop));
+  });
+  const zs = blur(target, 14);
+  const route = zs.map((z, i) => {
+    const u = at(i);
+    const toTop = smoothstep(us - 0.05, us, u);
+    return { u, z: toTop * z0(us) + (1 - toTop) * z };
+  });
+  let pts = route.map(({ u, z }) => [u * W, yOf(z)]);
+  pts = rdp(pts, 0.35);
+  pts = chaikin(pts, false);
+  const along = [0];
+  for (let i = 1; i < pts.length; i++) along.push(along[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const length = along.at(-1);
+
+  // Camps: the first at the start, the last on the summit, the others on the highest point of the
+  // route within `snap` of even steps between them.
+  const count = spec.camps ?? 6;
+  const snap = spec.snap ?? 0.035;
+  const idxAt = (x) => {
+    let best = 0;
+    for (let i = 1; i < pts.length; i++) if (Math.abs(pts[i][0] - x) < Math.abs(pts[best][0] - x)) best = i;
+    return best;
+  };
+  const camps = [];
+  for (let c = 0; c < count; c++) {
+    let i;
+    if (c === 0) i = 0;
+    else if (c === count - 1) i = pts.length - 1;
+    else {
+      const u = u0 + ((us - u0) * c) / (count - 1);
+      const a = idxAt((u - snap) * W), b = idxAt((u + snap) * W);
+      i = a;
+      for (let j = a; j <= b; j++) if (pts[j][1] < pts[i][1]) i = j;
+    }
+    camps.push({ x: pts[i][0], y: pts[i][1], f: along[i] / length });
+  }
+  return { view: "climb", W, H, pad, box: [0, 0, W, H + pad], layers, route: { pts, length, camps } };
 }
 
 function mix(paper, ink, share) {
@@ -497,6 +600,23 @@ function toSVG(geom, palette, note = "") {
   return `${head}<g fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="${palette.contour}" stroke-width=".75" vector-effect="non-scaling-stroke" d="${regular}"/><path stroke="${palette.index}" stroke-width="1.3" vector-effect="non-scaling-stroke" d="${index}"/></g>${mark}</svg>\n`;
 }
 
+// One depth band of the climb panorama: the ridgelines in `depths`, each a flat screen of
+// ultramarine pale (lighter the farther it is), with a paper hairline along every ridge in front
+// of the skyline, as on the ascent.
+function climbSVG(geom, palette, depths, note = "") {
+  const [, , bw, bh] = geom.box;
+  const last = geom.layers.length - 1;
+  const parts = geom.layers
+    .filter((l) => depths.includes(l.depth))
+    .map((l) => {
+      const top = l.pts.map((p, j) => `${j ? "L" : "M"}${f1(p[0])} ${f1(p[1])}`).join("");
+      const fill = palette.screens[Math.min(palette.screens.length - 1, Math.round((l.depth / Math.max(1, last)) * (palette.screens.length - 1)))];
+      const body = `<path fill="${fill}" d="${top}L${bw} ${bh}L0 ${bh}Z"/>`;
+      return l.depth ? body + `<path fill="none" stroke="${palette.paper}" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="${top}"/>` : body;
+    });
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${bw} ${bh}" width="${bw}" height="${bh}">${note ? `<!-- ${note} -->` : ""}${parts.join("")}</svg>\n`;
+}
+
 // The ascent's stage seeds: one per stage id, derived from the ascent seed unless set.
 function stageSeeds(ascent, stageIds) {
   return stageIds.map((id) => ascent.stageSeeds?.[id] ?? (hashSeed(`${ascent.seed}/${id}`) % 99999) + 1);
@@ -507,6 +627,7 @@ function drawArea(area, config) {
   const P = { ...ART_DEFAULTS, interval: config.interval ?? ART_DEFAULTS.interval, floor: config.floor ?? ART_DEFAULTS.floor, ...(area.params || {}) };
   if (area.view === "apron") return [apronView(area, P)];
   if (area.view === "ascent") return ascentView(area, P);
+  if (area.view === "climb") return [climbView(area, P)];
   return [{ ...planView({ W: area.size[0], H: area.size[1], summit: area.summit, seed: area.seed, fade: area.fade }, P), mark: Boolean(area.mark) }];
 }
 /* </core> */
@@ -549,6 +670,36 @@ export async function generateArt({ root = path.resolve(here, ".."), log = false
   for (const [i, geom] of slices.entries()) {
     const note = `Contour Lineage · ${stageIds[i]} · stage ${i + 1} of ${stageIds.length} · seeds ${config.ascent.seed}/${ascent.stageSeeds[i]} · generated by scripts/art.mjs`;
     await emit(`stage-${stageIds[i]}`, toSVG(geom, artPalette(tokens, "reference"), note));
+  }
+
+  // The home page's route: the ascent as one panorama in depth bands, plus the route and its camps
+  // for scripts/build.mjs to draw over it (it is drawn inline so it can draw itself on scroll).
+  if (config.climb) {
+    const spec = {
+      ...config.ascent,
+      ...config.climb,
+      view: "climb",
+      W: config.climb.size[0],
+      H: config.climb.size[1],
+      stageSeeds: ascent.stageSeeds,
+      camps: stageIds.length,
+    };
+    const [geom] = drawArea(spec, config);
+    const palette = artPalette(tokens, "reference");
+    const bands = Object.entries(config.climb.bands || { far: [0], mid: [1, 2], near: [3] });
+    for (const [band, depths] of bands) {
+      const note = `Contour Lineage · climb ${band} · ridgelines ${depths.join(", ")} of the ascent · seeds ${config.ascent.seed}/${ascent.stageSeeds.join("/")} · generated by scripts/art.mjs`;
+      await emit(`climb-${band}`, climbSVG(geom, palette, depths, note));
+    }
+    files.climb = {
+      W: geom.W,
+      H: geom.H,
+      pad: geom.pad,
+      bands: bands.map(([band]) => band),
+      length: geom.route.length,
+      pts: geom.route.pts,
+      camps: geom.route.camps.map((c, i) => ({ ...c, stage: stageIds[i] })),
+    };
   }
 
   // Keep the explorer's copy of the algorithm, the seeds and the palette in step with the site.

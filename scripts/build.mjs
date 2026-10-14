@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Zero-dependency build: renders the home page (site/index.html) from
-// site-data/home.json and site-data/takes.json, and the map (site/map/index.html),
-// the radar (site/radar/index.html) and the library (site/library/index.html)
-// from content/*.json. Run: node scripts/build.mjs
+// Zero-dependency build: renders the home page (site/index.html) from site-data/home.json,
+// site-data/story.json and site-data/takes.json; the trail log (site/log/index.html) from
+// site-data/takes.json and site-data/notes.json; and the route (site/map/index.html), the radar
+// (site/radar/index.html) and the field guide (site/library/index.html) from content/*.json.
+// Run: node scripts/build.mjs
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -51,7 +52,7 @@ for (const f of FONTS) {
   }
   if (next !== css) await writeFile(site("assets/site.css"), next);
 }
-const ASSETS = ["site.css", "radar.js", ...art.map((a) => a.file)];
+const ASSETS = ["site.css", "radar.js", "climb.js", ...art.map((a) => a.file)];
 for (const f of ASSETS) {
   const text = (await readFile(site(`assets/${f}`), "utf8")).replace(/\r\n/g, "\n");
   assetVersion[f] = createHash("sha256").update(text).digest("hex").slice(0, 8);
@@ -112,6 +113,9 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 const words = (s) => String(s || "").trim().split(/\s+/).filter(Boolean).length;
+// Story copy may name counts the build knows: {blips}, {sources}, {entries}, {notes}.
+const fill = (s) =>
+  String(s ?? "").replace(/\{(blips|sources|entries|notes)\}/g, (_, k) => String({ blips: blips.length, sources: entries.length, entries: (takes.entries || []).length, notes: notes.length }[k]));
 
 function shortTitle(e) {
   if (plate.short?.[e.id]) return plate.short[e.id];
@@ -154,6 +158,7 @@ const plateSrc = await loadJson(siteData("plate.json"));
 const radarSrc = await loadJson(process.env.RADAR_FILE || content("radar.json"));
 const homeSrc = await loadJson(siteData("home.json"));
 const takesSrc = await loadJson(siteData("takes.json"));
+const storySrc = await loadJson(siteData("story.json"));
 
 const rawStages = Array.isArray(stagesSrc.data) ? stagesSrc.data : stagesSrc.data.stages;
 const stages = rawStages.map((s, i) => ({
@@ -241,6 +246,7 @@ const radar = radarSrc.data;
 const TAKE_GROUPS = ["testing", "using", "watch"];
 const home = homeSrc.data;
 const takes = takesSrc.data;
+const story = storySrc.data;
 const noteById = Object.fromEntries(notes.map((n) => [n.id, n]));
 // A link is exactly one of: a radar blip, a library entry, a note, a map stage or an absolute URL.
 const LINK_KINDS = ["radar", "library", "note", "stage", "href"];
@@ -300,6 +306,13 @@ function checkLinks(at, links, err) {
     checkLinks(at, p.links, hErr);
   }
   for (const w of home.work?.items || []) checkLinks(`work ${w.id}`, w.links, hErr);
+
+  const sErr = (m) => errors.push(`${storySrc.file}: ${m}`);
+  for (const k of ["map", "radar", "library", "log", "about"]) if (!story.nav?.[k]) sErr(`nav.${k} is missing`);
+  for (const k of ["route", "valleys", "gear", "log", "guide"]) if (!story.home?.[k]?.heading) sErr(`home.${k}.heading is missing`);
+  for (const k of Object.keys(story.home?.route?.camps || {})) if (!stageById[k]) sErr(`home.route.camps: unknown stage "${k}"`);
+  for (const k of RADAR_RINGS) if (!story.rings?.[k]) sErr(`rings.${k} is missing`);
+  for (const k of ["radar", "library", "log"]) if (!story.pages?.[k]?.title) sErr(`pages.${k}.title is missing`);
 }
 
 if (errors.length) {
@@ -605,10 +618,11 @@ ${SPRITE}
   <a class="name" href="${rel}"${cur("home")}>Rafael Gorski</a>
   <nav class="site-nav" aria-label="Site">
     <ul>
-      <li><a href="${rel}map/"${cur("map")}>Map</a></li>
-      <li><a href="${rel}radar/"${cur("radar")}>Radar</a></li>
-      <li><a href="${rel}library/"${cur("library")}>Library</a></li>
-      <li><a href="${rel}about/"${cur("about")}>About</a></li>
+      <li><a href="${rel}map/"${cur("map")}>${esc(story.nav.map)}</a></li>
+      <li><a href="${rel}radar/"${cur("radar")}>${esc(story.nav.radar)}</a></li>
+      <li><a href="${rel}library/"${cur("library")}>${esc(story.nav.library)}</a></li>
+      <li><a href="${rel}log/"${cur("log")}>${esc(story.nav.log)}</a></li>
+      <li><a href="${rel}about/"${cur("about")}>${esc(story.nav.about)}</a></li>
     </ul>
   </nav>
 </header>
@@ -690,7 +704,7 @@ ${sec
   )
   .join("\n")}${
             sec.length > GHOST_MAX
-              ? `\n            <li><a class="ghost-more" href="${rel}library/#${esc(s.id)}-also">${sec.length - GHOST_MAX} more in the library</a></li>`
+              ? `\n            <li><a class="ghost-more" href="${rel}library/#${esc(s.id)}-also">${sec.length - GHOST_MAX} more in the field guide</a></li>`
               : ""
           }
           </ul></div>`
@@ -717,12 +731,12 @@ ${sec
     <p class="caption">${esc(plate.caption)}</p>
     <div class="legend-key">
       ${key()}
-      <p class="edition">Edition ${esc(plate.edition)} · ${notes.length} note${notes.length === 1 ? "" : "s"}, ${entries.length} sources${updatedLabel ? ` · library updated ${esc(updatedLabel)}` : ""}</p>
+      <p class="edition">Edition ${esc(plate.edition)} · ${notes.length} note${notes.length === 1 ? "" : "s"}, ${entries.length} sources${updatedLabel ? ` · field guide updated ${esc(updatedLabel)}` : ""}</p>
       ${sampleNotice(rel)}
     </div>
   </div>
   <section class="route" aria-labelledby="route">
-    <h2 id="route" class="vh">The route, stage by stage</h2>
+    <h2 id="route" class="vh">The route, camp by camp</h2>
     <p class="span-govern" aria-hidden="true"><span>Govern is charted last but holds from the first decision</span></p>
     <ol class="stages">
 ${cols}
@@ -734,8 +748,8 @@ ${cols}
   return page({
     rel,
     current: "map",
-    title: `Map: ${plate.title} — Rafael Gorski`,
-    description: `A map of launching and scaling AI systems in ${stages.length} stages, from ${stageRange}, with original notes and curated sources pinned to the stage where each matters.`,
+    title: `${plate.title} — Rafael Gorski`,
+    description: `The route for launching and scaling AI systems: ${stages.length} camps, from ${stageRange}, with original notes and curated sources pinned to the stretch where each matters.`,
     bodyClass: "is-map",
     main,
   });
@@ -812,9 +826,9 @@ ${prim
 
   const main = `<div class="page-head lib-head has-art">
   ${artImg(rel, "library", "art-sheet")}
-  ${rangeTitle("Library", "range range-short")}
+  ${rangeTitle(story.pages.library.title, "range range-short")}
   <div class="legend">
-    <p class="caption">${entries.length} sources, each pinned to the stage where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <p class="caption">${esc(fill(story.pages.library.caption))}</p>
     <div class="legend-key">
       ${key({ withNotes: false })}
       ${updatedLabel ? `<p class="edition">Updated ${esc(updatedLabel)}${entries.every(isVerified) ? ". Every link, title, publisher and year checked against its source." : ""}</p>` : ""}
@@ -835,8 +849,8 @@ ${sections}
   return page({
     rel,
     current: "library",
-    title: "Library — Rafael Gorski",
-    description: `Curated sources for launching and scaling AI systems, grouped by stage from ${stageRange}, each with why it matters and what to check.`,
+    title: `${story.pages.library.title} — Rafael Gorski`,
+    description: `The field guide to launching and scaling AI systems: curated sources grouped by stretch of the route, from ${stageRange}, each with why it matters and what to check.`,
     bodyClass: "is-library",
     main,
   });
@@ -879,7 +893,7 @@ function renderRadar() {
   const rel = "../";
   const edition = formatDate(radar.edition);
   const ringKey = radar.rings
-    .map((r, i) => `<li>${ringGlyph(i)}<span><b>${esc(r.name)}</b> <span class="k-sub">${esc(r.meaning)}</span></span></li>`)
+    .map((r, i) => `<li>${ringGlyph(i)}<span><b>${esc(r.name)}</b> <span class="k-sub"><span class="k-frame">${esc(story.rings[r.id])}.</span> ${esc(r.meaning)}</span></span></li>`)
     .join("");
   const marks = [
     markGlyph("unchanged", "No change") + "</span>",
@@ -890,7 +904,6 @@ function renderRadar() {
     .map((m) => `<li>${m}</li>`)
     .join("");
   const counts = RADAR_RINGS.map((r) => `${blips.filter((b) => b.ring === r).length} ${ringById[r].name.toLowerCase()}`).join(", ");
-  const ringWords = radar.rings.map((r) => r.name.toLowerCase()).join(", ");
 
   const index = radar.quadrants
     .map(
@@ -919,7 +932,7 @@ function renderRadar() {
           <p class="b-s">${esc(b.summary)}</p>
           <dl class="b-x">
             <div><dt>Evidence</dt><dd><ul class="b-ev">${evidence}</ul></dd></div>
-            <div><dt>On the map</dt><dd><ul class="b-st">${where}</ul></dd></div>
+            <div><dt>On the route</dt><dd><ul class="b-st">${where}</ul></dd></div>
           </dl>
         </li>`;
   };
@@ -950,10 +963,10 @@ ${rings}
 
   const main = `<div class="radar">
   <div class="radar-head">
-    <h1>${esc(ringWords[0].toUpperCase() + ringWords.slice(1))}</h1>
+    <h1>${esc(story.pages.radar.title)}</h1>
   </div>
   <div class="radar-legend">
-    <p class="caption">The map shows when something matters in the life of an AI system. The radar shows how far to rely on it. Each of the ${blips.length} blips sits in one ring and is backed by sources in the library.</p>
+    <p class="caption">${esc(fill(story.pages.radar.caption))}</p>
     <dl class="key radar-key">
       <div><dt>Ring</dt><dd><ol class="rk-rings">${ringKey}</ol></dd></div>
       <div><dt>Mark</dt><dd><ul class="rk-marks">${marks}</ul></dd></div>
@@ -978,14 +991,14 @@ ${rings}
   <div class="ledger">
 ${sections}
   </div>
-  <p class="radar-close">Read the same ground by lifecycle stage on <a href="${rel}map/">the map</a>, or source by source in <a href="${rel}library/">the library</a>.</p>
+  <p class="radar-close">Read the same ground camp by camp on <a href="${rel}map/">the route</a>, or source by source in <a href="${rel}library/">the field guide</a>.</p>
 </div>`;
 
   return page({
     rel,
     current: "radar",
-    title: "Radar — Rafael Gorski",
-    description: `A radar of ${blips.length} techniques, platforms, measures and governance practices for AI systems, each placed from ${ringById.adopt.name.toLowerCase()} to ${ringById.hold.name.toLowerCase()} and backed by sources in the library.`,
+    title: `Radar: ${story.pages.radar.title.toLowerCase()} — Rafael Gorski`,
+    description: `The gear check for launching and scaling AI systems: a radar of ${blips.length} techniques, platforms, measures and governance practices, each placed from ${ringById.adopt.name.toLowerCase()} to ${ringById.hold.name.toLowerCase()} and backed by sources in the field guide.`,
     bodyClass: "is-radar",
     main,
     contract: RADAR_CONTRACT,
@@ -995,23 +1008,32 @@ ${sections}
 
 // ---------- Home ----------
 const HOME_CONTRACT = `<!--
-THESIS: The home page is the author's annotated page: his take set as plain
-  positions in the reading column, every one annotated in the margin with the
-  radar blip, library source or note that backs it, then a dated lab-notes plate.
-  Refuses the personal-site hero, headshot, skills grid and post-card list.
-OWN-WORLD: The atlas plate, inverted. Vermilion (his voice) owns the bands,
-  margin remarks, note chips and trace ids; ultramarine appears only where his
-  voice points into the reference (blip discs, unit glyphs, stage chips). Paper,
-  ink rules, Jost lettering, system sans reading.
-STORY: Visitors learn what he holds to about building agents and why, see what
-  he is testing and what he would stop, follow a margin note into the field
-  guide, and know how to reach him.
+THESIS: The home page is the expedition: one climb told top to bottom. The
+  summit view first (the thesis as the summit's label), then the route drawn
+  up the ridge camp by camp, the valleys where climbs stall, the gear check,
+  the trail log and, last, the guide. Refuses the personal-site hero, the
+  metro-map journey slide, the post-card list and scroll-jacking.
+OWN-WORLD: The atlas plate. The route's ridge is the map's own ascent as one
+  panorama in ultramarine-pale screens; camps are stage-band squares
+  (Govern in ink); the route is an ink line; the guide is the one vermilion
+  mark, the trail blaze, and vermilion stays his voice (camp remarks, valleys,
+  trail-log bands). Paper, ink rules, Barlow Condensed Light titles, Jost
+  lettering, system sans reading.
+STORY: Visitors read the thesis, climb the six camps with the marker as the
+  route draws itself, see the named failure modes with their evidence, check
+  the gear on the radar, sample the trail log, and meet the guide: how he
+  leads a climb, what he builds, how to reach him.
 FIRST VIEWPORT: Margin line; the thesis as a two-line light h1 naming the
-  author's summit, its last line running on a hairline leader to the trail
-  blaze; the lede as a margin note beside the who-and-where facts; three
-  vermilion bands indexing the lab notes.
-FORM: Grounded structure 5 of 7 (essay with marginalia), after a re-roll on
-  factual grounds; stagings declined; seed a1f6f0ec.
+  author's summit, its last line on a hairline leader to the trail blaze; the
+  lede as a margin note beside the itinerary; the route's panorama rising
+  into view below.
+FORM: Owner-specified scroll story (v3 brief: the climb), built on the
+  annotated page (grounded structure 5 of 7, seed a1f6f0ec); no new roll.
+MOTION: One authored moment. The route draws with the reader's progress
+  through the camps, each camp appears as the route reaches it, the blaze
+  climbs, and the nearer ridges settle a few percent. Scroll-driven CSS
+  (one registered number, --p) with a small first-party fallback
+  (assets/climb.js). Reduced motion, no JS or no support: drawn in full.
 -->`;
 
 // Copy in site-data/*.json may carry [text](url) links; everything else is escaped.
@@ -1025,7 +1047,7 @@ function xref(l, rel) {
   }
   if (l.library) {
     const e = entries.find((x) => x.id === l.library);
-    return `<li><a class="x-src" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e)}<span class="x-t"><span class="vh">In the library: </span>${esc(shortTitle(e))} <span class="x-m">· ${yearLabel(e)}</span></span></a></li>`;
+    return `<li><a class="x-src" href="${rel}library/#src-${esc(e.id)}">${glyphFor(e)}<span class="x-t"><span class="vh">In the field guide: </span>${esc(shortTitle(e))} <span class="x-m">· ${yearLabel(e)}</span></span></a></li>`;
   }
   if (l.note) {
     const n = noteById[l.note];
@@ -1033,21 +1055,101 @@ function xref(l, rel) {
   }
   if (l.stage) {
     const s = stageById[l.stage];
-    return `<li><a class="x-stage" href="${rel}map/#stage-${esc(s.id)}"><span class="x-sn" aria-hidden="true">${s.n}</span><span class="x-t"><span class="vh">On the map: </span>${esc(s.name)} <span class="x-m">· ${esc(s.question)}</span></span></a></li>`;
+    return `<li><a class="x-stage" href="${rel}map/#stage-${esc(s.id)}"><span class="x-sn" aria-hidden="true">${s.n}</span><span class="x-t"><span class="vh">On the route: </span>${esc(s.name)} <span class="x-m">· ${esc(s.question)}</span></span></a></li>`;
+  }
+  if (l.take) {
+    const t = l.take;
+    const say = l.label ? `${esc(l.label)}<span class="vh">: ${esc(t.title)}</span>` : `<span class="vh">In the trail log: </span>${esc(t.title)}`;
+    return `<li><a class="x-take" href="${rel}log/#take-${esc(t.id)}"><span class="x-sq" aria-hidden="true"></span><span class="x-t">${say}</span></a></li>`;
+  }
+  if (l.valley) {
+    const t = l.valley;
+    return `<li><a class="x-valley" href="#valley-${esc(t.id)}"><span class="x-v" aria-hidden="true"></span><span class="x-t"><span class="vh">Valley: </span>${esc(t.title)}</span></a></li>`;
   }
   return `<li><a class="x-ext" href="${esc(l.href)}"><span class="x-arrow" aria-hidden="true">↗</span><span class="x-t">${esc(l.label)}</span></a></li>`;
 }
 const xrefs = (links, rel) => (links?.length ? `<ul class="xref">${links.map((l) => xref(l, rel)).join("")}</ul>` : "");
 
+// Lab notes, newest first within a group; file order breaks ties.
+const takesIn = (g) =>
+  (takes.entries || [])
+    .map((t, i) => ({ t, i }))
+    .filter(({ t }) => t.group === g)
+    .sort((a, b) => b.t.date.localeCompare(a.t.date) || a.i - b.i)
+    .map(({ t }) => t);
+const takeEntry = (t, rel, { id = true } = {}) => `          <li class="take"${id ? ` id="take-${esc(t.id)}"` : ""}>
+            <h4 class="tk-t">${id ? "" : `<a href="${rel}log/#take-${esc(t.id)}">`}${esc(t.title)}${id ? "" : "</a>"}</h4>
+            <p class="tk-m"><time datetime="${esc(t.date)}">${esc(formatDate(t.date))}</time>${t.confirmed === true ? "" : ' · <span class="tk-draft">Draft</span>'}</p>
+            <p class="tk-b">${inline(t.body)}</p>
+            ${xrefs(t.links, rel)}
+          </li>`;
+// The stage a lab note belongs to on the route: its first link that names one, directly or
+// through a radar blip or a note.
+const takeStage = (t) => {
+  for (const l of t.links || []) {
+    if (l.stage) return l.stage;
+    if (l.radar) return blips.find((b) => b.id === l.radar)?.stages[0];
+    if (l.note) return noteById[l.note]?.stage;
+  }
+  return null;
+};
+// The valleys: each "Watch out for" note is paired with the Hold blip it links to, and they are
+// told in the order a team meets them on the route (the blip's first stage), then file order.
+const stageIndex = (id) => stages.findIndex((s) => s.id === id);
+const valleys = (takes.entries || [])
+  .map((t, i) => ({ t, i, b: t.group === "watch" ? blips.find((b) => b.ring === "hold" && (t.links || []).some((l) => l.radar === b.id)) : null }))
+  .filter(({ b }) => b)
+  .sort((x, y) => stageIndex(x.b.stages[0]) - stageIndex(y.b.stages[0]) || x.i - y.i);
+
+// The route's panorama: three depth bands of the ascent (images), with the route, its camps and
+// the guide's trail blaze drawn over them inline so they can respond to scroll. --p, from 0 at
+// the first camp to 1 on the summit, is how far along the route the reader is; at rest (no
+// motion, no script or no scroll-driven animation) it is 1 and the route is drawn in full.
+const climb = art.climb;
+const n1 = (v) => String(Math.round(v * 10) / 10);
+const routeD = climb ? climb.pts.map((p, i) => `${i ? "L" : "M"}${n1(p[0])} ${n1(p[1])}`).join("") : "";
+function climbScene(rel) {
+  const { W, H, pad, camps, length } = climb;
+  const summit = camps[camps.length - 1];
+  const layers = climb.bands
+    .map((b) => {
+      const [w, h] = artSize[`climb-${b}`];
+      return `<img class="art climb-l climb-${b}" src="${asset(rel, `art/climb-${b}.svg`)}" alt="" width="${w}" height="${h}" decoding="async">`;
+    })
+    .join("");
+  const marks = camps
+    .map((c, i) => {
+      const s = stageById[c.stage];
+      return `<g transform="translate(${n1(c.x)} ${n1(c.y)})"><g class="cp${s.id === "govern" ? " cp-gov" : ""}" style="--f:${c.f.toFixed(4)}"><g class="cp-i"><rect x="-10" y="-10" width="20" height="20"/><text class="cp-n" dy="0.36em">${s.n}</text><text class="cp-l" y="${i === camps.length - 1 ? 31 : 31}">${esc(s.name.toUpperCase())}</text></g></g></g>`;
+    })
+    .join("");
+  // The guide: a trail blaze (one stripe of vermilion between two of white) on a short staff,
+  // standing where the reader has reached.
+  const blaze = `<g class="mk" style="--route: path('${routeD}')" transform="translate(${n1(summit.x)} ${n1(summit.y)})"><g class="mk-i"><line class="mk-s" x1="0" y1="0" x2="0" y2="-30"/><rect class="mk-w" x="0" y="-34" width="24" height="14"/><rect class="mk-r" x="0" y="-29.5" width="24" height="5"/></g></g>`;
+  return `<div class="climb-scene" aria-hidden="true">
+      <div class="climb-frame" style="--ar:${(W / H).toFixed(4)};--pad:${((H + pad) / H).toFixed(4)}">
+        ${layers}
+        <svg class="climb-svg" viewBox="0 0 ${W} ${H}" focusable="false">
+          <path class="rt-plan" d="${routeD}"/>
+          <path class="rt-walk" d="${routeD}" style="--len:${length.toFixed(1)}"/>
+          ${marks}
+          ${blaze}
+        </svg>
+      </div>
+    </div>`;
+}
+// Scroll-driven: while camp i crosses the reading line, --p runs from camp i's place on the route
+// to camp i + 1's. One keyframe set per leg, generated from the route's geometry.
+function climbKeyframes() {
+  const f = climb.camps.map((c) => c.f);
+  return f
+    .slice(0, -1)
+    .map((a, i) => `@keyframes climb-${i} { from { --p: ${a.toFixed(4)}; } to { --p: ${f[i + 1].toFixed(4)}; } }`)
+    .join("\n");
+}
+
 function renderHome() {
   const rel = "./";
-  // Newest first within a group; file order breaks ties.
-  const takesIn = (g) =>
-    (takes.entries || [])
-      .map((t, i) => ({ t, i }))
-      .filter(({ t }) => t.group === g)
-      .sort((a, b) => b.t.date.localeCompare(a.t.date) || a.i - b.i)
-      .map(({ t }) => t);
   // One sentence per line. The last line ends in the leader that runs out to the trail blaze on the
   // summit beside it (CSS sets the art so the blaze sits on the leader's line).
   const sentences = String(home.thesis).split(/(?<=[.!?])\s+/);
@@ -1058,66 +1160,126 @@ function renderHome() {
         : `<span class="h1-l">${esc(s)}</span>`
     )
     .join(" ");
+  const S = story.home;
+  const margin = (label, say, inner, cls = "") =>
+    say || inner ? `<aside class="mn${cls}" aria-label="${esc(label)}">${say ? `<p class="mn-say">${inline(say)}</p>` : ""}${inner || ""}</aside>` : "";
+  const label = (t) => `<p class="mn-l">${esc(t)}</p>`;
 
-  const who = (home.who || [])
-    .map((w) => `<div><dt>${esc(w.label)}</dt><dd>${inline(w.text)}</dd></div>`)
-    .join("\n      ");
-  const labIndex = takes.groups
-    .map(
-      (g) =>
-        `<li><a href="#${esc(g.id)}"><span class="li-name">${esc(g.name)}</span><span class="li-c">${takesIn(g.id).length}<span class="vh"> notes</span></span></a></li>`
-    )
-    .join("\n      ");
+  // The itinerary: the route card for this page.
+  const total = (takes.entries || []).length;
+  const itinerary = [
+    ["route", S.route.heading, `${stages.length} camps, ${stageRange}`],
+    ["valleys", S.valleys.heading, `${valleys.length} failure modes`],
+    ["gear", S.gear.heading, `${blips.length} items on the radar`],
+    ["log", S.log.heading, `${total} entries, ${notes.length} note${notes.length === 1 ? "" : "s"}`],
+    ["guide", S.guide.heading, home.take?.heading || ""],
+  ]
+    .map(([id, name, note]) => `<li><a href="#${id}"><span class="it-n">${esc(name)}</span><span class="it-m">${esc(note)}</span></a></li>`)
+    .join("\n        ");
 
-  const margin = (label, say, inner) =>
-    say || inner ? `<aside class="mn" aria-label="${esc(label)}">${say ? `<p class="mn-say">${inline(say)}</p>` : ""}${inner || ""}</aside>` : "";
-
-  const positions = (home.take?.positions || [])
-    .map(
-      (p) => `    <li class="pos hm" id="p-${esc(p.id)}">
-      <div class="pos-main">
-        <h3 class="pos-t">${esc(p.title)}</h3>
-        <p>${inline(p.body)}</p>
-      </div>
-      ${margin(`Evidence for: ${p.title}`, p.say, xrefs(p.links, rel))}
-    </li>`
-    )
-    .join("\n");
-
-  const takeEntry = (t) => `          <li class="take" id="take-${esc(t.id)}">
-            <h4 class="tk-t">${esc(t.title)}</h4>
-            <p class="tk-m"><time datetime="${esc(t.date)}">${esc(formatDate(t.date))}</time>${t.confirmed === true ? "" : ' · <span class="tk-draft">Draft</span>'}</p>
-            <p class="tk-b">${inline(t.body)}</p>
-            ${xrefs(t.links, rel)}
-          </li>`;
-  const groups = takes.groups
-    .map((g) => {
-      const list = takesIn(g.id);
-      return `      <section class="lab-g" id="${esc(g.id)}" aria-labelledby="${esc(g.id)}-h">
-        <h3 class="lab-band" id="${esc(g.id)}-h"><span>${esc(g.name)}</span><span class="lb-c">${list.length}<span class="vh"> notes</span></span></h3>
-        <p class="lab-q">${esc(g.caption || "")}</p>
-        ${list.length ? `<ol class="takes">\n${list.map(takeEntry).join("\n")}\n        </ol>` : `<p class="empty">Nothing here yet.</p>`}
-      </section>`;
+  // The route: six camps, each a stretch of the climb.
+  const camps = stages
+    .map((s, i) => {
+      const test = plate.tests?.[s.id];
+      const here = valleys.filter((v) => v.b.stages[0] === s.id);
+      const logged = ["testing", "using"].flatMap((g) => takesIn(g)).filter((t) => takeStage(t) === s.id).slice(0, 2);
+      const pins = notesAt(s.id).map((n) => notePin(n, rel)).join("");
+      const inner =
+        (here.length ? label("Valleys on this stretch") + xrefs(here.map((v) => ({ valley: v.t })), rel) : "") +
+        (logged.length ? label("From the trail log") + xrefs(logged.map((t) => ({ take: t })), rel) : "") +
+        (pins ? `<div class="mn-notes">${pins}</div>` : "");
+      const c = climb?.camps[i];
+      const leg = i < stages.length - 1 ? ` style="view-timeline:--c${i} block"` : "";
+      return `      <li class="camp hm${s.id === "govern" ? " is-govern" : ""}" id="camp-${esc(s.id)}"${c ? ` data-f="${c.f.toFixed(4)}"` : ""}${leg}>
+        <div class="camp-in pos-main">
+          <h3 class="camp-band"><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
+          <p class="camp-q">${esc(s.question)}</p>
+          ${test ? `<p class="camp-test"><b>${esc(test.label)}</b> ${esc(test.text)}</p>` : ""}
+          <p class="camp-go"><a href="${rel}map/#stage-${esc(s.id)}">${esc(S.route.go)}</a> · <a href="${rel}library/#${esc(s.id)}">${primaryAt(s.id).length} sources in the field guide</a></p>
+        </div>
+        ${margin(`On the climb at ${s.name}`, S.route.camps?.[s.id], inner, " camp-in")}
+      </li>`;
     })
     .join("\n");
 
-  const guide = () => {
-    const band = stages
-      .map(
-        (s) =>
-          `<li${s.id === "govern" ? ' class="is-govern"' : ""}><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></li>`
-      )
-      .join("");
-    return `<div class="guide">
-          <div class="mini-ridge" aria-hidden="true">${stages.map((s) => artImg(rel, `stage-${s.id}`, "ridge", { lazy: true })).join("")}</div>
-          <ol class="mini-band" aria-label="The ${stages.length} stages on the map">${band}</ol>
-          <dl class="guide-l">
-            <div><dt><a href="${rel}map/">Map</a></dt><dd>${stages.length} stages, from ${esc(stageRange)}, with ${entries.length} sources pinned where each matters most.</dd></div>
-            <div><dt><a href="${rel}radar/">Radar</a></dt><dd>${blips.length} practices placed from ${esc(ringById.adopt.name)} to ${esc(ringById.hold.name)}, each backed by sources.</dd></div>
-            <div><dt><a href="${rel}library/">Library</a></dt><dd>Every source, with why it matters and what to check.</dd></div>
-          </dl>
-        </div>`;
-  };
+  // The valleys: the failure modes, in the order a team meets them.
+  const valleyList = valleys
+    .map(({ t, b }) => {
+      const where = b.stages.map((id) => stageById[id]);
+      const loc = stages.map((s) => `<i${s.id === b.stages[0] ? ' class="on"' : b.stages.includes(s.id) ? ' class="also"' : ""}></i>`).join("");
+      const links = [...(t.links || []), { take: t, label: "In the trail log" }];
+      return `      <li class="valley hm" id="valley-${esc(t.id)}">
+        <div class="pos-main">
+          <p class="v-where"><span class="v-loc" aria-hidden="true">${loc}</span><span>At ${esc(where[0].name)}${where[1] ? ` <span class="v-also">· also ${esc(where[1].name)}</span>` : ""}</span></p>
+          <h3 class="v-t">${esc(t.title)}</h3>
+          <p>${inline(t.body)}</p>
+        </div>
+        ${margin(`Evidence for: ${t.title}`, "", xrefs(links, rel))}
+      </li>`;
+    })
+    .join("\n");
+
+  // Gear check: the radar's four rings as a packing list.
+  const gear = radar.rings
+    .map((r, ri) => {
+      const list = blips.filter((b) => b.ring === r.id);
+      return `      <li class="gear-r${r.id === "hold" ? " is-hold" : ""}">
+        <div class="gr-h">
+          <h3 class="gr-t">${ringGlyph(ri)}<span class="gr-name">${esc(r.name)}</span><span class="gr-frame">${esc(story.rings[r.id])}</span></h3>
+          <p class="gr-m">${esc(r.meaning)}${r.id === "hold" && S.gear.hold ? ` <a href="#valleys">${esc(S.gear.hold)}</a>` : ""}</p>
+        </div>
+        <ul class="rdots" aria-label="${esc(r.name)}: ${list.length} on the radar">${list
+          .map((b) => {
+            const say = `${b.n}. ${b.name}`;
+            return `<li><a class="rdot" href="${rel}radar/#blip-${esc(b.id)}" title="${esc(say)}"><span aria-hidden="true">${b.n}</span><span class="vh">${esc(say)}</span></a></li>`;
+          })
+          .join("")}</ul>
+      </li>`;
+    })
+    .join("\n");
+
+  // Trail log: the newest entry from the two groups the valleys don't already tell, and the notes.
+  const logCols = ["testing", "using"]
+    .map((gid) => {
+      const g = takes.groups.find((x) => x.id === gid);
+      const list = takesIn(gid);
+      return `      <section class="lab-g" aria-labelledby="x-${esc(gid)}-h">
+        <h3 class="lab-band" id="x-${esc(gid)}-h"><a href="${rel}log/#${esc(gid)}"><span>${esc(g.name)}</span><span class="lb-c">${list.length}<span class="vh"> entries</span></span></a></h3>
+        <p class="lab-q">${esc(g.caption || "")}</p>
+        <ol class="takes">
+${list.slice(0, 1).map((t) => takeEntry(t, rel, { id: false })).join("\n")}
+        </ol>
+      </section>`;
+    })
+    .join("\n");
+  const noteCol = `      <section class="lab-g" aria-labelledby="x-notes-h">
+        <h3 class="lab-band" id="x-notes-h"><a href="${rel}log/#notes"><span>${esc(story.pages.log.notesHeading)}</span><span class="lb-c">${notes.length}<span class="vh"> notes</span></span></a></h3>
+        <p class="lab-q">${esc(story.pages.log.notesIntro)}</p>
+        <ol class="takes">
+${notes
+  .map(
+    (n) => `          <li class="take">
+            ${notePin(n, rel)}
+            <p class="tk-m">${esc(n.dateLabel || formatDate(n.date))} · Charted at ${esc(stageById[n.stage].name)}</p>
+            <p class="tk-b">${esc(n.summary)}</p>
+          </li>`
+  )
+  .join("\n")}
+        </ol>
+      </section>`;
+
+  const who = (home.who || []).map((w) => `<div><dt>${esc(w.label)}</dt><dd>${inline(w.text)}</dd></div>`).join("\n        ");
+  const positions = (home.take?.positions || [])
+    .map(
+      (p) => `      <li class="pos hm" id="p-${esc(p.id)}">
+        <div class="pos-main">
+          <h4 class="pos-t">${esc(p.title)}</h4>
+          <p>${inline(p.body)}</p>
+        </div>
+        ${margin(`Evidence for: ${p.title}`, p.say, xrefs(p.links, rel))}
+      </li>`
+    )
+    .join("\n");
   const chain = (w) =>
     `<figure class="chain">
           <ol>${w.chain
@@ -1129,18 +1291,22 @@ function renderHome() {
           ${w.chainCaption ? `<figcaption>${inline(w.chainCaption)}</figcaption>` : ""}
         </figure>`;
   const work = (home.work?.items || [])
-    .map((w) => {
-      const pins = w.guide ? `<div class="mn-notes">${notes.map((n) => notePin(n, rel)).join("")}</div>` : "";
-      return `    <article class="work hm" id="w-${esc(w.id)}" aria-labelledby="w-${esc(w.id)}-h">
+    .map(
+      (w) => `    <article class="work hm" id="w-${esc(w.id)}" aria-labelledby="w-${esc(w.id)}-h">
       <div class="pos-main">
-        <h3 class="pos-t" id="w-${esc(w.id)}-h">${esc(w.title)}</h3>
+        <h4 class="pos-t" id="w-${esc(w.id)}-h">${esc(w.title)}</h4>
         <p>${inline(w.body)}</p>
-        ${w.chain ? chain(w) : ""}${w.guide ? guide() : ""}
+        ${w.chain ? chain(w) : ""}
       </div>
-      ${margin(`More on ${w.title}`, w.say, pins + xrefs(w.links, rel))}
-    </article>`;
-    })
+      ${margin(`More on ${w.title}`, w.say, xrefs(w.links, rel))}
+    </article>`
+    )
     .join("\n");
+
+  const head = (id, h, cap) => `<div class="sec-head hm">
+      <h2 id="${id}-h">${esc(h)}</h2>
+      ${cap ? `<p class="sec-cap">${inline(fill(cap))}</p>` : ""}
+    </div>`;
 
   const main = `<div class="home">
   <div class="home-head hm has-art">
@@ -1149,58 +1315,81 @@ function renderHome() {
       ${artImg(rel, "home", "art-summit")}
     </div>
     <p class="lede">${inline(home.lede)}</p>
-    <aside class="who" aria-label="Who writes this">
-      <dl>
-      ${who}
-      </dl>
-      <p class="own">${esc(home.own)}</p>
-    </aside>
-    <nav class="lab-index" aria-label="Lab notes">
+    <nav class="itin" aria-label="On this page">
       <ol>
-      ${labIndex}
+        ${itinerary}
       </ol>
     </nav>
   </div>
 
-  <section class="sec" id="take" aria-labelledby="take-h">
-    <div class="sec-head hm">
-      <h2 id="take-h">${esc(home.take?.heading || "My take")}</h2>
-      ${home.take?.intro ? `<p class="sec-cap">${inline(home.take.intro)}</p>` : ""}
+  <section class="sec climb" id="route" aria-labelledby="route-h">
+    ${head("route", S.route.heading, S.route.intro)}
+    <div class="climb-body">
+    ${climb ? climbScene(rel) : ""}
+    <ol class="camps">
+${camps}
+    </ol>
+    </div>
+  </section>
+
+  <section class="sec valleys" id="valleys" aria-labelledby="valleys-h">
+    ${head("valleys", S.valleys.heading, S.valleys.intro)}
+    <ol class="valley-list">
+${valleyList}
+    </ol>
+  </section>
+
+  <section class="sec gear" id="gear" aria-labelledby="gear-h">
+    ${head("gear", S.gear.heading, S.gear.intro)}
+    <ol class="gear-rings">
+${gear}
+    </ol>
+    <p class="sec-go"><a href="${rel}radar/">${esc(S.gear.go)}</a></p>
+  </section>
+
+  <section class="sec log-x" id="log" aria-labelledby="log-h">
+    ${head("log", S.log.heading, S.log.intro)}
+    <div class="lab-plate">
+${logCols}
+${noteCol}
+    </div>
+    <p class="sec-go"><a href="${rel}log/">${esc(S.log.go)}</a> <span class="sec-go-m">· ${total} entries and ${notes.length} note${notes.length === 1 ? "" : "s"}</span></p>
+  </section>
+
+  <section class="sec guide" id="guide" aria-labelledby="guide-h">
+    ${head("guide", S.guide.heading, S.guide.intro)}
+    <div class="sub hm" id="take">
+      <div class="pos-main">
+        <h3 class="sub-t">${esc(home.take?.heading || "How I lead a climb")}</h3>
+        ${home.take?.intro ? `<p class="sub-cap">${inline(home.take.intro)}</p>` : ""}
+      </div>
+      <aside class="who" aria-label="Who writes this">
+        <dl>
+        ${who}
+        </dl>
+        <p class="own">${esc(home.own)}</p>
+      </aside>
     </div>
     <ol class="positions">
 ${positions}
     </ol>
-  </section>
-
-  <section class="sec" id="lab" aria-labelledby="lab-h">
-    <div class="sec-head hm">
-      <h2 id="lab-h">${esc(home.lab?.heading || "Lab notes")}</h2>
-      ${home.lab?.intro ? `<p class="sec-cap">${inline(home.lab.intro)}</p>` : ""}
-    </div>
-    <div class="lab-plate">
-${groups}
-    </div>
-  </section>
-
-  <section class="sec" id="work" aria-labelledby="work-h">
-    <div class="sec-head hm">
-      <h2 id="work-h">${esc(home.work?.heading || "What I build")}</h2>
+    <div class="sub hm" id="work">
+      <div class="pos-main"><h3 class="sub-t">${esc(home.work?.heading || "What I build")}</h3></div>
     </div>
 ${work}
-  </section>
-
-  <section class="sec talk" id="conversations" aria-labelledby="talk-h">
-    <div class="sec-head hm">
-      <div>
-        <h2 id="talk-h">${esc(home.conversations?.heading || "Conversations")}</h2>
+    <div class="talk hm" id="conversations">
+      <div class="pos-main">
+        <h3 class="sub-t">${esc(home.conversations?.heading || "Conversations")}</h3>
         <p class="talk-p">${inline(home.conversations?.body || "")}</p>
       </div>
     </div>
   </section>
 </div>`;
 
-  // Links to the map's old home, /#stage-…, still land on the right column.
-  const legacy = `<script>if (/^#stage-[a-z]+$/.test(location.hash)) location.replace("map/" + location.hash);</script>\n`;
+  // Old links still land: /#stage-… on the route's column, and the lab notes, which moved to the
+  // trail log, on their entries there.
+  const legacy = `<script>(function(h){if(/^#stage-[a-z]+$/.test(h))location.replace("map/"+h);else if(/^#(lab|testing|using|watch|take-[a-z0-9-]+)$/.test(h))location.replace("log/"+h);})(location.hash);</script>\n`;
+  const keyframes = climb ? `<style>\n${climbKeyframes()}\n</style>\n` : "";
   return page({
     rel,
     current: "home",
@@ -1209,17 +1398,98 @@ ${work}
     bodyClass: "is-home",
     main,
     contract: HOME_CONTRACT,
-    head: legacy,
+    head: legacy + keyframes,
+    script: climb ? "climb.js" : "",
+  });
+}
+
+// ---------- Trail log ----------
+const LOG_CONTRACT = `<!--
+THESIS: The trail log is the author's notes from the climb: short dated lab
+  notes in three vermilion columns, then the long notes, each pinned to its
+  camp on the route. Refuses the blog index and the post-card grid.
+OWN-WORLD: The home page's voice: vermilion bands, Jost lettering, system
+  sans reading; ultramarine only where a note points into the reference.
+STORY: Readers see what he is testing, getting better at and would stop,
+  newest first, follow any entry to its evidence, and open a long note.
+FIRST VIEWPORT: Margin line; the light title beside a contour sheet corner
+  with the intro as a standfirst; the three vermilion bands indexing the
+  groups.
+FORM: The home page's former lab plate, moved to its own page (v3).
+-->`;
+
+function renderLog() {
+  const rel = "../";
+  const total = (takes.entries || []).length;
+  const latest = (takes.entries || []).map((t) => t.date).sort().at(-1);
+  const groups = takes.groups
+    .map((g) => {
+      const list = takesIn(g.id);
+      return `      <section class="lab-g" id="${esc(g.id)}" aria-labelledby="${esc(g.id)}-h">
+        <h3 class="lab-band" id="${esc(g.id)}-h"><span>${esc(g.name)}</span><span class="lb-c">${list.length}<span class="vh"> entries</span></span></h3>
+        <p class="lab-q">${esc(g.caption || "")}</p>
+        ${list.length ? `<ol class="takes">\n${list.map((t) => takeEntry(t, rel)).join("\n")}\n        </ol>` : `<p class="empty">Nothing here yet.</p>`}
+      </section>`;
+    })
+    .join("\n");
+  const noteList = notes
+    .map((n) => {
+      const s = stageById[n.stage];
+      return `      <li class="log-n hm" id="${esc(n.id.toLowerCase())}">
+        <div class="pos-main">
+          <p class="tk-m"><span class="x-id">${esc(n.id)}</span> · ${esc(n.status)} · <time datetime="${esc(n.date)}">${esc(n.dateLabel || formatDate(n.date))}</time></p>
+          <h3 class="pos-t"><a href="${rel}notes/${esc(n.slug)}/">${esc(n.title)}</a></h3>
+          <p>${esc(n.summary)}</p>
+        </div>
+        <aside class="mn" aria-label="Where ${esc(n.id)} sits">${notePin(n, rel)}${xrefs([{ stage: s.id }], rel)}</aside>
+      </li>`;
+    })
+    .join("\n");
+
+  const main = `<div class="log">
+  <div class="page-head log-head has-art">
+    ${artImg(rel, "notes", "art-sheet")}
+    <h1>${esc(story.pages.log.title)}</h1>
+    <p class="caption">${inline(home.lab?.intro || "")}</p>
+    <p class="edition">${total} entries${latest ? `, the latest ${esc(formatDate(latest))}` : ""}, shown as Draft until confirmed · <a href="#notes">${notes.length} long note${notes.length === 1 ? "" : "s"}</a></p>
+  </div>
+  <section class="sec log-lab" id="lab" aria-labelledby="lab-h">
+    <h2 id="lab-h" class="vh">${esc(home.lab?.heading || "Lab notes")}</h2>
+    <div class="lab-plate">
+${groups}
+    </div>
+  </section>
+  <section class="sec log-notes" id="notes" aria-labelledby="notes-h">
+    <div class="sec-head hm">
+      <h2 id="notes-h">${esc(story.pages.log.notesHeading)}</h2>
+      <p class="sec-cap">${inline(story.pages.log.notesIntro)}</p>
+    </div>
+    <ol class="log-nl">
+${noteList}
+    </ol>
+  </section>
+</div>`;
+
+  return page({
+    rel,
+    current: "log",
+    title: `${story.pages.log.title} — Rafael Gorski`,
+    description: `Rafael Gorski's trail log: ${total} short, dated notes on what he is testing, using more effectively and would stop before production, and his long notes, each linked to its evidence.`,
+    bodyClass: "is-log",
+    main,
+    contract: LOG_CONTRACT,
   });
 }
 
 await mkdir(site("map"), { recursive: true });
 await mkdir(site("library"), { recursive: true });
 await mkdir(site("radar"), { recursive: true });
+await mkdir(site("log"), { recursive: true });
 await writeFile(site("index.html"), renderHome());
 await writeFile(site("map/index.html"), renderMap());
 await writeFile(site("radar/index.html"), renderRadar());
 await writeFile(site("library/index.html"), renderLibrary());
+await writeFile(site("log/index.html"), renderLog());
 
 // Hand-written pages (about, notes, 404) link the same assets; keep their versions in step.
 async function htmlFiles(dir) {
@@ -1246,8 +1516,8 @@ for (const file of await htmlFiles(site(""))) {
 }
 
 console.log(
-  `Built home, map, radar and library: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
+  `Built home, route (map), radar, field guide (library) and trail log: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
-console.log(`Asset versions: ${["site.css", "radar.js", ...FONTS].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
+console.log(`Asset versions: ${["site.css", "radar.js", "climb.js", ...FONTS].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
 console.log(`Art: ${art.length} SVGs in site/assets/art/, ${(art.reduce((s, a) => s + a.bytes, 0) / 1024).toFixed(1)} KB in all, largest ${art.reduce((m, a) => (a.bytes > m.bytes ? a : m)).name} at ${(Math.max(...art.map((a) => a.bytes)) / 1024).toFixed(1)} KB${art.some((a) => a.changed) ? ` (redrawn: ${art.filter((a) => a.changed).map((a) => a.name).join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));

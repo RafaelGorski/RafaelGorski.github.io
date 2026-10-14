@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About this site — Rafael Gorski</title>
-<meta name="description" content="How this site is put together: the map of launching and scaling AI systems, how sources are chosen and charted, the radar, and the colophon.">
+<meta name="description" content="How this site is put together: the story of the climb, the route of launching and scaling AI systems, how sources are chosen and charted, the radar as a gear check, and the colophon.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=2aa63db4">
+<link rel="stylesheet" href="../assets/site.css?v=0c3af88f">
 <!--
 THESIS: About this site explains the method and the making of the reference,
   not the person. The author speaks for himself on the home page; there is one
@@ -17,8 +17,9 @@ THESIS: About this site explains the method and the making of the reference,
 OWN-WORLD: Atlas plate world: light condensed titles lettered at the summit
   of the page's contour sheet, Jost plate lettering, system sans reading,
   ultramarine key glyphs.
-STORY: The reader learns how stages, sources, fills and radar rings are chosen,
-  how the site is built, and where the author's own take lives.
+STORY: The reader learns the expedition the site tells (camps, valleys, gear
+  check, field guide, trail log, guide), how stages, sources, fills and radar
+  rings are chosen, how the site is built, and where the author's own take lives.
 FIRST VIEWPORT: Title, one-paragraph purpose, then the method.
 FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
 -->
@@ -39,9 +40,10 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
   <a class="name" href="../">Rafael Gorski</a>
   <nav class="site-nav" aria-label="Site">
     <ul>
-      <li><a href="../map/">Map</a></li>
+      <li><a href="../map/">Route</a></li>
       <li><a href="../radar/">Radar</a></li>
-      <li><a href="../library/">Library</a></li>
+      <li><a href="../library/">Field guide</a></li>
+      <li><a href="../log/">Trail log</a></li>
       <li><a href="./" aria-current="page">About</a></li>
     </ul>
   </nav>
@@ -56,12 +58,16 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
 
   <div class="page">
     <div class="prose">
-      <h2 id="the-map">The map</h2>
-      <p>The <a href="../map/">map</a> divides the life of an AI system into six stages, from the first decision to accountable operation: Purpose, Design, Launch, Scale, Operate and Govern. Each stage is defined by the question it has to answer. Govern is drawn last, but it applies from the first decision.</p>
+      <h2 id="the-story">The story</h2>
+      <p>The site tells one expedition. Launching and scaling an AI system is a climb. The six stages are camps on the route, each with a question the team answers before it moves on. The valleys are the failure modes where climbs stall. The radar is the gear check. The field guide is the guidebook, with sources for every stretch, and the trail log is my notes from the climb. I'm the guide: I don't carry the team, I walk the route with it.</p>
+      <p>The metaphor is a frame, not a claim. Every camp, valley and piece of gear on the site names a real decision, failure mode or practice, and links to its evidence. The <a href="../">home page</a> tells the climb from the summit view down to the guide; the other pages are the reference you would carry.</p>
+
+      <h2 id="the-map">The route</h2>
+      <p>The <a href="../map/">route</a> divides the life of an AI system into six stages, from the first decision to accountable operation: Purpose, Design, Launch, Scale, Operate and Govern. Each stage is a camp, defined by the question it has to answer. Govern is drawn last, but it applies from the first decision.</p>
       <p>Notes are written for the people who make those decisions. Each one is grounded in a public engineering standard or specification, explained without jargon, and closed with requirements that can be adopted as written. The aim is guidance an executive can act on and an engineer can check.</p>
 
       <h2 id="the-library">How sources are charted</h2>
-      <p>Every source in the <a href="../library/">library</a> is pinned to the one or two stages where it matters most, the first being where it is drawn on the map. Each carries two lines: why it matters, for the person who decides, and what to check, for the person who builds.</p>
+      <p>Every source in the <a href="../library/">field guide</a> is pinned to the one or two stages where it matters most, the first being where it is drawn on the map. Each carries two lines: why it matters, for the person who decides, and what to check, for the person who builds.</p>
       <dl class="key about-key">
         <div><dt>Shape</dt><dd><ul>
           <li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Rule</b> <span class="k-sub">standards, specifications and regulations</span></span></li>
@@ -77,15 +83,16 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
       <p>Being specific about maturity is part of the guidance. A program built on evolving ground should plan for change rather than discover it.</p>
 
       <h2 id="the-radar">The radar</h2>
-      <p>The <a href="../radar/">radar</a> is a second reading of the same ground. The map says when something matters in the life of an AI system; the radar says how far to rely on it. Each practice sits in one of four rings, from Adopt to Hold, and is backed by sources in the library. The placements are editorial judgement, and each edition marks what moved.</p>
+      <p>The <a href="../radar/">radar</a> is the gear check, a second reading of the same ground. The route says when something matters in the life of an AI system; the radar says how far to rely on it. Each practice sits in one of four rings: Adopt is what to take on the climb, Trial what to test on the approach, Assess what to scout ahead, and Hold what to leave behind. Each is backed by sources in the field guide. The placements are editorial judgement, and each edition marks what moved.</p>
 
       <h2 id="voice">Two voices</h2>
-      <p>The map, the radar and the library are written to be impersonal: they are a reference, and they should read the same whoever opens them. The <a href="../">home page</a> is the opposite. It is my own take on building agents and AI systems, with dated lab notes on what I'm testing and what I'd watch out for. Across the site, vermilion marks my own writing and ultramarine marks the reference.</p>
+      <p>The route, the radar and the field guide are written to be impersonal: they are a reference, and they should read the same whoever opens them. The <a href="../">home page</a> and the <a href="../log/">trail log</a> are the opposite. The home page is my own take on building agents and AI systems, told as the climb, and the trail log keeps my dated notes on what I'm testing and what I'd watch out for. Across the site, vermilion marks my own writing and ultramarine marks the reference.</p>
 
       <h2 id="colophon">Colophon</h2>
       <p>Titles are lettered in Barlow Condensed Light, a slightly rounded condensed grotesk; plate lettering is set in Jost, a geometric typeface in the Futura line. Both are self-hosted under the SIL Open Font License. Reading text uses your system's sans serif. The pages are static HTML generated by a zero-dependency Node script from JSON files, and they read in full without JavaScript. There is no tracking and no request to any third party.</p>
-      <p>The mountains are generative. My surname, Górski, means "of the mountains" in Polish, so a small script draws each part of the site its own summit from a seed: contour lines seen from above behind the page titles and around the radar, and one ridge seen from the side that the map's six stages climb in order. They are drawn once, when the site is built, as plain images.</p>
-      <p>The site was built with coding agents: several sessions working in parallel on sources, design and the radar, each on its own branch, with a build and a link check deciding what gets published. The source is on <a href="https://github.com/RafaelGorski/RafaelGorski.github.io">GitHub</a>.</p>
+      <p>The mountains are generative. My surname, Górski, means "of the mountains" in Polish, so a small script draws each part of the site its own summit from a seed: contour lines seen from above behind the page titles and around the radar, and one ridge seen from the side that the route's six stages climb in order. They are drawn once, when the site is built, as plain images.</p>
+      <p>On the home page the same ridge becomes a panorama. As you read down the six camps, the route draws itself up the ridge, each camp appears as you reach it, the trail blaze climbs with you and the nearer slopes settle slightly. It moves only when you scroll. With reduced motion turned on, or without JavaScript and scroll-driven animation, the route is shown fully drawn.</p>
+      <p>The site was built with coding agents: several sessions working in parallel on sources, design, the radar and the story, each on its own branch, with a build and a link check deciding what gets published. The source is on <a href="https://github.com/RafaelGorski/RafaelGorski.github.io">GitHub</a>.</p>
       <p>To get in touch, see <a href="../#conversations">Conversations</a> on the home page. Views here are my own, not my employer's.</p>
     </div>
   </div>
@@ -93,7 +100,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate); seed 01706d71.
 
 <footer class="foot">
   <p>© 2026 Rafael Gorski. Views are my own, not my employer's.</p>
-  <p><a href="../map/">Back to the map</a></p>
+  <p><a href="../map/">Back to the route</a></p>
 </footer>
 </body>
 </html>

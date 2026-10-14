@@ -1,11 +1,14 @@
 # rafaelgorski.com
 
-Rafael Gorski's personal site. The home page is his own take on building agents and AI systems,
-with dated lab notes. Behind it sits a field guide: a map of launching and scaling AI systems, from
-Purpose to Govern, with original notes and curated sources pinned to the stage where each matters,
-and a radar that places techniques, platforms, measures and governance practices from Adopt to
-Hold. The site is static HTML served by GitHub Pages. A zero-dependency Node script generates the
-home page, the map, the radar and the library from JSON.
+Rafael Gorski's personal site, told as one climb: launching and scaling an AI system is a climb.
+The home page is his own take, from the summit view down the route: six camps from Purpose to
+Govern, the valleys where climbs stall, a gear check, an excerpt of his trail log and the guide.
+Behind it sit the reference pages: the route (`/map/`), with original notes and curated sources
+pinned to the stage where each matters; the radar, the gear check that places techniques,
+platforms, measures and governance practices from Adopt to Hold; and the field guide
+(`/library/`). The trail log (`/log/`) keeps his dated notes. The site is static HTML served by
+GitHub Pages. A zero-dependency Node script generates the home page, the route, the radar, the
+field guide and the trail log from JSON.
 
 ## Layout
 
@@ -16,12 +19,15 @@ content/                       curated data (owned by curation; do not edit from
   radar.json                   radar edition: quadrants, rings and blips
 site-data/                     site copy
   home.json                    home page: thesis, lede, who, positions, work, conversations
-  takes.json                   home page lab notes (Testing now, Using more effectively, Watch out for)
-  plate.json                   map title, caption, per-stage tests, short titles
+  story.json                   the story: menu labels, the home page's section headings, intros and
+                               camp remarks, the radar's ring framing, page titles and intros
+  takes.json                   lab notes (Testing now, Using more effectively, Watch out for), shown
+                               in the trail log and drawn on by the home page
+  plate.json                   route title, caption, per-stage tests, short titles
   notes.json                   notes registry: id, stage, title, status
   art.json                     seeds and settings for the mountain art
 scripts/
-  build.mjs                    renders site/index.html, site/map/, site/radar/ and site/library/
+  build.mjs                    renders site/index.html, site/map/, site/radar/, site/library/ and site/log/
   art.mjs                      draws the mountain art (Contour Lineage) as SVG; build.mjs runs it
   check-links.mjs              fails if any internal link or #fragment does not resolve
 art/                           design tools for the mountain art (not published)
@@ -29,13 +35,15 @@ art/                           design tools for the mountain art (not published)
   viewer.html                  p5.js seed explorer (open it in a browser)
 site/                          published root
   index.html                   the home page (generated)
-  map/index.html               the map (generated)
-  radar/index.html             the radar (generated)
-  library/index.html           the library (generated)
+  map/index.html               the route (generated; menu label "Route")
+  radar/index.html             the radar, the gear check (generated)
+  library/index.html           the field guide (generated; menu label "Field guide")
+  log/index.html               the trail log (generated)
   notes/<slug>/index.html      one folder per note (hand-written)
   about/index.html             about this site: method and colophon (hand-written)
   assets/site.css              the whole design system
   assets/radar.js              radar hover and focus linking (progressive enhancement only)
+  assets/climb.js              the home page's route where scroll-driven CSS is unsupported (progressive enhancement only)
   assets/art/                  the mountain art, one SVG per area and stage (generated)
   assets/fonts/                self-hosted fonts (OFL): Barlow Condensed Light for titles, Jost for lettering
   404.html
@@ -60,7 +68,7 @@ python -m http.server 8000 --directory site
 Then open <http://localhost:8000>. The generated pages are committed, so the site also previews
 without running the build.
 
-The build also stamps every link to `assets/site.css`, `assets/radar.js`, the art in
+The build also stamps every link to `assets/site.css`, `assets/radar.js`, `assets/climb.js`, the art in
 `assets/art/` and the two fonts in `assets/fonts/` with a short content hash
 (`site.css?v=1a2b3c4d`), in generated and hand-written pages alike. It writes the fonts' hashes into
 the `@font-face` URLs in `site.css` too, so a font's preload and its request stay one fetch.
@@ -79,10 +87,13 @@ font. The 404 page links the title font from the domain root, like its other ass
 
 Górski means "of the mountains", so each part of the site carries its own generative summit:
 contour lines seen from above behind the page heads, an apron of slopes around the radar disc, and
-one ridge seen from the side that the six stages climb in order, above the map's stage columns and
-the library's stage index. `scripts/art.mjs` draws them
+one ridge seen from the side that the six stages climb in order, above the route's stage columns
+and the field guide's stage index. On the home page the same ridge is one panorama that the route
+climbs. `scripts/art.mjs` draws them
 as static SVG into `site/assets/art/` (one file per area: `home`, `map`, `radar`, `library`,
-`notes`, `about`, `404`, and `stage-<id>` for each stage). The build runs it first, so CI always
+`notes`, `about`, `404`, `stage-<id>` for each stage, and `climb-far`, `climb-mid` and
+`climb-near` for the home page's panorama). It also computes the route up the panorama and where
+its camps stand; the build draws those inline. The build runs it first, so CI always
 redraws them; it is deterministic, so the same seed gives the same file. Run it alone with
 `node scripts/art.mjs` to print each file's size.
 
@@ -97,7 +108,7 @@ To change the art:
 3. Run `node scripts/build.mjs` and `node scripts/check-links.mjs`.
 
 Where the art appears and the rules it keeps (never behind data, never darker than ultramarine
-pale, still, hidden in print) are in `DESIGN.md` under Mountain art. The algorithm's philosophy and
+pale, still except the home page's climb, hidden in print) are in `DESIGN.md` under Mountain art. The algorithm's philosophy and
 its hidden parameters are in `art/philosophy.md`. A new note can reuse `assets/art/notes.svg`, or
 add its own entry to `site-data/art.json` and point its head image at that file.
 
@@ -117,10 +128,36 @@ When ready to serve from `rafaelgorski.com`:
    (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and `www` as a
    `CNAME` to `rafaelgorski.github.io`.
 
-## Editing the home page
+## The story
 
-The home page at `/` is generated from two files in `site-data/`. Run `node scripts/build.mjs`
-after editing either, then `node scripts/check-links.mjs`.
+The site is one expedition. The six stages are camps on the route, the valleys are the failure
+modes (each "Watch out for" lab note with the Hold blip it links to), the radar is the gear check,
+the library is the field guide, the lab notes and long notes are the trail log, and the author is
+the guide. The menu reads Route, Radar, Field guide, Trail log, About; the addresses (`map/`,
+`radar/`, `library/`, `log/`, `about/`) are stable.
+
+The story's own copy is in `site-data/story.json`: the menu labels, the home page's section
+headings and intros, one remark per camp (`home.route.camps.<stage-id>`), the radar's ring framing
+(`rings`), and the radar, field guide and trail log titles and intros. `{blips}`, `{sources}`,
+`{entries}` and `{notes}` are filled in by the build. The route page's title and caption are in
+`site-data/plate.json`.
+
+### The route on the home page
+
+As the reader moves down the six camps, the route draws itself up the panorama, each camp appears
+as the route reaches it, the trail blaze climbs, and the nearer ridges settle a little. It is CSS
+(scroll-driven animation on the camps' view timelines) where the browser supports it, and
+`assets/climb.js` elsewhere. With reduced motion, without JavaScript or without either, the route
+is shown drawn in full with the blaze on the summit. The route's line and camp positions come from
+`scripts/art.mjs` (`climb` in `site-data/art.json`); the build writes the per-camp keyframes into
+the home page's head.
+
+## Editing the home page and the trail log
+
+The home page at `/` is generated from `site-data/home.json`, `site-data/story.json` and
+`site-data/takes.json`; the trail log at `/log/` from `site-data/takes.json` and
+`site-data/notes.json`. Run `node scripts/build.mjs` after editing any of them, then
+`node scripts/check-links.mjs`.
 
 ### Lab notes: `site-data/takes.json`
 
@@ -151,7 +188,9 @@ after editing either, then `node scripts/check-links.mjs`.
 }
 ```
 
-- To add a note, add an entry. Within a group, entries are shown newest first by `date`
+- To add a note, add an entry. It appears in the trail log; the newest Testing now and Using more
+  effectively entries also appear on the home page, and every Watch out for entry that links to a
+  Hold blip becomes one of the home page's valleys. Within a group, entries are shown newest first by `date`
   (`YYYY-MM-DD` or `YYYY-MM`), then in file order.
 - `group` is `testing`, `using` or `watch`. The group ids and their order are fixed; names and
   captions can change.
@@ -169,11 +208,13 @@ resolve, or a body runs over 50 words.
 ### Take, work and contact: `site-data/home.json`
 
 - `thesis` is the page's h1. Each sentence goes on its own line.
-- `lede`, `who` (the label and text rows beside the lede) and `own` (the "views are my own" line).
+- `lede` (the guide framing under the thesis), `who` (the label and text rows in The guide) and
+  `own` (the "views are my own" line).
 - `take.positions`: each has an `id`, a `title`, a `body` (aim for 80 words or fewer), an optional
   `say` (a short remark in the margin, set in vermilion) and `links` in the same form as lab notes.
-- `work.items`: Problem-Based SRS (with its trace `chain`) and the field guide (`"guide": true`
-  draws the stage band and the counts).
+- `take.heading` is "How I lead a climb"; `take.positions` are his principles, in The guide.
+- `work.items`: Problem-Based SRS (with its trace `chain`).
+- `lab.heading` and `lab.intro` head the trail log.
 - `conversations.body`: the one sentence about getting in touch. Keep it to an invitation to talk;
   the site does not list services, prices or availability.
 
@@ -186,8 +227,8 @@ Any text in `home.json` may carry `[text](url)` links. Internal links are relati
 2. Give the note the next ID (`GN-0002`), and set its stage in the locator band (the
    `aria-current="location"` segment) and in the "Charted at" aside.
 3. Add it to `site-data/notes.json` with the same stage, then run `node scripts/build.mjs`. The
-   note appears as a vermilion block on the map, in that stage's library section and beside the
-   field guide on the home page. Lab notes in `site-data/takes.json` can link to it as
+   note appears in the trail log, as a vermilion block on the route, in that stage's field-guide
+   section and at its camp on the home page. Lab notes in `site-data/takes.json` can link to it as
    `{ "note": "GN-0002" }`.
 4. Link to the map as `../../map/` from a note, never `../../`: the home page is not the map. The
    link check fails on a link whose text names the map but lands on the home page.
@@ -238,8 +279,10 @@ Every library entry cited by a blip shows "On the radar", each library stage sec
 blips charted at that stage, and each map column ends with their numbered discs. Blips link back
 to their evidence in the library and to their stages on the map (`map/#stage-<id>`).
 
-## The map's address
+## Addresses that moved
 
-The map moved from `/` to `/map/` when the home page arrived. Old links to `/#stage-<id>` are
-forwarded to `map/#stage-<id>` by one inline line of script on the home page; everything else on
-the home page reads without JavaScript.
+The map (now the route) moved from `/` to `/map/` when the home page arrived, and the lab notes
+moved from the home page to the trail log in v3. One inline line of script on the home page forwards
+the old links: `/#stage-<id>` to `map/#stage-<id>`, and `/#lab`, `/#testing`, `/#using`,
+`/#watch` and `/#take-<id>` to the same anchor in `log/`. Everything else on the home page reads
+without JavaScript.
