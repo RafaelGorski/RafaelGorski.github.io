@@ -1124,7 +1124,8 @@ function climbScene(rel) {
     })
     .join("");
   // The guide: a trail blaze (one stripe of vermilion between two of white) on a short staff,
-  // standing where the reader has reached.
+  // standing where the reader has reached. It is drawn before the camps, so at a camp the camp's
+  // square covers the foot of the staff.
   const blaze = `<g class="mk" style="--route: path('${routeD}')" transform="translate(${n1(summit.x)} ${n1(summit.y)})"><g class="mk-i"><line class="mk-s" x1="0" y1="0" x2="0" y2="-30"/><rect class="mk-w" x="0" y="-34" width="24" height="14"/><rect class="mk-r" x="0" y="-29.5" width="24" height="5"/></g></g>`;
   return `<div class="climb-scene" aria-hidden="true">
       <div class="climb-frame" style="--ar:${(W / H).toFixed(4)};--pad:${((H + pad) / H).toFixed(4)}">
@@ -1132,8 +1133,8 @@ function climbScene(rel) {
         <svg class="climb-svg" viewBox="0 0 ${W} ${H}" focusable="false">
           <path class="rt-plan" d="${routeD}"/>
           <path class="rt-walk" d="${routeD}" style="--len:${length.toFixed(1)}"/>
-          ${marks}
           ${blaze}
+          ${marks}
         </svg>
       </div>
     </div>`;
