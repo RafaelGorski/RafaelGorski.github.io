@@ -1122,8 +1122,6 @@ code {
   --k: 2;
   padding: var(--top) 0 0;
   row-gap: 1.6rem;
-  /* The panorama ends with the head: it never runs on behind the sections below. */
-  clip-path: inset(-6rem -100vw -0.75rem);
 }
 .summit { grid-column: 1 / -1; position: relative; timeline-scope: --climb; }
 .is-home h1 {
@@ -1141,7 +1139,7 @@ code {
   .h1-last { display: flex; align-items: flex-end; }
   .h1-t { flex: 0 1 auto; min-width: 0; }
   .leader { flex: 1 0 1.25rem; height: 0; margin: 0 0 var(--lead-y) 0.3em; border-top: 1px solid var(--ink); }
-  .climb-scene {
+  .climb-scene, .climb-points {
     position: absolute; z-index: -1;
     left: calc((1 - var(--pw)) * 100cqi);
     top: calc(100% - var(--lead-y) - var(--sy) * var(--pw) * 100cqi);
@@ -1400,26 +1398,31 @@ code {
   stroke-dasharray: calc(var(--len) * 1px) calc(var(--len) * 1px);
   stroke-dashoffset: calc((1 - var(--p, 1)) * var(--len) * 1px);
 }
-/* A camp appears, and settles a few units, as the route reaches it. */
-.cp {
-  opacity: clamp(0, (var(--p, 1) - var(--f)) * 40 + 1, 1);
-  transform: translateY(calc(clamp(0, (var(--f) - var(--p, 1)) * 40, 1) * 7px));
-}
+/* A camp ahead is an open square; it fills as the route reaches it. The camp in hand is ringed. */
+.cp-f { opacity: clamp(0, (var(--p, 1) - var(--f)) * 40 + 1, 1); }
 .cp-i { transform: scale(var(--k)); }
 .mk-i { transform: scale(var(--km, var(--k))); }
-.cp rect { fill: var(--ultra); stroke: var(--paper); stroke-width: 1.5px; }
-.cp-gov rect { fill: var(--ink); }
-.cp-n { fill: #fff; font-size: 12.5px; font-weight: 600; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.cp-o rect { fill: var(--paper); stroke: var(--ultra); stroke-width: 1.5px; }
+.cp-f rect { fill: var(--ultra); stroke: var(--paper); stroke-width: 1.5px; }
+.cp-gov .cp-o rect { stroke: var(--ink); }
+.cp-gov .cp-f rect { fill: var(--ink); }
+.cp-o text, .cp-f text { font-size: 12.5px; font-weight: 600; text-anchor: middle; font-variant-numeric: tabular-nums; }
+.cp-o text { fill: var(--ultra); }
+.cp-gov .cp-o text { fill: var(--ink); }
+.cp-f text { fill: #fff; }
+.cp.is-on rect { stroke: var(--ink); stroke-width: 2.5px; }
 .cp-l {
   fill: var(--ink); font-size: 13.5px; font-weight: 600; letter-spacing: 0.08em; text-anchor: middle;
   paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round;
 }
-/* The guide: a trail blaze on a staff, standing where the reader has reached. */
+/* The guide: a trail blaze on a staff, standing where the reader has reached. --b, when set, moves
+   the blaze alone (with reduced motion, pointing at a camp moves the blaze and leaves the route
+   drawn). */
 .mk-s { stroke: var(--ink); stroke-width: 1.5px; }
 .mk-w { fill: #fff; stroke: var(--ink); stroke-width: 1px; }
 .mk-r { fill: var(--red); }
 @supports (offset-path: path("M0 0")) {
-  .mk { offset-path: var(--route); offset-distance: calc(var(--p, 1) * 100%); offset-rotate: 0deg; transform: none; }
+  .mk { offset-path: var(--route); offset-distance: calc(var(--b, var(--p, 1)) * 100%); offset-rotate: 0deg; transform: none; }
 }
 
 @supports (animation-timeline: view()) {
@@ -1438,6 +1441,7 @@ code {
   .home-head { --k: 2.8; --km: 2.1; }
   .climb-track { display: none; }
   .climb-scene { margin-top: 1.6rem; }
+  .climb-points { display: none; }
   .cp-l { display: none; }
 }
 
@@ -1453,11 +1457,11 @@ code {
 .camp:target { background: var(--ultra-tint); box-shadow: -0.75rem 0 0 var(--ultra-tint), 0.75rem 0 0 var(--ultra-tint); }
 @media (min-width: 40rem) {
   .camp { grid-template-columns: 10.5rem minmax(0, 1fr); align-items: baseline; }
-  .camp-band { grid-row: 1 / span 3; }
+  .route-x .camp-band { grid-row: 1 / span 3; }
 }
 @media (min-width: 64rem) {
   .camp { grid-template-columns: 10.5rem minmax(0, 1fr) minmax(0, 1.15fr) 12.5rem; }
-  .camp-band { grid-row: auto; }
+  .route-x .camp-band { grid-row: auto; }
   /* In its own column the two links stand one per line. */
   .camp-go { display: grid; justify-items: start; }
   .camp-go > span { display: none; }
@@ -1492,6 +1496,69 @@ code {
   color: var(--red);
 }
 .camp-go { margin: 0; font-family: var(--letter); font-weight: 500; font-size: 0.88rem; line-height: 1.45; }
+/* In the list the callout's parts are cells of the row, and its name repeats the band. */
+.camp-c { display: contents; }
+.camp-n { display: none; }
+
+/* ---------- With climb.js: the camps on the title's panorama ----------
+   The list moves onto .climb-points, laid exactly over the drawing. Each camp's link is a 2.75rem
+   target on its point, over the camp's square; the rest of the camp is its callout, a paper label
+   on a hairline leader, opened by pointing at the camp, moving along the drawing, focusing it or
+   tapping it. The callouts stay in the accessibility tree (opacity, never display or visibility),
+   so every camp reads in order without pointing. The layer lets the pointer through except on the
+   targets and the open callout. */
+.climb-points { z-index: 1; aspect-ratio: var(--ar); pointer-events: none; --fw: calc(var(--pw) * 100cqi); }
+.climb-points .camps { margin: 0; }
+.climb-points .camp {
+  position: absolute; left: calc(var(--x) * 100%); top: calc(var(--y) * 100%);
+  display: block; width: 0; height: 0; padding: 0; border: 0;
+}
+.climb-points .camp.is-on { z-index: 2; }
+.climb-points .camp-band { position: absolute; left: -1.375rem; top: -1.375rem; display: block; }
+.climb-points .camp-band a, .climb-points .is-govern .camp-band a {
+  display: block; width: 2.75rem; height: 2.75rem; padding: 0;
+  background: transparent; color: transparent; overflow: hidden; white-space: nowrap;
+  pointer-events: auto;
+}
+.climb-points .camp-band a:hover { background: transparent; }
+.climb-points .camp-band a .band-n { color: transparent; }
+.climb-points .camp-band a:focus-visible { outline: 2px solid var(--ink); outline-offset: -0.6rem; }
+.climb-points .camp-c {
+  --cw: min(19rem, var(--fw));
+  --cl: clamp(-1 * var(--x) * var(--fw), -0.5 * var(--cw), (1 - var(--x)) * var(--fw) - var(--cw));
+  position: absolute; left: var(--cl); top: 1.65rem; width: var(--cw);
+  display: grid; gap: 0.4rem;
+  padding: 0.6rem 0.8rem 0.75rem;
+  background: var(--paper);
+  border: 1px solid var(--rule); border-top: 2px solid var(--ink);
+  opacity: 0; transform: translateY(0.3rem);
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.climb-points .camp.is-on .camp-c { opacity: 1; transform: none; pointer-events: auto; transition-duration: 0.26s; }
+/* The summit's callout hangs from its label, clear of the leader. */
+.climb-points .is-govern .camp-c { top: 2.6rem; }
+.climb-points .is-govern .camp-c::before { top: calc(-2.6rem + 0.7rem); height: calc(2.6rem - 0.7rem - 2px); }
+/* The leader: a hairline from the camp's square down to its callout. */
+.climb-points .camp-c::before {
+  content: ""; position: absolute;
+  left: calc(-1 * var(--cl) - 1px); top: calc(-1.65rem + 0.7rem); height: calc(1.65rem - 0.7rem - 2px);
+  border-left: 1px solid var(--ink);
+}
+.climb-points .camp-n {
+  display: flex; align-items: baseline; gap: 0.45rem; margin: 0;
+  font-family: var(--letter); font-weight: 600; font-size: 0.8rem; line-height: 1.2;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--ultra);
+}
+.climb-points .camp-n .band-n { color: var(--ink-2); }
+.climb-points .is-govern .camp-n { color: var(--ink); }
+.climb-points .camp-q { font-size: 1.02rem; text-wrap: balance; }
+.climb-points .camp-say { font-size: 0.92rem; }
+.climb-points .camp-go { display: grid; justify-items: start; font-size: 0.86rem; }
+.climb-points .camp-go > span { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .climb-points .camp-c { transition: none; transform: none; }
+}
 
 /* ---------- Home: the valleys ---------- */
 .valley-list { list-style: none; margin: 0; padding: 0; }
@@ -1661,13 +1728,13 @@ code {
 @media (forced-colors: active) {
   .band, .note-pin, .stage-index a, .locator a, .n-chip, .tag, .lab-band, .camp-band a { border: 1px solid CanvasText; }
   .k-note, .x-sq, .x-v, .v-loc i { border: 1px solid CanvasText; }
-  .art, .climb-scene { display: none; }
+  .art, .climb-scene, .climb-points .camp-c::before { display: none; }
   .leader, .radar-head h1::before { display: none; }
   h1, .sec-head h2, .ls-head h2, .prose h2 { color: CanvasText; }
 }
 
 @media print {
-  .skip, .site-nav, .stage-index, .art, .climb-scene, .itin { display: none; }
+  .skip, .site-nav, .stage-index, .art, .climb-scene, .climb-points, .itin { display: none; }
   .band, .stage-index a, .note-pin, .lab-band, .camp-band a, .v-loc i { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .camp { break-inside: avoid; }
   .summit { margin-bottom: 0; }

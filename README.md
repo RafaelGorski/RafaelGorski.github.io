@@ -146,12 +146,17 @@ headings and intros, one remark per camp (`home.route.camps.<stage-id>`), the ra
 
 The route's panorama is the ground of the home page's title: the thesis's leader runs to its
 summit. As the reader scrolls down from the title, the route draws itself up the ridge, each camp
-appears as the route reaches it, the trail blaze climbs to the summit and the nearer ridges settle
-a little; it is done by the time the panorama reaches the top of the screen. It is CSS
-(scroll-driven animation on one view timeline) where the browser supports it, and
-`assets/climb.js` elsewhere. On phones, with reduced motion, without JavaScript or without either,
-the route is shown drawn in full with the blaze on the summit. The six camps follow as a compact
-list. The route's line and camp positions come from `scripts/art.mjs` (`climb` in
+fills as the route reaches it, the trail blaze climbs to the summit and the nearer ridges settle a
+little; it is done by the time the panorama reaches the top of the screen. It is CSS (scroll-driven
+animation on one view timeline) where the browser supports it, and `assets/climb.js` elsewhere.
+
+The six camps are points on the panorama. Pointing at one (or moving along the drawing, which snaps
+to the nearest), focusing it with the keyboard or tapping it walks the blaze along the route to that
+camp, draws the route up to it and opens its callout: the question, the camp's remark from
+`site-data/story.json` and links to its stretch of the route and its field-guide sources. Leaving
+returns the climb to where the scroll puts it. The camps are a real ordered list (`#camps`) that
+`climb.js` moves onto the panorama; without JavaScript, and on phones, it stays a compact list under
+the title. With reduced motion the blaze jumps and the route stays drawn. The route's line and camp positions come from `scripts/art.mjs` (`climb` in
 `site-data/art.json`).
 
 ## Editing the home page and the trail log

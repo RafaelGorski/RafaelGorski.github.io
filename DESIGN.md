@@ -483,10 +483,29 @@ valleys, Gear check, Trail log, The guide.
   without either engine, the route is drawn in full, every camp shows and the blaze stands on the
   summit at the end of the leader. Nothing loops or autoplays; the scroll is never taken over and
   no reading space is spent on it. Print and forced colours drop the panorama.
-- **The route (camps):** six compact rows, read across from 64rem: the camp band (the stage band as
-  a sign, linking to the stage on the route), the stage question in Jost, his remark in vermilion,
-  and the stretch on the route and its sources in the field guide. Below 64rem the band leads and
-  the rest stacks beside or under it.
+- **The camps, on the panorama:** from 40rem, with JavaScript, the six camps are points on the
+  title's panorama, not a section of their own. `climb.js` moves the camps' ordered list
+  (`#camps`) onto `.climb-points`, a layer laid exactly over the drawing. Each camp's link (to its
+  stage on the route) is a 2.75rem target over its square. The rest of the camp is its **callout**:
+  a paper label on a 2px ink rule with a hairline leader up to the camp. It holds the number and
+  name, the question in Jost, his camp line in vermilion, and "This stretch on the route" and its
+  field-guide sources. Callouts stay in the accessibility tree (opacity only), so every camp reads
+  in order without pointing.
+- **The animation follows the pointer.** Pointing at a camp, or moving along the drawing (which
+  snaps to the nearest camp), takes that camp in hand. The blaze walks the route to it, the route is
+  drawn solid up to it (a 260–800ms decelerating ease with no overshoot, on `--p`), its square is
+  ringed in ink and its callout opens. Leaving the drawing glides back to where the scroll puts the
+  climb. Camps ahead of the climber are open squares; they fill as the route reaches them.
+  Keyboard focus does the same: Tab reaches each camp's link, then its callout's two links; Enter
+  follows the focused link; Escape lets go. On touch the first tap opens a camp, the links in its
+  callout go on, a second tap on the camp follows its link, and a tap elsewhere lets go. With
+  reduced motion the blaze jumps to the camp (`--b`, the blaze's own place) and the route stays
+  drawn in full.
+- **Fallback list:** without JavaScript, and on phones, the camps are a compact list under the
+  title in their own section (The route), one row each and read across from 64rem: the camp band,
+  the question, his remark, and the two links. Below 64rem the band leads and the rest stacks
+  beside or under it. With the script on wider screens that section is hidden, so the title section
+  never grows and the page is shorter.
 - **The valleys:** each "Watch out for" lab note paired with the Hold blip it links to, in the order a
   team meets them (the blip's first stage, then file order). Each is a `.hm` row: a locator (the
   six stages as a strip, the valley's stage in vermilion and a second stage outlined in it) with

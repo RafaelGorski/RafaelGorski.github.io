@@ -1029,9 +1029,12 @@ FIRST VIEWPORT: Margin line; the thesis as a two-line light h1, its last line
 FORM: Owner-specified scroll story (v3 brief: the climb), built on the
   annotated page (grounded structure 5 of 7, seed a1f6f0ec); no new roll.
 MOTION: One authored moment. As the title scrolls away, the route draws up
-  the ridge behind it, each camp appears as the route reaches it, the blaze
+  the ridge behind it, each camp fills as the route reaches it, the blaze
   climbs to the summit the title names, and the nearer ridges settle a few
-  percent; it is done while the summit is still on screen. Scroll-driven CSS
+  percent; it is done while the summit is still on screen. The camps are
+  points on the panorama: pointing, focusing or tapping one walks the blaze to
+  it (eased, no bounce) and opens its callout; letting go returns to the
+  scroll. Scroll-driven CSS
   (one registered number, --p) with a small first-party fallback
   (assets/climb.js). Phones, reduced motion, no JS or no support: drawn in full.
 -->`;
@@ -1107,30 +1110,35 @@ function climbScene(rel) {
   const layers = climb.bands
     .map((b) => {
       const [w, h] = artSize[`climb-${b}`];
-      return `<img class="art climb-l climb-${b}" src="${asset(rel, `art/climb-${b}.svg`)}" alt="" width="${w}" height="${h}" decoding="async">`;
+      return `<img class="art climb-l climb-${b}" src="${asset(rel, `art/climb-${b}.svg`)}" alt="" aria-hidden="true" width="${w}" height="${h}" decoding="async">`;
     })
     .join("");
+  // Each camp: an open square (the camp ahead), a solid one laid over it once the route reaches it,
+  // and its name beneath.
   const marks = camps
-    .map((c, i) => {
+    .map((c) => {
       const s = stageById[c.stage];
-      return `<g transform="translate(${n1(c.x)} ${n1(c.y)})"><g class="cp${s.id === "govern" ? " cp-gov" : ""}" style="--f:${c.f.toFixed(4)}"><g class="cp-i"><rect x="-10" y="-10" width="20" height="20"/><text class="cp-n" dy="0.36em">${s.n}</text><text class="cp-l" y="${i === camps.length - 1 ? 31 : 31}">${esc(s.name.toUpperCase())}</text></g></g></g>`;
+      return `<g transform="translate(${n1(c.x)} ${n1(c.y)})"><g class="cp${s.id === "govern" ? " cp-gov" : ""}" data-camp="${esc(s.id)}" style="--f:${c.f.toFixed(4)}"><g class="cp-i"><g class="cp-o"><rect x="-9.25" y="-9.25" width="18.5" height="18.5"/><text dy="0.36em">${s.n}</text></g><g class="cp-f"><rect x="-10" y="-10" width="20" height="20"/><text dy="0.36em">${s.n}</text></g><text class="cp-l" y="31">${esc(s.name.toUpperCase())}</text></g></g></g>`;
     })
     .join("");
   // The guide: a trail blaze (one stripe of vermilion between two of white) on a short staff,
   // standing where the reader has reached. It is drawn before the camps, so at a camp the camp's
   // square covers the foot of the staff.
   const blaze = `<g class="mk" style="--route: path('${routeD}')" transform="translate(${n1(summit.x)} ${n1(summit.y)})"><g class="mk-i"><line class="mk-s" x1="0" y1="0" x2="0" y2="-30"/><rect class="mk-w" x="0" y="-34" width="24" height="14"/><rect class="mk-r" x="0" y="-29.5" width="24" height="5"/></g></g>`;
+  // The drawing is decorative. With climb.js the six camps (the list under the title, #camps) move
+  // into .climb-points, a layer laid exactly over it, where each camp's link stands on its point.
   return `<div class="climb-scene" aria-hidden="true">
       <div class="climb-frame" style="--pad:${((H + pad) / H).toFixed(4)}">
         ${layers}
-        <svg class="climb-svg" viewBox="0 0 ${W} ${H}" focusable="false">
+        <svg class="climb-svg" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">
           <path class="rt-plan" d="${routeD}"/>
           <path class="rt-walk" d="${routeD}" style="--len:${length.toFixed(1)}"/>
           ${blaze}
           ${marks}
         </svg>
       </div>
-    </div>`;
+    </div>
+      <div class="climb-points"></div>`;
 }
 
 function renderHome() {
@@ -1152,7 +1160,7 @@ function renderHome() {
   // The itinerary: the route card for this page.
   const total = (takes.entries || []).length;
   const itinerary = [
-    ["route", S.route.heading, `${stages.length} camps, ${stageRange}`],
+    ["camps", S.route.heading, `${stages.length} camps, ${stageRange}`],
     ["valleys", S.valleys.heading, `${valleys.length} failure modes`],
     ["gear", S.gear.heading, `${blips.length} items on the radar`],
     ["log", S.log.heading, `${total} entries, ${notes.length} note${notes.length === 1 ? "" : "s"}`],
@@ -1161,17 +1169,24 @@ function renderHome() {
     .map(([id, name, note]) => `<li><a href="#${id}"><span class="it-n">${esc(name)}</span><span class="it-m">${esc(note)}</span></a></li>`)
     .join("\n        ");
 
-  // The route: six camps, one row each, read across: the camp, its question, the guide's remark,
-  // and where to go next. The climb itself is drawn behind the title.
+  // The route: the six camps. Without the script they are a compact list under the title, one row
+  // each: the camp, its question, the guide's remark and where to go next. climb.js moves the list
+  // onto the title's panorama, where each camp's link stands on its point (--x, --y, shares of the
+  // drawing) and the rest becomes its callout.
   const camps = stages
-    .map(
-      (s) => `      <li class="camp${s.id === "govern" ? " is-govern" : ""}" id="camp-${esc(s.id)}">
-        <h3 class="camp-band"><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
-        <p class="camp-q">${esc(s.question)}</p>
-        ${S.route.camps?.[s.id] ? `<p class="camp-say">${inline(S.route.camps[s.id])}</p>` : ""}
-        <p class="camp-go"><a href="${rel}map/#stage-${esc(s.id)}">${esc(S.route.go)}</a><span aria-hidden="true"> · </span><a href="${rel}library/#${esc(s.id)}">${primaryAt(s.id).length} sources in the field guide</a></p>
-      </li>`
-    )
+    .map((s, i) => {
+      const c = climb?.camps[i];
+      const at = c ? ` data-f="${c.f.toFixed(4)}" style="--x:${(c.x / climb.W).toFixed(4)};--y:${(c.y / climb.H).toFixed(4)}"` : "";
+      return `      <li class="camp${s.id === "govern" ? " is-govern" : ""}" id="camp-${esc(s.id)}"${at}>
+        <h3 class="camp-band"><a class="camp-a" href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
+        <div class="camp-c">
+          <p class="camp-n" aria-hidden="true"><span class="band-n">${s.n}</span>${esc(s.name)}</p>
+          <p class="camp-q">${esc(s.question)}</p>
+          ${S.route.camps?.[s.id] ? `<p class="camp-say">${inline(S.route.camps[s.id])}</p>` : ""}
+          <p class="camp-go"><a href="${rel}map/#stage-${esc(s.id)}">${esc(S.route.go)}</a><span aria-hidden="true"> · </span><a href="${rel}library/#${esc(s.id)}">${primaryAt(s.id).length} sources in the field guide</a></p>
+        </div>
+      </li>`;
+    })
     .join("\n");
 
   // The valleys: the failure modes, in the order a team meets them.
@@ -1296,7 +1311,7 @@ ${notes
 
   <section class="sec route-x" id="route" aria-labelledby="route-h">
     ${head("route", S.route.heading, S.route.intro)}
-    <ol class="camps">
+    <ol class="camps" id="camps" aria-labelledby="route-h">
 ${camps}
     </ol>
   </section>
