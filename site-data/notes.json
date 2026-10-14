@@ -20,7 +20,7 @@
       "status": "Draft",
       "date": "2026-10",
       "dateLabel": "October 2026",
-      "summary": "Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample."
+      "summary": "Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample. Then map the value stream to see where late defects cost time."
     }
   ]
 }

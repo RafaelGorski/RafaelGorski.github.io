@@ -4,23 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Test triangulation: properties that say what must never happen — Rafael Gorski</title>
-<meta name="description" content="Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample.">
+<meta name="description" content="Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample. Then map the value stream to see where late defects cost time.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../assets/site.css?v=804c3913">
+<link rel="stylesheet" href="../../assets/site.css?v=b1d2fd71">
 <!--
 THESIS: A note is a plate in the atlas: it says where on the route it sits
   (Design), then draws its argument as exhibits and adoptable requirements.
   Refuses the blog-post template and the testing-tutorial template.
 OWN-WORLD: Same plate paper as GN-0001; the locator marks Design in vermilion;
-  the exhibit is a property and its failure report, set in monospace on
-  ultramarine tint, because here the code is the data.
+  exhibit 1 is a property and its failure report, set in monospace on
+  ultramarine tint, because here the code is the data; exhibit 2 is a value
+  stream map drawn on the trace grid, with waiting as an empty outlined bar.
 STORY: The reader learns why examples alone leave gaps, sees four angles on one
   behaviour, learns to state properties (especially what must never happen)
-  instead of choosing examples, watches a framework break a refund rule, and
-  leaves with six adoptable requirements and three first steps.
+  instead of choosing examples, watches a framework break a refund rule, sees
+  on a value stream map what the same gap costs when it is found late, and
+  leaves with seven adoptable requirements and three first steps.
 FIRST VIEWPORT: Locator band; the title, with the note chip and date in the
   margin rail; then the lede and abstract as a standfirst under a rule.
 FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
@@ -57,10 +59,10 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
       <div class="nh-grid has-art">
         <img class="art art-sheet" src="../../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
         <h1>Test triangulation: properties that say what must never happen</h1>
-        <p class="note-meta"><span class="n-chip">GN-0002</span> Draft · <time datetime="2026-10">October 2026</time> · <a href="../../log/#gn-0002">Trail log</a> · Source: <a href="#ref-est">Effective Software Testing</a></p>
+        <p class="note-meta"><span class="n-chip">GN-0002</span> Draft · <time datetime="2026-10">October 2026</time> · <a href="../../log/#gn-0002">Trail log</a> · Sources: <a href="#ref-est">Effective Software Testing</a>, <a href="#ref-lsd">Lean Software Development</a></p>
         <div class="standfirst">
           <p class="lede">An example-based test checks a case an engineer thought of. When coding agents write code faster than anyone can read it, the defects that matter sit in the cases nobody thought of.</p>
-          <p class="abstract">Test triangulation checks one behaviour from several independent angles: examples from the specification, the structure of the code, contracts and properties. Property-based testing separates the tests from engineers' concrete examples. The team states the properties that constrain the behaviour, including what must never happen, and a framework generates thousands of inputs trying to break them. This note draws on Maurício Aniche's <em>Effective Software Testing</em>. It explains the method, shows a property finding a gap in a refund rule, and sets out six requirements a program can adopt.</p>
+          <p class="abstract">Test triangulation checks one behaviour from several independent angles: examples from the specification, the structure of the code, contracts and properties. Property-based testing separates the tests from engineers' concrete examples. The team states the properties that constrain the behaviour, including what must never happen, and a framework generates thousands of inputs trying to break them. This note draws on Maurício Aniche's <em>Effective Software Testing</em> and on Mary and Tom Poppendieck's <em>Lean Software Development</em>. It explains the method, shows a property finding a gap in a refund rule, uses a value stream map to show what the same gap costs when it is found late, and sets out seven requirements a program can adopt.</p>
         </div>
       </div>
     </div>
@@ -75,10 +77,11 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
           <li><a href="#s4"><span class="secno">4</span>What must never happen</a></li>
           <li><a href="#s5"><span class="secno">5</span>Thousands of cases</a></li>
           <li><a href="#s6"><span class="secno">6</span>Triage the counterexample</a></li>
-          <li><a href="#s7"><span class="secno">7</span>Requirements R1–R6</a></li>
-          <li><a href="#s8"><span class="secno">8</span>Where to start</a></li>
-          <li><a href="#s9"><span class="secno">9</span>What is still open</a></li>
-          <li><a href="#refs"><span class="secno">10</span>References</a></li>
+          <li><a href="#s7"><span class="secno">7</span>Map the value stream</a></li>
+          <li><a href="#s8"><span class="secno">8</span>Requirements R1–R7</a></li>
+          <li><a href="#s9"><span class="secno">9</span>Where to start</a></li>
+          <li><a href="#s10"><span class="secno">10</span>What is still open</a></li>
+          <li><a href="#refs"><span class="secno">11</span>References</a></li>
         </ol>
       </nav>
 
@@ -190,7 +193,44 @@ Original Sample
         </ul>
         <p>The third answer is the main reason to do this. A set of properties is a precise statement of what the team believes the rules are. When the framework breaks one, it often shows that the rules were incomplete or contradicted each other. Finding that in a test run costs a conversation; finding it in production costs a dispute with a customer. Tracing each property to the need it protects, in the way <a href="../../library/#src-problem-based-srs">Problem-Based SRS</a> traces requirements to customer problems, makes it clear who owns the answer.</p>
 
-        <h2 id="s7"><a class="self" href="#s7"><span class="secno">7</span>Requirements for leadership</a></h2>
+                <h2 id="s7"><a class="self" href="#s7"><span class="secno">7</span>Map the value stream to find the waste</a></h2>
+                <p>Section&nbsp;6 claims that a gap found in a test run costs less than one found later. A value stream map shows how much less, for a particular team. The idea comes from lean thinking, which Mary and Tom Poppendieck applied to software in <em>Lean Software Development</em>. They define waste as “anything that does not add value to a product, value as perceived by the customer”, and give handoffs as an example: “In product development, handing off development from one group to another is waste” <a href="#ref-lsd">[LSD, intro]</a>. Their first chapter pairs two tools: seeing waste, whose list includes waiting and defects, and value stream mapping <a href="#ref-lsd">[LSD, ch.&nbsp;1]</a>. A map follows one request from the moment it is asked for to the moment it is delivered, and records where the time went: doing the work, waiting for it, or doing it again.</p>
+
+                <figure class="exhibit vsm" aria-labelledby="exhibit-2-cap">
+                  <div class="trace-head" aria-hidden="true">
+                    <span class="name-h">step</span>
+                    <span class="scale"><span>day 0</span><span>day 10</span><span>day 20</span></span>
+                    <span class="dur">duration</span>
+                  </div>
+                  <ol class="trace">
+                    <li class="trace-row k-work" style="--depth:0;--s:0;--w:2.5"><span class="name">Write the requirement</span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+                    <li class="trace-row k-wait" style="--depth:0;--s:2.5;--w:15"><span class="name">Wait for a development slot</span><span class="lane"><span class="bar"></span></span><span class="dur">3 days</span></li>
+                    <li class="trace-row k-work" style="--depth:0;--s:17.5;--w:2.5"><span class="name">Agent writes the code and example tests</span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+                    <li class="trace-row k-wait" style="--depth:0;--s:20;--w:10"><span class="name">Wait for review</span><span class="lane"><span class="bar"></span></span><span class="dur">2 days</span></li>
+                    <li class="trace-row k-work" style="--depth:0;--s:30;--w:2.5"><span class="name">Code review</span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+                    <li class="trace-row k-wait" style="--depth:0;--s:32.5;--w:20"><span class="name">Wait for a test environment</span><span class="lane"><span class="bar"></span></span><span class="dur">4 days</span></li>
+                    <li class="trace-row k-work is-error" style="--depth:0;--s:52.5;--w:5"><span class="name">Manual testing<span class="err">finds a double refund</span></span><span class="lane"><span class="bar"></span></span><span class="dur">1 day</span></li>
+                    <li class="trace-row k-wait" style="--depth:0;--s:57.5;--w:15"><span class="name">Wait for the requirement owner's answer</span><span class="lane"><span class="bar"></span></span><span class="dur">3 days</span></li>
+                    <li class="trace-row k-work is-error" style="--depth:0;--s:72.5;--w:7.5"><span class="name">Rework, review and test again</span><span class="lane"><span class="bar"></span></span><span class="dur">1.5 days</span></li>
+                    <li class="trace-row k-wait" style="--depth:0;--s:80;--w:20"><span class="name">Wait for the release window</span><span class="lane"><span class="bar"></span></span><span class="dur">4 days</span></li>
+                  </ol>
+                  <div class="trace-legend" aria-hidden="true">
+                    <span style="--c:var(--ultra)">work</span>
+                    <span class="is-wait" style="--c:var(--paper)">waiting in a queue</span>
+                    <span style="--c:var(--red)">defect and rework</span>
+                  </div>
+                  <figcaption id="exhibit-2-cap"><b>Exhibit 2.</b> Illustrative value stream map of one change to the refund rule from section&nbsp;6, from request to release over 20 working days. Synthetic data: the steps, the queues and every duration are invented. A filled bar is work, an outlined bar is time spent waiting in a queue, and red marks the defect and the rework it caused.</figcaption>
+                </figure>
+
+                <p>Read as a value stream, the change was worked on for 4 of its 20 days and waited in a queue for the other 16. Three points of improvement stand out:</p>
+                <ul>
+                  <li><strong>Faster coding barely moves the total.</strong> The agent's half day is already one of the shortest steps on the map; halving it again saves a quarter of a day in twenty. The Poppendiecks observe that experts “have a tendency to maximize the performance of the part of the product representing their own specialty rather than focusing on overall system performance” <a href="#ref-lsd">[LSD, intro]</a>. Buying faster code generation without looking at the queues makes the same mistake at the scale of a program. Their chapter&nbsp;7, See the Whole, returns to the theme <a href="#ref-lsd">[LSD, ch.&nbsp;7]</a>.</li>
+                  <li><strong>The defect was found late, after two handoffs.</strong> The code that allowed a double refund was written on day&nbsp;4 and the defect was found seven working days later, after the change had passed from the agent to a reviewer and from the reviewer to a tester. A property run on every push (<a href="#r2">R2</a>) fails within minutes of the code being written, before the first queue.</li>
+                  <li><strong>The real question was asked last.</strong> The defect raised the constraint-set question from section&nbsp;6: does the limit apply to each refund or to the total? Answering it cost three days of waiting for the requirement owner and a day and a half of rework. Asked on day&nbsp;0, while the never-list is written with that owner (<a href="#r1">R1</a>), the same question costs one conversation.</li>
+                </ul>
+                <p>In the terms of this note, the map is one more angle. The test suite says whether the code is right; the map says when the team finds out, and what the delay costs. None of the three points is visible from inside a single step: the agent, the reviewer and the tester can each be quick while the change still takes four weeks. The Poppendiecks put the remedy plainly: “Compressing the value stream as much as possible is a fundamental lean strategy for eliminating waste” <a href="#ref-lsd">[LSD, intro]</a>. Properties compress one part of it by moving the discovery of defects and gaps to the start. Mapping a comparable change again after adopting them (<a href="#r7">R7</a>) shows whether they did, and where the largest waste now sits.</p>
+
+                <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>Requirements for leadership</a></h2>
         <p>These are written so that they can be copied into an engineering standard or a definition of done. Each one links to the section above that motivates it.</p>
         <p class="reqs-key">The key words <span class="kw">MUST</span>, <span class="kw">MUST NOT</span> and <span class="kw">SHOULD</span> are to be read as described in <a href="#ref-rfc2119">RFC&nbsp;2119 and RFC&nbsp;8174</a> when, and only when, they appear in capitals.</p>
 
@@ -237,16 +277,23 @@ Original Sample
               <p class="rtrace">§<a href="#s1">1</a> · §<a href="#s3">3</a></p>
             </div>
           </li>
+          <li id="r7">
+            <span class="rid"><a href="#r7">R7</a></span>
+            <div>
+              <p>Before adopting these requirements, a team <span class="kw">SHOULD</span> map at least one change from request to release, recording working time, waiting time and where each defect was found. It <span class="kw">SHOULD</span> map a comparable change again afterwards and compare the two.</p>
+              <p class="rtrace">§<a href="#s7">7</a> · <a href="#ref-lsd">[LSD]</a></p>
+            </div>
+          </li>
         </ol>
 
-        <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>Where to start</a></h2>
+        <h2 id="s9"><a class="self" href="#s9"><span class="secno">9</span>Where to start</a></h2>
         <ol class="phases">
-          <li><p><strong>Pick one rule that costs money when it breaks.</strong> Refunds, credits, permission checks and retry budgets are good candidates. Write its never-list with the business owner of the rule (<a href="#r1">R1</a>).</p></li>
+          <li><p><strong>Map one change, then pick one rule.</strong> Follow a recent change from request to release and note where it waited and where its defects were found (<a href="#r7">R7</a>). Then pick one rule that costs money when it breaks, such as refunds, credits, permission checks or retry budgets, and write its never-list with the rule's business owner (<a href="#r1">R1</a>).</p></li>
           <li><p><strong>Turn the list into properties.</strong> Add a property-based testing library for the team's language; the book's examples use jqwik for Java. Run the properties on every push and keep every shrunk counterexample as an example test (<a href="#r2">R2</a>, <a href="#r5">R5</a>).</p></li>
-          <li><p><strong>Triage the first counterexamples together.</strong> Review the first failures with the business owner and sort each into the three answers from section&nbsp;6. Then write <a href="#r1">R1</a> to <a href="#r6">R6</a> into the definition of done for components that enforce rules (<a href="#r3">R3</a>, <a href="#r4">R4</a>, <a href="#r6">R6</a>).</p></li>
+          <li><p><strong>Triage together, then map again.</strong> Review the first counterexamples with the business owner and sort each into the three answers from section&nbsp;6. Map a comparable change and compare it with the first map. Then write <a href="#r1">R1</a> to <a href="#r7">R7</a> into the definition of done for components that enforce rules (<a href="#r3">R3</a>, <a href="#r4">R4</a>, <a href="#r6">R6</a>).</p></li>
         </ol>
 
-        <h2 id="s9"><a class="self" href="#s9"><span class="secno">9</span>What is still open</a></h2>
+        <h2 id="s10"><a class="self" href="#s10"><span class="secno">10</span>What is still open</a></h2>
         <p>Being specific about the limits is part of the guidance:</p>
         <ul>
           <li>Good properties take creativity and practice. Aniche gives a section of the chapter to exactly that, and another to common issues <a href="#ref-est">[EST, ch.&nbsp;5]</a>.</li>
@@ -254,13 +301,15 @@ Original Sample
           <li>Generators can be biased. A generator that never produces an empty list, or only produces values in a narrow range, cannot find defects outside it.</li>
           <li>Passing is not proof. A property that survives 10,000 tries has not found a counterexample in those tries. It has not shown that none exists.</li>
           <li>Model outputs are not deterministic. Properties test the code around the model. Judging the model's own answers needs repeated trials and evaluation, such as <a href="../../radar/#blip-repeated-trial-reliability">repeated-trial reliability</a> on the radar.</li>
-        </ul>
+                    <li>One map is an anecdote. A single change can be unusual, and durations recalled from memory can be wrong. Map several changes, taking the times from the tracker and the delivery pipeline where possible, before deciding where the largest waste is.</li>
+                  </ul>
         <p>None of this argues for fewer example tests. It argues against letting examples be the only statement of what the system must do.</p>
 
-        <h2 id="refs"><a class="self" href="#refs"><span class="secno">10</span>References</a></h2>
+        <h2 id="refs"><a class="self" href="#refs"><span class="secno">11</span>References</a></h2>
         <ul class="refs">
           <li id="ref-est"><span class="rk">[EST]</span><span>Aniche, M. <a href="https://www.manning.com/books/effective-software-testing"><cite>Effective Software Testing: A developer's guide</cite></a>. Manning, 2022. Chapters cited: <a href="https://livebook.manning.com/book/effective-software-testing/chapter-1/">1, Effective and systematic software testing</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-2/">2, Specification-based testing</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-3/">3, Structural testing and code coverage</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-4/">4, Designing contracts</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-5/">5, Property-based testing</a>. Listed in this site's <a href="../../library/#src-effective-software-testing">field guide</a>.</span></li>
           <li id="ref-jqwik"><span class="rk">[JQWIK]</span><span>jqwik. <a href="https://jqwik.net/docs/current/user-guide.html">jqwik user guide</a>, current version.</span></li>
+          <li id="ref-lsd"><span class="rk">[LSD]</span><span>Poppendieck, M. and Poppendieck, T. <a href="https://www.informit.com/store/lean-software-development-an-agile-toolkit-9780321150783"><cite>Lean Software Development: An Agile Toolkit</cite></a>. Addison-Wesley, 2003. Parts cited: the Introduction; chapter 1, Eliminate Waste (Tool 1, Seeing Waste; Tool 2, Value Stream Mapping); chapter 7, See the Whole. Listed in this site's <a href="../../library/#src-lean-software-development">field guide</a>.</span></li>
           <li id="ref-rfc2119"><span class="rk">[RFC2119]</span><span>Bradner, S. <a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>, and <a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>.</span></li>
         </ul>
 

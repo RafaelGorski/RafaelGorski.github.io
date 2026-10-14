@@ -522,6 +522,19 @@
       "verified": "2026-10-12"
     },
     {
+      "id": "lean-software-development",
+      "title": "Lean Software Development: An Agile Toolkit",
+      "publisher": "Mary Poppendieck and Tom Poppendieck, Addison-Wesley",
+      "year": 2003,
+      "url": "https://www.informit.com/store/lean-software-development-an-agile-toolkit-9780321150783",
+      "kind": "book",
+      "stages": ["operate", "design"],
+      "why": "Lean thinking for software. Its value stream map follows one request to delivery and shows where work waits, is handed off or is redone. When agents make coding faster, that waste is what remains.",
+      "check": "Map one change from request to release. Record working time, waiting time and where each defect was found, then remove the largest waste first.",
+      "maturity": "stable",
+      "verified": "2026-10-14"
+    },
+    {
       "id": "eu-ai-act",
       "title": "Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence (Artificial Intelligence Act)",
       "publisher": "European Parliament and Council of the European Union",

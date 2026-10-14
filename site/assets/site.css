@@ -1006,6 +1006,12 @@ code {
 .exhibit figcaption { max-width: var(--measure); font-size: 0.86rem; line-height: 1.5; color: var(--ink-2); }
 .exhibit figcaption b { font-family: var(--letter); font-weight: 600; color: var(--ink); }
 
+/* Exhibit: value stream map, drawn on the trace grid */
+.vsm .trace-row .name { font-family: var(--read); }
+.k-work { --bar: var(--ultra); }
+.k-wait { --bar: var(--paper); }
+.k-wait .bar, .trace-legend .is-wait::before { border: 1px solid var(--ink-2); }
+
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .bar {

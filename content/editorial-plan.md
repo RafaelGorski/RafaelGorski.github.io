@@ -8,7 +8,8 @@
 The published note, *Agentic observability* (stage: operate, built on `otel-genai-semconv`), is the
 model for the series: one decision, a small set of primary sources, and a clear statement of what
 is still in development. The second note, *Test triangulation* (GN-0002, stage: design, built on
-`effective-software-testing`), follows the same form.
+`effective-software-testing`, with `lean-software-development` for its value stream map), follows
+the same form.
 
 ## 1. What must the pilot beat?
 

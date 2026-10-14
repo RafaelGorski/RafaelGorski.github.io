@@ -438,6 +438,11 @@ sprite in each page:
   - Bar colours: workflow ink, agent and plan ultramarine, model ultramarine mid, tool ink
     secondary, error vermilion.
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
+- **Exhibit (value stream):** the trace grid reused for one change from request to release, as in
+  GN-0002 (`.exhibit.vsm`). Step names are set in the reading face, not the code face. Work
+  (`k-work`) is an ultramarine bar; waiting (`k-wait`) is a paper bar with a 1px ink-secondary
+  outline, matched by an outlined legend swatch (`is-wait`); the defect and its rework are
+  vermilion (`is-error`). Step names say which steps are waits, so colour is never the only cue.
 - **Exhibit (code):** used when the code itself is the evidence, as in GN-0002. Each block has an
   uppercase Jost label over a 2px ink rule, then a `pre` on ultramarine tint in the code face,
   scrolling sideways rather than wrapping. A scrolling block is a focusable, labelled region
