@@ -24,8 +24,8 @@ itself loads no third-party script: it ships static SVG.
 ## Ship a seed
 
 1. Find a seed you like in the viewer and note it.
-2. Put it in `site-data/art.json`: `areas.<area>.seed` for a page, or `ascent.seed` for the map's
-   six stages. To change one stage only, add `"stageSeeds": { "scale": 1234 }` under `ascent`.
+2. Put it in `site-data/art.json`: `areas.<area>.seed` for a page, or `ascent.seed` for the route's
+   six stages (and the home page's climb panorama, which is drawn from the same seeds). To change one stage only, add `"stageSeeds": { "scale": 1234 }` under `ascent`.
    Settings changed in the viewer go under the area's `"params"` (for example
    `"params": { "spurs": 10, "rock": 0.4 }`); `summit` is `[across, down]` as shares of the sheet.
 3. Run `node scripts/build.mjs`, then `node scripts/check-links.mjs`. The build regenerates the SVGs

@@ -1,8 +1,8 @@
 {
   "title": "Rafael Gorski — Agents are software. Build them like it.",
-  "description": "Rafael Gorski on building agents and AI systems: what he holds to, what he is testing, and what he would stop before production, with every point linked to its evidence.",
+  "description": "Rafael Gorski on building agents and AI systems, told as a climb: the route from the first decision to accountable operation, the valleys where teams stall, the gear to carry and his trail log, with every point linked to its evidence.",
   "thesis": "Agents are software. Build them like it.",
-  "lede": "I build agents and the software around them. This page is my take on doing that well: what I hold to, what I'm testing, and what I'd stop before it reaches production. The [map](map/), [radar](radar/) and [library](library/) are the reference.",
+  "lede": "Launching and scaling an AI system is a climb. I build agents and the software around them, and I work with teams the way a mountain guide does: walk the route with them, name the valleys before we reach them, and check the gear at every camp.",
   "who": [
     { "label": "Role", "text": "Engineering Manager at Microsoft" },
     { "label": "Based in", "text": "Brazil" },
@@ -12,7 +12,7 @@
   ],
   "own": "Views are my own, not my employer's.",
   "take": {
-    "heading": "My take",
+    "heading": "How I lead a climb",
     "intro": "What I hold to when building agents and the systems around them, with the evidence beside each point.",
     "positions": [
       {
@@ -96,13 +96,6 @@
           { "href": "https://rafaelgorski.github.io/Problem-Based-SRS/skills-health.html", "label": "Skills Health dashboard" },
           { "radar": "problem-based-requirements" }
         ]
-      },
-      {
-        "id": "field-guide",
-        "title": "A field guide to launching and scaling AI systems",
-        "body": "The rest of this site is the reference, and it is written to be impersonal. The map follows an AI system through six stages, the radar says how far to rely on each practice, and the library keeps every source with why it matters and what to check.",
-        "guide": true,
-        "say": "Notes are where I write at length. Each one is pinned to a stage on the map."
       }
     ]
   },

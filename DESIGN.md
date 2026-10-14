@@ -1,6 +1,6 @@
 ---
 name: Rafael Gorski — Launching and scaling AI systems
-description: An atlas plate of the AI lifecycle, from Purpose to Govern, with every note and curated source pinned to the stage where it matters, and on the home page the author's own take and lab notes in vermilion.
+description: An atlas plate of the AI lifecycle, from Purpose to Govern, told as one climb. The route's six camps, the valleys where climbs stall, the radar as the gear check, the field guide and the author's trail log, with every note and curated source pinned to the stretch where it matters, and the author's own voice in vermilion.
 colors:
   paper: "#fcfcfa"
   ink: "#16171b"
@@ -181,6 +181,27 @@ components:
   trace-chain-id:
     textColor: "{colors.vermilion}"
     typography: "{typography.unit}"
+  camp-band:
+    backgroundColor: "{colors.ultramarine}"
+    textColor: "{colors.paper}"
+    typography: "{typography.stage}"
+    rounded: "{rounded.none}"
+    padding: "0.9rem 0.9rem 0.85rem"
+  camp-band-govern:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
+  camp-mark:
+    backgroundColor: "{colors.ultramarine}"
+    textColor: "{colors.paper}"
+    size: "20 SVG units"
+  guide-blaze:
+    backgroundColor: "{colors.vermilion}"
+    textColor: "{colors.paper}"
+    size: "24 × 14 SVG units on a 30-unit ink staff"
+  valley-locator:
+    backgroundColor: "{colors.ultramarine-tint}"
+    textColor: "{colors.vermilion}"
+    size: "six 0.8rem × 0.5rem segments, 2px apart"
 ---
 
 # Design System: Rafael Gorski — Launching and scaling AI systems
@@ -194,10 +215,21 @@ The map, at `/map/`, is the plate. Six stages run left to right as an ultramarin
 by the question it must answer. Every curated source is one counted unit pinned below the stage
 where it matters most, and the author's own notes are the only vermilion on the page.
 
-The home page is the one place the author speaks for himself: his take on building agents and AI
-systems, and his dated lab notes. It is the same atlas with its colour logic inverted. Vermilion,
-his voice, owns the bands and the margin remarks; ultramarine appears only where his voice points
-into the reference. See Home below.
+**The story (v3: the climb).** The site tells one expedition: launching and scaling an AI system is
+a climb. The six stages are camps on the route, the valleys are the failure modes (the radar's
+Hold items, told as his "Watch out for" notes), the radar is the gear check, the library is the
+field guide, his notes are the trail log, and he is the guide who walks the route with the team.
+The menu follows the story: Route (`/map/`), Radar, Field guide (`/library/`), Trail log
+(`/log/`) and About; the URLs did not change. The metaphor is a frame, never a claim: one clear
+image per section, and every camp, valley and piece of gear names a real decision, failure mode or
+practice with a link to its evidence. Narrative copy lives in `site-data/story.json`.
+
+The home page is the one place the author speaks for himself, and it tells the climb from top to
+bottom: the summit view (the thesis), the route drawn up the ridge camp by camp, the valleys, the
+gear check, an excerpt of the trail log and, last, the guide. It is the same atlas with its colour
+logic inverted. Vermilion, his voice, owns his remarks, the valleys and the trail-log bands, and the
+guide's trail blaze is the one vermilion mark on the route; ultramarine appears only where his voice
+points into the reference. See Home and Trail log below.
 
 The radar is the plate's second reading. The map says when something matters in the lifecycle; the
 radar says how far to rely on it: adopt, trial, assess or hold. It is drawn as a polar plate in the
@@ -206,10 +238,12 @@ Thoughtworks form (quadrants, four rings, numbered blips, a list per quadrant) w
 or palette.
 
 It is light only, because readers open shared links on laptops and phones in daylight offices. The
-pages read in full without JavaScript. The only external script is `site/assets/radar.js`, which
-adds hover and focus linking to the radar as progressive enhancement. The home page carries one
-inline line of script that forwards old links to the map's former home (`/#stage-…`) to
-`map/#stage-…`. The 404 page uses root-relative links because the site is served from a domain
+pages read in full without JavaScript. There are two small first-party scripts, both progressive
+enhancement: `site/assets/radar.js` adds hover and focus linking to the radar, and
+`site/assets/climb.js` drives the home page's route where the browser has no scroll-driven
+animation. The home page carries one inline line of script that forwards old links: the map's
+former home (`/#stage-…`) to `map/#stage-…`, and the lab notes that moved to the trail log
+(`/#lab`, `/#testing`, `/#using`, `/#watch`, `/#take-…`) to `log/#…`. The 404 page uses root-relative links because the site is served from a domain
 root. There is no tracking and there are no third-party requests.
 
 Anti-references: the RFC or specification sheet (the previous iteration), the personal-brand hero
@@ -273,6 +307,10 @@ original writing.
   tracking, balanced wrapping. The home page's thesis is the one larger h1 (up to 6rem,
   line-height 0.95), one sentence per line. Positions on the home page are Jost 500, and the essay
   paragraphs beside them step up to 1.125rem from 64rem.
+- **Panorama lettering** on the home page's route is set in SVG user units, like the disc's: camp
+  numerals 12.5 and camp names 13.5 (uppercase, 0.08em, with a paper halo). A scale factor (`--k`,
+  1.5 from 64rem, 2 from 40rem, 2.8 below) restores the marks where the panorama is drawn small;
+  below 40rem the names are dropped and the camps keep their numerals.
 - **Disc lettering** is set in SVG user units, so it scales with the disc: quadrant names 15
   (uppercase, 0.07em), blip numerals 13.5, counts 12.5, the ring scale 11.5 (uppercase, 0.08em).
   At the smallest desktop disc a numeral renders near 10px.
@@ -283,37 +321,41 @@ No page head reads "bold title over a grey subtitle". Each title is lettered int
 drawing, as names are lettered into a map, and stays a real `<h1>`, first in reading order:
 h1, then the legend or margin text, then the content.
 
-- **Home (summit label):** the thesis sits beside the author's summit, and its last line runs on a
-  1px ink leader, straight, at its x-height, to the vermilion trail blaze. The art is placed from
-  the thesis (CSS sets the sheet's top so the blaze lands on the leader's line, at any width), so
-  the two never drift apart. The lede is a margin note in ink at body size, on a 2px rule, beside
-  the who list.
-- **Map (range name):** the title is lettered in light spaced capitals across the six-stage ridge,
+- **Home (summit label):** the thesis names the summit of the route drawn behind it: its last line
+  runs on a 1px ink leader, straight, at its x-height, to the summit camp, where the guide's trail
+  blaze stands once the route is climbed. The panorama is placed from the thesis (CSS sets its top
+  so the summit lands on the leader's line, at any width), so the two never drift apart. The lede
+  is a margin note in ink at body size, on a 2px rule, on the paper beside the panorama.
+- **Route (range name):** "The route from Purpose to Govern" (`site-data/plate.json`) is lettered in light spaced capitals across the six-stage ridge,
   in the ridge's own grid row. The build measures the title in the title face
   (`ADVANCE` in `scripts/build.mjs`) and CSS spaces it to the sheet's exact width, so it spans the
   climb on one line; on very wide screens it stops at the `100rem` sheet. Titles of 36 characters or
   more fall back to the plain title. The caption joins the key as legend text, beside a contour
   corner.
-- **Radar (summit label):** the title sits in the margin; a 1px ink elbow leader runs up the disc's
+- **Radar (summit label):** "Gear check for the climb" sits in the margin; a 1px ink elbow leader runs up the disc's
   vertical paper axis from the centre (the summit), clear of every blip, and across above the disc
   to the title. It belongs to the title, so as the page scrolls it slides up the axis.
   The intro sentence joins the ring legend, which precedes the disc in reading order: the legend
   stands under its own 2px neatline, and the intro is its opening line, set in the key's text
   column at legend size.
-- **Library:** "Library" is lettered on the ascent above the stage index, at the range name's size
-  and with 0.32em spacing, but not across the full width.
+- **Field guide:** "Field guide" is lettered on the ascent above the stage index, at the range
+  name's size and with 0.32em spacing, but not across the full width.
+- **Trail log:** a readable light display title, as on a note, beside the notes sheet corner, with
+  the intro as a standfirst in ink and the counts as an edition line.
 - **Note:** a readable light display title (no range lettering), the meta in the margin rail
   above the contents, then the lede and abstract as a standfirst in ink under a 2px rule.
 - **About and 404:** About's title ends at the summit of its own sheet (62% across, 16% down), with
   the caption and prose beside the sheet. The 404 sheet's summit lies beyond its top-right corner,
   so the title is lettered there, against that edge, with the text beside it.
-- **Section titles** (My take, Lab notes, What I build, Conversations, the library stage heads,
-  note and About sections) are the light face at a smaller size. Bands and their numerals stay
+- **Section titles** (the home page's The route, The valleys, Gear check, Trail log and The guide;
+  the trail log's Notes; the library stage heads; note and About sections) are the light face at a
+  smaller size, and the guide's sub-sections (How I lead a climb, What I build, Conversations) one
+  step smaller again. Bands and their numerals stay
   Jost: they are data.
 - **States:** below 64rem the map's ridge splits into two rows, so its title is set plain; below
   40rem every leader is dropped, range lettering becomes the plain title and margin notes return
   under the title as a standfirst in ink. Print sets every title plain and hides leaders and art;
-  forced colours hide the leaders and set titles in the system text colour. Nothing moves and no
+  forced colours hide the leaders and set titles in the system text colour. No title moves and no
   title needs JavaScript.
 - **Never:** eyebrow or kicker labels, italic serif accent words, gradient text, a single bold word
   in a light title, a centred hero, buttons or title cards, or a decorative arrow for a leader.
@@ -373,7 +415,8 @@ sprite in each page:
 
 ## Components
 
-- **Margin line:** name at left, nav at right (Map, Radar, Library, About). The name is the link
+- **Margin line:** name at left, nav at right (Route, Radar, Field guide, Trail log, About; labels in
+  `site-data/story.json`). On phones the items wrap whole, never mid-label. The name is the link
   home and carries `aria-current="page"` there. The current page carries a 3px ultramarine
   underline. A 1px ink rule spans the gutters.
 - **Key:** a `dl` of Shape, Fill and Red, using the same glyphs as the plate. It appears on the
@@ -403,21 +446,65 @@ sprite in each page:
 ### Home
 
 Rendered by `scripts/build.mjs` from `site-data/home.json` (thesis, lede, who, positions, work,
-conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
+conversations), `site-data/story.json` (the story's headings, intros, camp remarks and ring
+framing), `site-data/takes.json` (lab notes) and the route geometry from `scripts/art.mjs` into
+`site/index.html`. The sections run top to bottom as the climb: the summit view, The route, The
+valleys, Gear check, Trail log, The guide.
 
 - **Grid:** content is held to `76rem`, left-aligned with the margin line. From 64rem up, each
   passage is two columns: the reading column (`1fr`, prose at `66ch`) and the margin
   (`16rem`–`23rem`). Below 64rem the margin follows its paragraph after a dashed hairline.
 - **Head:** the thesis as the h1, one sentence per line (the build splits it at sentence ends),
   lettered as the summit's label with a leader to the trail blaze (see Titles: map lettering).
-  Below it, from 64rem, the lede as a margin note in ink on a 2px rule, set against the margin
-  column, and in the margin the **who** list: a `dl` on a 2px ink rule with small uppercase labels
-  (Role, Based in, Paper, Open source, Elsewhere), then "Views are my own, not my employer's." in
-  Jost. Below 64rem the lede follows the title as a standfirst in ink.
-- **Lab index:** three vermilion bands across the full width, one per lab-note group, each with its
-  count in pale vermilion. They link to the groups and stack one per row at 40rem and below.
-- **Sections:** a 2px ink rule and a light title-face h2 (My take, Lab notes, What I build,
-  Conversations). A section's caption is never a grey subtitle: from 64rem it is a margin note in
+  The thesis's leader runs to the summit of the route's panorama (see below), which is the title's
+  ground: from 64rem it stands at the right of the sheet (70% of its width) with its summit on the
+  leader's line, the lede (the guide framing) is a margin note in ink on a 2px rule on the paper
+  beside it, and the **itinerary** (the page's five sections as a route card on a 2px ink rule,
+  each a Jost name and a count the build computes) is its legend, under it in the margin column.
+  No text stands on the art; only the leader crosses it. From 40rem to 64rem the panorama spans the
+  sheet under the thesis and the lede and itinerary follow it. Below 40rem it is a small strip under
+  the thesis, drawn in full, and the leader is dropped.
+- **The route's panorama (`.climb-scene`), behind the title:** the ascent (the map's own ridge, as
+  one image in three depth bands), and over it, drawn inline: the planned route as a dotted
+  ink-secondary line, the walked route as a 2.6-unit ink line, the camps as 20-unit squares
+  (ultramarine, Govern in ink) with white Jost numerals and the stage name beneath, and the guide's
+  trail blaze on a short staff, drawn under the squares. The build writes its aspect and summit
+  (`--ar`, `--sx`, `--sy`) on the head, and CSS places it from the thesis.
+- **Motion (one authored moment):** one registered number, `--p`, 0 at the first camp and 1 on the
+  summit, says how far up the reader is. It runs from the top of the page to the moment the
+  panorama reaches the top of the screen (the exit-crossing of `.climb-track`, an empty box from
+  the top of the page to the top of the panorama), so the climb is done while the summit is still
+  in view and the title and the route end as one picture. From `--p` CSS draws the route
+  (`stroke-dashoffset`), shows each camp as the route reaches it (opacity, and a 7-unit settle),
+  stands the blaze on the route (`offset-path`/`offset-distance`, in the SVG's own units) and
+  settles the two nearer ridge bands (transform only, 2.2% and 4.4%). Where `animation-timeline` is
+  unsupported, `climb.js` (about 1.5 KB, no library) sets the same `--p` from the same box on
+  scroll, with rAF. `--p` rests at 1: on phones, with reduced motion, without JavaScript, or
+  without either engine, the route is drawn in full, every camp shows and the blaze stands on the
+  summit at the end of the leader. Nothing loops or autoplays; the scroll is never taken over and
+  no reading space is spent on it. Print and forced colours drop the panorama.
+- **The route (camps):** six compact rows, read across from 64rem: the camp band (the stage band as
+  a sign, linking to the stage on the route), the stage question in Jost, his remark in vermilion,
+  and the stretch on the route and its sources in the field guide. Below 64rem the band leads and
+  the rest stacks beside or under it.
+- **The valleys:** each "Watch out for" lab note paired with the Hold blip it links to, in the order a
+  team meets them (the blip's first stage, then file order). Each is a `.hm` row: a locator (the
+  six stages as a strip, the valley's stage in vermilion and a second stage outlined in it) with
+  "At Design · also Operate" in vermilion and ink-secondary, his note's title and body unchanged,
+  and in the margin its evidence and "In the trail log".
+- **Gear check:** the radar's four rings as a packing list: ring glyph, ring name, the climb framing
+  ("Take on the climb", "Test on the approach", "Scout ahead", "Leave behind"), the ring's meaning,
+  then every blip in it as a numbered disc linking to its entry on the radar. Hold links back up to
+  the valleys.
+- **Trail log (excerpt):** three columns on the lab plate's grid: the newest Testing now entry, the
+  newest Using more effectively entry (the valleys already tell Watch out for) and the long notes,
+  each under a vermilion band that links to the group on the trail log.
+- **The guide:** his principles (the take's positions, unchanged, under "How I lead a climb") with
+  the **who** list beside them in the margin (a `dl` on a 2px ink rule with small uppercase labels:
+  Role, Based in, Paper, Open source, Elsewhere, then "Views are my own, not my employer's." in Jost),
+  What I build, and Conversations as the close.
+- **Sections:** a 2px ink rule and a light title-face h2 (The route, The valleys, Gear check, Trail
+  log, The guide). A section's caption is never a grey subtitle: from 64rem it is a margin note in
   ink beside the title, under the same rule, and below 64rem a standfirst in ink after it. The
   first item of a section has no hairline of its own. No section numbers and no eyebrow labels.
 - **Position:** an h3 in the position style and a paragraph in the essay style. Its margin holds an
@@ -425,9 +512,10 @@ conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
 - **Cross-reference (`.xref`):** one line per link, each led by the reference's own mark: a
   numbered ultramarine disc for a radar blip (with its ring), the unit glyph for a library source
   (with its year), a vermilion square for a note (with its id), a tint square with the stage numeral
-  for a map stage (with the stage question), and an ultramarine ↗ for an outside link. Screen
-  readers hear "On the radar", "In the library" or "On the map" before the name.
-- **Lab plate:** at 72rem and wider, three columns on a subgrid (band, caption, notes), divided by
+  for a stage on the route (with the stage question), a vermilion square for a trail-log entry, a
+  vermilion notch for a valley, and an ultramarine ↗ for an outside link. Screen readers hear "On
+  the radar", "In the field guide", "On the route" or "In the trail log" before the name.
+- **Lab plate** (the trail log's, and the home excerpt's): at 72rem and wider, three columns on a subgrid (band, caption, notes), divided by
   hairlines with 3px of paper between the bands, read across for groups and down for notes. Below
   that, the groups stack. Each note: Jost title, a meta line (date, then "Draft" until the note is
   confirmed), a body of at most 50 words, and its cross-references. Notes are newest first within a
@@ -435,14 +523,15 @@ conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
 - **Trace chain:** under Problem-Based SRS, the real CP → CN → FR chain from the skill's CRM
   example. Ids in vermilion Jost, the kind as a small label, each level indented and joined to its
   parent by an ink elbow, on a 2px ink rule, with a caption.
-- **Mini band:** under the field guide, the six stage segments (Govern in ink) linking to the map
-  columns, then a `dl` of Map, Radar and Library with counts the build computes. The margin carries
-  every note as a note pin.
 - **Close:** Conversations in Jost 500 at a larger size, one plain inline link to LinkedIn. It is
   not a button.
 
 #### Voice on the home page
 
+- The guide framing stays grounded: how he works and what he holds to, never teams led, summits
+  reached, clients, results or numbers that are not already public on the site. No "Sherpa" and no
+  "shepherd". New first-person lines (the lede, the camp remarks, section intros) are drafts for his
+  review until he confirms them.
 - First person, plain words, short sentences. Opinions with a reason attached, and honesty about
   what is not settled (his own method is in Trial, not Adopt, and the page says so).
 - No hype words, no exclamation marks, no self-descriptors (expert, leader, visionary, seasoned,
@@ -452,8 +541,24 @@ conversations) and `site-data/takes.json` (lab notes) into `site/index.html`.
   results, numbers, clients or employer-internal material.
 - Consulting stays a single sentence: open to conversations, reach him on LinkedIn. No service menu,
   prices, packages, availability or hire-me action.
-- The rest of the site stays impersonal. "I" appears on the home page, in About's Two voices and
-  Colophon, and in notes only where the author speaks.
+- The rest of the site stays impersonal. "I" appears on the home page, in the trail log, in About's
+  The story, Two voices and Colophon, and in notes only where the author speaks.
+
+### Trail log
+
+Rendered by `scripts/build.mjs` from `site-data/takes.json` and `site-data/notes.json` into
+`site/log/index.html`. His notes from the climb: the lab notes (formerly on the home page) and the
+long notes.
+
+- **Head:** the light title beside the notes sheet corner, the lab intro as a standfirst in ink, and
+  an edition line (entries, the latest date, Draft until confirmed, and a link to the long notes).
+- **Lab plate** (`#lab`): three vermilion bands (Testing now, Using more effectively, Watch out
+  for), each with its caption and its entries newest first, as described under Home. Entry anchors
+  are `#take-<id>` and group anchors `#testing`, `#using` and `#watch`, as they were on the home
+  page, which forwards the old ones here.
+- **Notes** (`#notes`): each long note as a `.hm` row (`#gn-0001`): id, status and date, the title
+  linking to the note, its summary, and in the margin its note pin and the stage it is charted at.
+  The note itself stays at `/notes/<slug>/`; its meta line links back to its trail-log entry.
 
 ### Radar
 
@@ -480,7 +585,8 @@ Rendered by `scripts/build.mjs` from `content/radar.json` into `site/radar/index
 - **Ring glyph:** a quarter disc with four bands, the ring's band solid ultramarine and the rest
   tint. It names the ring by position, not colour, in the key and on every ring heading.
 - **Key:** under a 2px ink neatline, the intro sentence in the key's text column, then Ring (glyph,
-  name, meaning from `radar.json`) and Mark (the four movement marks).
+  name, the climb framing from `site-data/story.json` in Jost ink, then the meaning from
+  `radar.json`) and Mark (the four movement marks).
   Edition, status and ring counts follow on the quiet `.edition` line.
 - **Quadrant index:** four bands in a two-by-two grid, in the same positions as the quadrants on the
   disc, each with its count. Governance is the ink band.
@@ -518,10 +624,9 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
     right edges are neatlines at the margin rule and the right gutter; its left and bottom fall
     away to the valley floor, so the title stands on open ground. On the map and the library it
     keeps to the last two columns of the legend row, beside the key and never behind it.
-  - Home: the author's summit, `.art-summit`, in rule grey, with a vermilion Polish trail blaze (a
-    colour stripe between two white ones) on the summit, beside the thesis. It is placed from the
-    thesis so the blaze sits at the end of the thesis's leader, runs to the end of the margin line,
-    and is clipped at the foot of the head. Hidden below 40rem, where the thesis fills the width.
+  - Home: until v3 the author's summit, `home.svg` (contours in rule grey with a vermilion Polish
+    trail blaze), stood behind the thesis. It is still drawn, for the archived version, but the home
+    page now sets the route's panorama there (below).
   - About: a portrait margin plate, `.art-margin`, in the right margin beside the prose; the title
     is lettered at its summit.
   - Radar: the apron, `.art-apron`. The disc is the summit seen from above and its four rings are
@@ -532,18 +637,25 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
     climbs to the summit above Govern. Each stage shapes its stretch from its own seed. The same
     six images climb above the library's stage index (`.lib-ascent`, on the index's own grid and
     3px off its bands; the row scrolls away and only the bands stick; hidden below 40rem, where the
-    index wraps to two rows), stand at the foot of each library stage head, and run above the home
-    page's mini band (hidden there below 48rem, where the band wraps).
+    index wraps to two rows), and stand at the foot of each library stage head.
+  - Home: the climb, `.climb-l`, the title's ground. The same ascent drawn as one panorama
+    (`climb-far`, `climb-mid` and `climb-near`, 1,600 × 440 with 36 units more below the frame),
+    behind the route, its camps and the blaze. `scripts/art.mjs` also computes the route: a smoothed line kept just below the
+    skyline ridge and above the ridge in front, so it rises and dips with the range, with the camps
+    on its high points nearest even steps from the start to the summit. It uses the ascent's seeds;
+    no new seed.
   - 404: the slopes of a summit that lies beyond the sheet, full page behind the text.
 - **Rules.**
   - Ground, never figure: never behind data (units, pins, blips, bands; where a head has a key, the
     sheet keeps above it), never behind vermilion text, never darker than ultramarine pale.
   - Decorative: `<img alt="" aria-hidden="true">`, no captions or alt text.
-  - Still: it never moves, so there is nothing to reduce for `prefers-reduced-motion`.
+  - Still, except where the reader moves it: only the home page's climb responds to scroll, as the
+    title scrolls away (the two nearer ridge bands settle by a few percent as the route is climbed). It never moves on its
+    own, and with reduced motion it does not move at all.
   - Hidden in print and in forced colours.
   - On phones every sheet becomes a 9rem cropped corner at 75% opacity, and the stage ridges a
     3.5rem strip.
-  - Each SVG stays small (the largest is about 13 KB; all thirteen are about 70 KB).
+  - Each SVG stays small (the largest, `climb-mid`, is about 16 KB; all sixteen are about 97 KB).
 
 ## Do's and Don'ts
 
@@ -559,25 +671,29 @@ Do:
 - Keep the radar's quadrant and ring ids and their order fixed. Placements live in
   `content/radar.json`; the build validates ids, stage and evidence references and the 30-word
   summary limit, and refuses a cell too full to draw.
-- Respect `prefers-reduced-motion`. The only authored motions are units stamping in column by
-  column on the map, radar blips stamping in ring by ring from Adopt outward, trace bars drawing on
-  note pages, and the three lab bands on the home page being laid down left to right (a clip-path
-  wipe). The mountain art never moves.
+- Respect `prefers-reduced-motion`. The only authored motions are the home page's climb (the route
+  drawing itself up the panorama behind the title as the title scrolls away; see Home), units stamping in column
+  by column on the map, radar blips stamping in ring by ring from Adopt outward, and trace bars
+  drawing on note pages. Transform, opacity and the route's stroke only; nothing loops or autoplays.
 - Change the mountain art through seeds and settings in `site-data/art.json` (explore them first in
   `art/viewer.html`), then run `node scripts/build.mjs`. The algorithm lives in `scripts/art.mjs`.
 
 Don't:
 
 - Use vermilion for anything other than the author's own voice: his notes, and on the home page
-  the lab bands, margin remarks and trace-chain ids (plus error spans in exhibits).
+  his remarks, the valleys, the trail-log bands, the guide's trail blaze and trace-chain ids (plus
+  error spans in exhibits).
 - Add cards, shadows, rounded corners, gradients, icons or eyebrow labels.
 - Add self-descriptors such as expert or leader, or a portrait, logos or testimonials.
 - Use monospace as a "technical" costume. It is for code and data only.
-- Edit `site/index.html`, `site/map/index.html`, `site/radar/index.html` or
-  `site/library/index.html` by hand. They are generated.
+- Edit `site/index.html`, `site/map/index.html`, `site/radar/index.html`,
+  `site/library/index.html` or `site/log/index.html` by hand. They are generated.
+- Call him a Sherpa or a shepherd, or let the metaphor turn cute: one image per section, with the
+  engineering point explicit.
 - Link to the map as `/` or `../`. The map is at `map/`; `scripts/check-links.mjs` fails on a link
   whose text names the map but lands on the home page.
 - Colour radar blips by quadrant or ring. Position and text carry both.
 - Put the mountain art behind data or vermilion text, draw it darker than ultramarine pale, animate
-  it, or load p5.js or any other script on the site to draw it. Do not edit `site/assets/art/` by
+  it on its own (only the climb, and only with the reader's scroll), or load p5.js or any other
+  script on the site to draw it. Do not edit `site/assets/art/` by
   hand; it is generated.

@@ -1,5 +1,5 @@
 {
-  "description": "Seeds and settings for the mountain art drawn by scripts/art.mjs (Contour Lineage). Change a seed or a summit position, then run node scripts/build.mjs. Explore seeds first in art/viewer.html.",
+  "description": "Seeds and settings for the mountain art drawn by scripts/art.mjs (Contour Lineage). Change a seed or a summit position, then run node scripts/build.mjs. Explore seeds first in art/viewer.html. climb is the home page's panorama: the ascent drawn as one image in depth bands, with the route and its camps computed from it (no seed of its own).",
   "interval": 50,
   "floor": 1000,
   "areas": {
@@ -11,5 +11,6 @@
     "about": { "view": "plan", "seed": 66754, "size": [900, 1200], "summit": [0.62, 0.16] },
     "404": { "view": "plan", "seed": 16021, "size": [1600, 900], "summit": [1.08, -0.12] }
   },
-  "ascent": { "seed": 30212, "size": [300, 84], "summitAt": 0.93 }
+  "ascent": { "seed": 30212, "size": [300, 84], "summitAt": 0.93 },
+  "climb": { "size": [1600, 440], "pad": 36, "start": 0.03, "snap": 0.035, "bands": { "far": [0], "mid": [1, 2], "near": [3] } }
 }

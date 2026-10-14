@@ -10,7 +10,7 @@ The drawing is the measurement. Marching squares extract isohypses, lines of equ
 
 The system knows where it is. On a page head it draws a sheet corner: the top and right edges are neatlines that cut the contours off, while the left and bottom fall away to the valley floor so the text can stand on open ground. Around the radar it draws only the apron, the slopes falling away beyond a disc whose four rings are already the top four contours. Above the map's six stages it draws one continuous route, each stage shaping its own stretch from its own seed and blending into its neighbours, so the slices join into a single ascent when they stand side by side and still read alone when they stand apart. Composition emerges from the algorithm's rules, not from placement by hand.
 
-Variation is lineage. Each area of the site is a seed, and a seed is a family resemblance: the same ridge grammar, the same interval, the same ink, a different mountain. Turning the seed is walking along the range. The craftsmanship lies in making every seed compose, so that there is no bad mountain in the family, only quieter and louder ones; that is the mark of an algorithm refined through countless iterations by someone at the top of the field, and the standard this one is held to. The art is ground, never figure: it stays lighter than the lightest ink that carries meaning, it never moves, and it disappears when the page is printed.
+Variation is lineage. Each area of the site is a seed, and a seed is a family resemblance: the same ridge grammar, the same interval, the same ink, a different mountain. Turning the seed is walking along the range. The craftsmanship lies in making every seed compose, so that there is no bad mountain in the family, only quieter and louder ones; that is the mark of an algorithm refined through countless iterations by someone at the top of the field, and the standard this one is held to. The art is ground, never figure: it stays lighter than the lightest ink that carries meaning, it never moves on its own, and it disappears when the page is printed. One sheet answers the reader: on the home page the ascent becomes a panorama with a route walked up it, and as the reader climbs the camps the nearer ridges settle by a few percent, the way foothills sink as you gain height. The route itself is the surveyor's too: it keeps just below the skyline ridge and above the ridge in front, rising and dipping with the range, and its camps stand on the high points nearest even steps to the summit.
 
 ## Conceptual seed
 
@@ -24,5 +24,5 @@ Hidden in the parameters, for those who know:
 ## Where it lives
 
 - `scripts/art.mjs`: the algorithm (between the `<core>` markers) and the Node wrapper that writes the site's SVGs.
-- `site-data/art.json`: seeds and per-area settings.
+- `site-data/art.json`: seeds and per-area settings, and `climb`, the home page's panorama and route (drawn from the ascent's seeds).
 - `art/viewer.html`: the p5.js explorer, built from the algorithmic-art skill's viewer template. Its copy of the algorithm is refreshed from `scripts/art.mjs` on every build.
