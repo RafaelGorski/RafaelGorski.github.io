@@ -144,13 +144,15 @@ headings and intros, one remark per camp (`home.route.camps.<stage-id>`), the ra
 
 ### The route on the home page
 
-As the reader moves down the six camps, the route draws itself up the panorama, each camp appears
-as the route reaches it, the trail blaze climbs, and the nearer ridges settle a little. It is CSS
-(scroll-driven animation on the camps' view timelines) where the browser supports it, and
-`assets/climb.js` elsewhere. With reduced motion, without JavaScript or without either, the route
-is shown drawn in full with the blaze on the summit. The route's line and camp positions come from
-`scripts/art.mjs` (`climb` in `site-data/art.json`); the build writes the per-camp keyframes into
-the home page's head.
+The route's panorama is the ground of the home page's title: the thesis's leader runs to its
+summit. As the reader scrolls down from the title, the route draws itself up the ridge, each camp
+appears as the route reaches it, the trail blaze climbs to the summit and the nearer ridges settle
+a little; it is done by the time the panorama reaches the top of the screen. It is CSS
+(scroll-driven animation on one view timeline) where the browser supports it, and
+`assets/climb.js` elsewhere. On phones, with reduced motion, without JavaScript or without either,
+the route is shown drawn in full with the blaze on the summit. The six camps follow as a compact
+list. The route's line and camp positions come from `scripts/art.mjs` (`climb` in
+`site-data/art.json`).
 
 ## Editing the home page and the trail log
 

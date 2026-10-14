@@ -309,8 +309,8 @@ original writing.
   paragraphs beside them step up to 1.125rem from 64rem.
 - **Panorama lettering** on the home page's route is set in SVG user units, like the disc's: camp
   numerals 12.5 and camp names 13.5 (uppercase, 0.08em, with a paper halo). A scale factor (`--k`,
-  1 on desktop, 1.7 below 64rem, 2.8 below 40rem) restores the marks where the panorama is drawn
-  small; below 40rem the names are dropped and the camps keep their numerals.
+  1.5 from 64rem, 2 from 40rem, 2.8 below) restores the marks where the panorama is drawn small;
+  below 40rem the names are dropped and the camps keep their numerals.
 - **Disc lettering** is set in SVG user units, so it scales with the disc: quadrant names 15
   (uppercase, 0.07em), blip numerals 13.5, counts 12.5, the ring scale 11.5 (uppercase, 0.08em).
   At the smallest desktop disc a numeral renders near 10px.
@@ -321,11 +321,11 @@ No page head reads "bold title over a grey subtitle". Each title is lettered int
 drawing, as names are lettered into a map, and stays a real `<h1>`, first in reading order:
 h1, then the legend or margin text, then the content.
 
-- **Home (summit label):** the thesis sits beside the author's summit, and its last line runs on a
-  1px ink leader, straight, at its x-height, to the vermilion trail blaze. The art is placed from
-  the thesis (CSS sets the sheet's top so the blaze lands on the leader's line, at any width), so
-  the two never drift apart. The lede is a margin note in ink at body size, on a 2px rule, beside
-  the itinerary.
+- **Home (summit label):** the thesis names the summit of the route drawn behind it: its last line
+  runs on a 1px ink leader, straight, at its x-height, to the summit camp, where the guide's trail
+  blaze stands once the route is climbed. The panorama is placed from the thesis (CSS sets its top
+  so the summit lands on the leader's line, at any width), so the two never drift apart. The lede
+  is a margin note in ink at body size, on a 2px rule, on the paper beside the panorama.
 - **Route (range name):** "The route from Purpose to Govern" (`site-data/plate.json`) is lettered in light spaced capitals across the six-stage ridge,
   in the ridge's own grid row. The build measures the title in the title face
   (`ADVANCE` in `scripts/build.mjs`) and CSS spaces it to the sheet's exact width, so it spans the
@@ -456,35 +456,37 @@ valleys, Gear check, Trail log, The guide.
   (`16rem`–`23rem`). Below 64rem the margin follows its paragraph after a dashed hairline.
 - **Head:** the thesis as the h1, one sentence per line (the build splits it at sentence ends),
   lettered as the summit's label with a leader to the trail blaze (see Titles: map lettering).
-  Below it, from 64rem, the lede (the guide framing) as a margin note in ink on a 2px rule, set
-  against the margin column, and in the margin the **itinerary**: the page's five sections as a
-  route card on a 2px ink rule, each a Jost name and a count the build computes. Below 64rem the
-  lede follows the title as a standfirst in ink, then the itinerary.
-- **The route (`.climb`):** the focal moment. A panorama of the ascent (the map's own ridge, as one
-  image in three depth bands) holds still at the top of the screen (`position: sticky`, at most
-  42svh tall) while the six camps are read below it. Over it, drawn inline: the planned route as a
-  dotted ink-secondary line, the walked route as a 2.6-unit ink line, the camps as 20-unit squares
+  The thesis's leader runs to the summit of the route's panorama (see below), which is the title's
+  ground: from 64rem it stands at the right of the sheet (70% of its width) with its summit on the
+  leader's line, the lede (the guide framing) is a margin note in ink on a 2px rule on the paper
+  beside it, and the **itinerary** (the page's five sections as a route card on a 2px ink rule,
+  each a Jost name and a count the build computes) is its legend, under it in the margin column.
+  No text stands on the art; only the leader crosses it. From 40rem to 64rem the panorama spans the
+  sheet under the thesis and the lede and itinerary follow it. Below 40rem it is a small strip under
+  the thesis, drawn in full, and the leader is dropped.
+- **The route's panorama (`.climb-scene`), behind the title:** the ascent (the map's own ridge, as
+  one image in three depth bands), and over it, drawn inline: the planned route as a dotted
+  ink-secondary line, the walked route as a 2.6-unit ink line, the camps as 20-unit squares
   (ultramarine, Govern in ink) with white Jost numerals and the stage name beneath, and the guide's
-  trail blaze on a short staff. Each camp below is a `.hm` row: a camp band (the stage band as a
-  sign, linking to the stage on the route), the stage question in the position style, the test
-  ("Move on when" / "In control when"), links to the stretch on the route and its sources in the
-  field guide, and in the margin his remark in vermilion, the valleys on that stretch, up to two
-  trail-log entries charted there and the note pinned there. Camps are contiguous and at least the
-  height below the reading line, so each hands the climb on to the next.
+  trail blaze on a short staff, drawn under the squares. The build writes its aspect and summit
+  (`--ar`, `--sx`, `--sy`) on the head, and CSS places it from the thesis.
 - **Motion (one authored moment):** one registered number, `--p`, 0 at the first camp and 1 on the
-  summit, says how far along the reader is. While camp i crosses the reading line (`--line`, 56vh;
-  36vh on phones) `--p` runs from camp i's place on the route to camp i + 1's: five scroll-driven
-  animations on the camps' own view timelines (`view-timeline: --c0` … `--c4`, gathered with
-  `timeline-scope`), with keyframes the build writes from the route's geometry into the page head.
-  From `--p` CSS draws the route (`stroke-dashoffset`), shows each camp as the route reaches it
-  (opacity, and a 7-unit settle), stands the blaze on the route (`offset-path`/`offset-distance`,
-  in the SVG's own units) and settles the two nearer ridge bands (transform only, 2.2% and 4.4%).
-  Camp text settles 8px as it enters view. Where `animation-timeline` is unsupported,
-  `climb.js` (about 2.4 KB, no library) sets the same `--p` from the same geometry on scroll, with
-  rAF, and an IntersectionObserver settles the text. `--p` rests at 1: with reduced motion, without
-  JavaScript, or without either engine, the route is drawn in full, every camp shows and the blaze
-  stands on the summit. Nothing loops or autoplays; the scroll is never taken over. Print and forced
-  colours drop the panorama and keep the camps.
+  summit, says how far up the reader is. It runs from the top of the page to the moment the
+  panorama reaches the top of the screen (the exit-crossing of `.climb-track`, an empty box from
+  the top of the page to the top of the panorama), so the climb is done while the summit is still
+  in view and the title and the route end as one picture. From `--p` CSS draws the route
+  (`stroke-dashoffset`), shows each camp as the route reaches it (opacity, and a 7-unit settle),
+  stands the blaze on the route (`offset-path`/`offset-distance`, in the SVG's own units) and
+  settles the two nearer ridge bands (transform only, 2.2% and 4.4%). Where `animation-timeline` is
+  unsupported, `climb.js` (about 1.5 KB, no library) sets the same `--p` from the same box on
+  scroll, with rAF. `--p` rests at 1: on phones, with reduced motion, without JavaScript, or
+  without either engine, the route is drawn in full, every camp shows and the blaze stands on the
+  summit at the end of the leader. Nothing loops or autoplays; the scroll is never taken over and
+  no reading space is spent on it. Print and forced colours drop the panorama.
+- **The route (camps):** six compact rows, read across from 64rem: the camp band (the stage band as
+  a sign, linking to the stage on the route), the stage question in Jost, his remark in vermilion,
+  and the stretch on the route and its sources in the field guide. Below 64rem the band leads and
+  the rest stacks beside or under it.
 - **The valleys:** each "Watch out for" lab note paired with the Hold blip it links to, in the order a
   team meets them (the blip's first stage, then file order). Each is a `.hm` row: a locator (the
   six stages as a strip, the valley's stage in vermilion and a second stage outlined in it) with
@@ -622,10 +624,9 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
     right edges are neatlines at the margin rule and the right gutter; its left and bottom fall
     away to the valley floor, so the title stands on open ground. On the map and the library it
     keeps to the last two columns of the legend row, beside the key and never behind it.
-  - Home: the author's summit, `.art-summit`, in rule grey, with a vermilion Polish trail blaze (a
-    colour stripe between two white ones) on the summit, beside the thesis. It is placed from the
-    thesis so the blaze sits at the end of the thesis's leader, runs to the end of the margin line,
-    and is clipped at the foot of the head. Hidden below 40rem, where the thesis fills the width.
+  - Home: until v3 the author's summit, `home.svg` (contours in rule grey with a vermilion Polish
+    trail blaze), stood behind the thesis. It is still drawn, for the archived version, but the home
+    page now sets the route's panorama there (below).
   - About: a portrait margin plate, `.art-margin`, in the right margin beside the prose; the title
     is lettered at its summit.
   - Radar: the apron, `.art-apron`. The disc is the summit seen from above and its four rings are
@@ -637,9 +638,9 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
     six images climb above the library's stage index (`.lib-ascent`, on the index's own grid and
     3px off its bands; the row scrolls away and only the bands stick; hidden below 40rem, where the
     index wraps to two rows), and stand at the foot of each library stage head.
-  - Home: the climb, `.climb-l`. The same ascent drawn as one panorama (`climb-far`, `climb-mid`
-    and `climb-near`, 1,600 × 440 with 36 units more below the frame), behind the route, its camps
-    and the blaze. `scripts/art.mjs` also computes the route: a smoothed line kept just below the
+  - Home: the climb, `.climb-l`, the title's ground. The same ascent drawn as one panorama
+    (`climb-far`, `climb-mid` and `climb-near`, 1,600 × 440 with 36 units more below the frame),
+    behind the route, its camps and the blaze. `scripts/art.mjs` also computes the route: a smoothed line kept just below the
     skyline ridge and above the ridge in front, so it rises and dips with the range, with the camps
     on its high points nearest even steps from the start to the summit. It uses the ascent's seeds;
     no new seed.
@@ -648,8 +649,8 @@ The philosophy, the hidden parameters and the p5.js seed explorer are in `art/` 
   - Ground, never figure: never behind data (units, pins, blips, bands; where a head has a key, the
     sheet keeps above it), never behind vermilion text, never darker than ultramarine pale.
   - Decorative: `<img alt="" aria-hidden="true">`, no captions or alt text.
-  - Still, except where the reader moves it: only the home page's climb responds to scroll (the
-    two nearer ridge bands settle by a few percent as the route is climbed). It never moves on its
+  - Still, except where the reader moves it: only the home page's climb responds to scroll, as the
+    title scrolls away (the two nearer ridge bands settle by a few percent as the route is climbed). It never moves on its
     own, and with reduced motion it does not move at all.
   - Hidden in print and in forced colours.
   - On phones every sheet becomes a 9rem cropped corner at 75% opacity, and the stage ridges a
@@ -671,7 +672,7 @@ Do:
   `content/radar.json`; the build validates ids, stage and evidence references and the 30-word
   summary limit, and refuses a cell too full to draw.
 - Respect `prefers-reduced-motion`. The only authored motions are the home page's climb (the route
-  drawing itself with the reader's progress through the camps; see Home), units stamping in column
+  drawing itself up the panorama behind the title as the title scrolls away; see Home), units stamping in column
   by column on the map, radar blips stamping in ring by ring from Adopt outward, and trace bars
   drawing on note pages. Transform, opacity and the route's stroke only; nothing loops or autoplays.
 - Change the mountain art through seeds and settings in `site-data/art.json` (explore them first in

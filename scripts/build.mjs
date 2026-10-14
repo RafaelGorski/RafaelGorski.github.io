@@ -1009,9 +1009,9 @@ ${sections}
 // ---------- Home ----------
 const HOME_CONTRACT = `<!--
 THESIS: The home page is the expedition: one climb told top to bottom. The
-  summit view first (the thesis as the summit's label), then the route drawn
-  up the ridge camp by camp, the valleys where climbs stall, the gear check,
-  the trail log and, last, the guide. Refuses the personal-site hero, the
+  title is the summit's label, set on the route's own panorama; scrolling out
+  of it climbs the route. Then the six camps in a compact list, the valleys
+  where climbs stall, the gear check, the trail log and, last, the guide. Refuses the personal-site hero, the
   metro-map journey slide, the post-card list and scroll-jacking.
 OWN-WORLD: The atlas plate. The route's ridge is the map's own ascent as one
   panorama in ultramarine-pale screens; camps are stage-band squares
@@ -1019,21 +1019,21 @@ OWN-WORLD: The atlas plate. The route's ridge is the map's own ascent as one
   mark, the trail blaze, and vermilion stays his voice (camp remarks, valleys,
   trail-log bands). Paper, ink rules, Barlow Condensed Light titles, Jost
   lettering, system sans reading.
-STORY: Visitors read the thesis, climb the six camps with the marker as the
-  route draws itself, see the named failure modes with their evidence, check
-  the gear on the radar, sample the trail log, and meet the guide: how he
-  leads a climb, what he builds, how to reach him.
-FIRST VIEWPORT: Margin line; the thesis as a two-line light h1 naming the
-  author's summit, its last line on a hairline leader to the trail blaze; the
-  lede as a margin note beside the itinerary; the route's panorama rising
-  into view below.
+STORY: Visitors read the thesis, watch the route draw itself up the ridge
+  behind it as they scroll on, read the six camps, see the named failure modes
+  with their evidence, check the gear on the radar, sample the trail log, and
+  meet the guide: how he leads a climb, what he builds, how to reach him.
+FIRST VIEWPORT: Margin line; the thesis as a two-line light h1, its last line
+  on a hairline leader to the summit of the route's panorama, which rises from
+  beside the lede to the right edge; the itinerary under the panorama.
 FORM: Owner-specified scroll story (v3 brief: the climb), built on the
   annotated page (grounded structure 5 of 7, seed a1f6f0ec); no new roll.
-MOTION: One authored moment. The route draws with the reader's progress
-  through the camps, each camp appears as the route reaches it, the blaze
-  climbs, and the nearer ridges settle a few percent. Scroll-driven CSS
+MOTION: One authored moment. As the title scrolls away, the route draws up
+  the ridge behind it, each camp appears as the route reaches it, the blaze
+  climbs to the summit the title names, and the nearer ridges settle a few
+  percent; it is done while the summit is still on screen. Scroll-driven CSS
   (one registered number, --p) with a small first-party fallback
-  (assets/climb.js). Reduced motion, no JS or no support: drawn in full.
+  (assets/climb.js). Phones, reduced motion, no JS or no support: drawn in full.
 -->`;
 
 // Copy in site-data/*.json may carry [text](url) links; everything else is escaped.
@@ -1062,10 +1062,6 @@ function xref(l, rel) {
     const say = l.label ? `${esc(l.label)}<span class="vh">: ${esc(t.title)}</span>` : `<span class="vh">In the trail log: </span>${esc(t.title)}`;
     return `<li><a class="x-take" href="${rel}log/#take-${esc(t.id)}"><span class="x-sq" aria-hidden="true"></span><span class="x-t">${say}</span></a></li>`;
   }
-  if (l.valley) {
-    const t = l.valley;
-    return `<li><a class="x-valley" href="#valley-${esc(t.id)}"><span class="x-v" aria-hidden="true"></span><span class="x-t"><span class="vh">Valley: </span>${esc(t.title)}</span></a></li>`;
-  }
   return `<li><a class="x-ext" href="${esc(l.href)}"><span class="x-arrow" aria-hidden="true">↗</span><span class="x-t">${esc(l.label)}</span></a></li>`;
 }
 const xrefs = (links, rel) => (links?.length ? `<ul class="xref">${links.map((l) => xref(l, rel)).join("")}</ul>` : "");
@@ -1083,16 +1079,6 @@ const takeEntry = (t, rel, { id = true } = {}) => `          <li class="take"${i
             <p class="tk-b">${inline(t.body)}</p>
             ${xrefs(t.links, rel)}
           </li>`;
-// The stage a lab note belongs to on the route: its first link that names one, directly or
-// through a radar blip or a note.
-const takeStage = (t) => {
-  for (const l of t.links || []) {
-    if (l.stage) return l.stage;
-    if (l.radar) return blips.find((b) => b.id === l.radar)?.stages[0];
-    if (l.note) return noteById[l.note]?.stage;
-  }
-  return null;
-};
 // The valleys: each "Watch out for" note is paired with the Hold blip it links to, and they are
 // told in the order a team meets them on the route (the blip's first stage), then file order.
 const stageIndex = (id) => stages.findIndex((s) => s.id === id);
@@ -1101,13 +1087,20 @@ const valleys = (takes.entries || [])
   .filter(({ b }) => b)
   .sort((x, y) => stageIndex(x.b.stages[0]) - stageIndex(y.b.stages[0]) || x.i - y.i);
 
-// The route's panorama: three depth bands of the ascent (images), with the route, its camps and
-// the guide's trail blaze drawn over them inline so they can respond to scroll. --p, from 0 at
-// the first camp to 1 on the summit, is how far along the route the reader is; at rest (no
-// motion, no script or no scroll-driven animation) it is 1 and the route is drawn in full.
+// The route's panorama, the ground of the home page's title: three depth bands of the ascent
+// (images), with the route, its camps and the guide's trail blaze drawn over them inline so they
+// can respond to scroll. --p, from 0 at the first camp to 1 on the summit, is how far up the route
+// the reader is; at rest (no motion, no script, no scroll-driven animation, phones) it is 1 and the
+// route is drawn in full. The summit's place (--sx, --sy, as shares of the panorama's width) lets
+// CSS end the thesis's leader on it.
 const climb = art.climb;
 const n1 = (v) => String(Math.round(v * 10) / 10);
 const routeD = climb ? climb.pts.map((p, i) => `${i ? "L" : "M"}${n1(p[0])} ${n1(p[1])}`).join("") : "";
+const climbVars = () => {
+  const { W, H, camps } = climb;
+  const summit = camps[camps.length - 1];
+  return `--ar:${(W / H).toFixed(4)};--sx:${(summit.x / W).toFixed(4)};--sy:${(summit.y / W).toFixed(4)}`;
+};
 function climbScene(rel) {
   const { W, H, pad, camps, length } = climb;
   const summit = camps[camps.length - 1];
@@ -1128,7 +1121,7 @@ function climbScene(rel) {
   // square covers the foot of the staff.
   const blaze = `<g class="mk" style="--route: path('${routeD}')" transform="translate(${n1(summit.x)} ${n1(summit.y)})"><g class="mk-i"><line class="mk-s" x1="0" y1="0" x2="0" y2="-30"/><rect class="mk-w" x="0" y="-34" width="24" height="14"/><rect class="mk-r" x="0" y="-29.5" width="24" height="5"/></g></g>`;
   return `<div class="climb-scene" aria-hidden="true">
-      <div class="climb-frame" style="--ar:${(W / H).toFixed(4)};--pad:${((H + pad) / H).toFixed(4)}">
+      <div class="climb-frame" style="--pad:${((H + pad) / H).toFixed(4)}">
         ${layers}
         <svg class="climb-svg" viewBox="0 0 ${W} ${H}" focusable="false">
           <path class="rt-plan" d="${routeD}"/>
@@ -1139,20 +1132,11 @@ function climbScene(rel) {
       </div>
     </div>`;
 }
-// Scroll-driven: while camp i crosses the reading line, --p runs from camp i's place on the route
-// to camp i + 1's. One keyframe set per leg, generated from the route's geometry.
-function climbKeyframes() {
-  const f = climb.camps.map((c) => c.f);
-  return f
-    .slice(0, -1)
-    .map((a, i) => `@keyframes climb-${i} { from { --p: ${a.toFixed(4)}; } to { --p: ${f[i + 1].toFixed(4)}; } }`)
-    .join("\n");
-}
 
 function renderHome() {
   const rel = "./";
-  // One sentence per line. The last line ends in the leader that runs out to the trail blaze on the
-  // summit beside it (CSS sets the art so the blaze sits on the leader's line).
+  // One sentence per line. The last line ends in the leader that runs out to the summit of the
+  // route behind it (CSS places the panorama so its summit sits on the leader's line).
   const sentences = String(home.thesis).split(/(?<=[.!?])\s+/);
   const thesis = sentences
     .map((s, i) =>
@@ -1162,9 +1146,8 @@ function renderHome() {
     )
     .join(" ");
   const S = story.home;
-  const margin = (label, say, inner, cls = "") =>
-    say || inner ? `<aside class="mn${cls}" aria-label="${esc(label)}">${say ? `<p class="mn-say">${inline(say)}</p>` : ""}${inner || ""}</aside>` : "";
-  const label = (t) => `<p class="mn-l">${esc(t)}</p>`;
+  const margin = (label, say, inner) =>
+    say || inner ? `<aside class="mn" aria-label="${esc(label)}">${say ? `<p class="mn-say">${inline(say)}</p>` : ""}${inner || ""}</aside>` : "";
 
   // The itinerary: the route card for this page.
   const total = (takes.entries || []).length;
@@ -1178,29 +1161,17 @@ function renderHome() {
     .map(([id, name, note]) => `<li><a href="#${id}"><span class="it-n">${esc(name)}</span><span class="it-m">${esc(note)}</span></a></li>`)
     .join("\n        ");
 
-  // The route: six camps, each a stretch of the climb.
+  // The route: six camps, one row each, read across: the camp, its question, the guide's remark,
+  // and where to go next. The climb itself is drawn behind the title.
   const camps = stages
-    .map((s, i) => {
-      const test = plate.tests?.[s.id];
-      const here = valleys.filter((v) => v.b.stages[0] === s.id);
-      const logged = ["testing", "using"].flatMap((g) => takesIn(g)).filter((t) => takeStage(t) === s.id).slice(0, 2);
-      const pins = notesAt(s.id).map((n) => notePin(n, rel)).join("");
-      const inner =
-        (here.length ? label("Valleys on this stretch") + xrefs(here.map((v) => ({ valley: v.t })), rel) : "") +
-        (logged.length ? label("From the trail log") + xrefs(logged.map((t) => ({ take: t })), rel) : "") +
-        (pins ? `<div class="mn-notes">${pins}</div>` : "");
-      const c = climb?.camps[i];
-      const leg = i < stages.length - 1 ? ` style="view-timeline:--c${i} block"` : "";
-      return `      <li class="camp hm${s.id === "govern" ? " is-govern" : ""}" id="camp-${esc(s.id)}"${c ? ` data-f="${c.f.toFixed(4)}"` : ""}${leg}>
-        <div class="camp-in pos-main">
-          <h3 class="camp-band"><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
-          <p class="camp-q">${esc(s.question)}</p>
-          ${test ? `<p class="camp-test"><b>${esc(test.label)}</b> ${esc(test.text)}</p>` : ""}
-          <p class="camp-go"><a href="${rel}map/#stage-${esc(s.id)}">${esc(S.route.go)}</a> · <a href="${rel}library/#${esc(s.id)}">${primaryAt(s.id).length} sources in the field guide</a></p>
-        </div>
-        ${margin(`On the climb at ${s.name}`, S.route.camps?.[s.id], inner, " camp-in")}
-      </li>`;
-    })
+    .map(
+      (s) => `      <li class="camp${s.id === "govern" ? " is-govern" : ""}" id="camp-${esc(s.id)}">
+        <h3 class="camp-band"><a href="${rel}map/#stage-${esc(s.id)}"><span class="band-n">${s.n}</span>${esc(s.name)}</a></h3>
+        <p class="camp-q">${esc(s.question)}</p>
+        ${S.route.camps?.[s.id] ? `<p class="camp-say">${inline(S.route.camps[s.id])}</p>` : ""}
+        <p class="camp-go"><a href="${rel}map/#stage-${esc(s.id)}">${esc(S.route.go)}</a><span aria-hidden="true"> · </span><a href="${rel}library/#${esc(s.id)}">${primaryAt(s.id).length} sources in the field guide</a></p>
+      </li>`
+    )
     .join("\n");
 
   // The valleys: the failure modes, in the order a team meets them.
@@ -1310,10 +1281,10 @@ ${notes
     </div>`;
 
   const main = `<div class="home">
-  <div class="home-head hm has-art">
+  <div class="home-head hm"${climb ? ` style="${climbVars()}"` : ""}>
     <div class="summit">
       <h1>${thesis}</h1>
-      ${artImg(rel, "home", "art-summit")}
+      ${climb ? `<div class="climb-track" aria-hidden="true"></div>\n      ${climbScene(rel)}` : ""}
     </div>
     <p class="lede">${inline(home.lede)}</p>
     <nav class="itin" aria-label="On this page">
@@ -1323,14 +1294,11 @@ ${notes
     </nav>
   </div>
 
-  <section class="sec climb" id="route" aria-labelledby="route-h">
+  <section class="sec route-x" id="route" aria-labelledby="route-h">
     ${head("route", S.route.heading, S.route.intro)}
-    <div class="climb-body">
-    ${climb ? climbScene(rel) : ""}
     <ol class="camps">
 ${camps}
     </ol>
-    </div>
   </section>
 
   <section class="sec valleys" id="valleys" aria-labelledby="valleys-h">
@@ -1390,7 +1358,6 @@ ${work}
   // Old links still land: /#stage-… on the route's column, and the lab notes, which moved to the
   // trail log, on their entries there.
   const legacy = `<script>(function(h){if(/^#stage-[a-z]+$/.test(h))location.replace("map/"+h);else if(/^#(lab|testing|using|watch|take-[a-z0-9-]+)$/.test(h))location.replace("log/"+h);})(location.hash);</script>\n`;
-  const keyframes = climb ? `<style>\n${climbKeyframes()}\n</style>\n` : "";
   return page({
     rel,
     current: "home",
@@ -1399,7 +1366,7 @@ ${work}
     bodyClass: "is-home",
     main,
     contract: HOME_CONTRACT,
-    head: legacy + keyframes,
+    head: legacy,
     script: climb ? "climb.js" : "",
   });
 }
