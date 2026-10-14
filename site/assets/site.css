@@ -940,6 +940,7 @@ code {
   overflow-wrap: anywhere;
 }
 .callout { margin: 1.25rem 0; padding: 0.9rem 1.1rem; background: var(--ultra-tint); font-size: 0.97rem; }
+.callout > p:last-child { margin-bottom: 0; }
 
 /* Exhibit: the trace */
 .exhibit { margin: 2rem 0 2.25rem; max-width: 64rem; }
@@ -989,6 +990,19 @@ code {
   content: ""; display: inline-block; width: 0.8rem; height: 0.8rem; margin-right: 0.4rem;
   background: var(--c); vertical-align: -0.08em;
 }
+/* Exhibit: code, where the code is the data */
+.exhibit .code-h {
+  margin: 0; padding-bottom: 0.4rem; border-bottom: 2px solid var(--ink);
+  font-family: var(--letter); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.exhibit pre {
+  margin: 0 0 1.25rem; padding: 0.9rem 1.1rem;
+  background: var(--ultra-tint);
+  font-family: var(--code); font-size: 0.8rem; line-height: 1.55; tab-size: 2;
+  overflow-x: auto;
+}
+.exhibit pre code { padding: 0; background: none; font-size: inherit; overflow-wrap: normal; }
 .exhibit figcaption { max-width: var(--measure); font-size: 0.86rem; line-height: 1.5; color: var(--ink-2); }
 .exhibit figcaption b { font-family: var(--letter); font-weight: 600; color: var(--ink); }
 

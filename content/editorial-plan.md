@@ -7,7 +7,8 @@
 
 The published note, *Agentic observability* (stage: operate, built on `otel-genai-semconv`), is the
 model for the series: one decision, a small set of primary sources, and a clear statement of what
-is still in development.
+is still in development. The second note, *Test triangulation* (GN-0002, stage: design, built on
+`effective-software-testing`), follows the same form.
 
 ## 1. What must the pilot beat?
 
@@ -95,7 +96,7 @@ is still in development.
 | Stage   | Proposed notes |
 |---------|----------------|
 | purpose | 1              |
-| design  | 2              |
+| design  | 2 (plus the test triangulation note) |
 | launch  | 3, 4           |
 | scale   | 5, 6           |
 | operate | 7 (plus the published observability note) |

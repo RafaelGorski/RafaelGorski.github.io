@@ -438,6 +438,11 @@ sprite in each page:
   - Bar colours: workflow ink, agent and plan ultramarine, model ultramarine mid, tool ink
     secondary, error vermilion.
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
+- **Exhibit (code):** used when the code itself is the evidence, as in GN-0002. Each block has an
+  uppercase Jost label over a 2px ink rule, then a `pre` on ultramarine tint in the code face,
+  scrolling sideways rather than wrapping. A scrolling block is a focusable, labelled region
+  (`tabindex="0"`, `role="region"`, `aria-labelledby` the label).
+- **Callout:** a tint block for a caveat or, as a `blockquote`, a quotation from a source.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.
 - **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace. No page

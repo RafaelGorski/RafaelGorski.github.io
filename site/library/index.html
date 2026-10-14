@@ -9,7 +9,7 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=c24acea8">
+<link rel="stylesheet" href="../assets/site.css?v=804c3913">
 <!--
 THESIS: The map is an atlas plate of the AI lifecycle. Six stages run
   across; every curated source is one counted unit pinned below the stage where
@@ -62,14 +62,14 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   <img class="art art-sheet" src="../assets/art/library.svg?v=1d212605" alt="" aria-hidden="true" width="1600" height="360" decoding="async">
   <h1 class="range range-short" style="--tw:4.111;--tn:11">Field guide</h1>
   <div class="legend">
-    <p class="caption">The guidebook for the route: 49 sources, each pinned to the stretch where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <p class="caption">The guidebook for the route: 50 sources, each pinned to the stretch where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
     <div class="legend-key">
       <dl class="key">
       <div><dt>Shape</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Rule</b> <span class="k-sub">standard, specification, regulation</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span><b>Practice</b> <span class="k-sub">framework, guide, book</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span><b>Evidence</b> <span class="k-sub">paper, postmortem</span></span></li></ul></dd></div>
       <div><dt>Fill</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Stable</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span><b>Evolving</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-draft"/></svg><span><b>Draft</b></span></li></ul></dd></div>
       
     </dl>
-      <p class="edition">Updated 12 October 2026. Every link, title, publisher and year checked against its source.</p>
+      <p class="edition">Updated 14 October 2026. Every link, title, publisher and year checked against its source.</p>
       
     </div>
   </div>
@@ -78,7 +78,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
 <nav class="stage-index" aria-label="Stages">
   <ol>
       <li><a href="#purpose"><span class="band-n">1</span><span class="si-name">Purpose</span><span class="si-c">6<span class="vh"> sources</span></span></a></li>
-      <li><a href="#design"><span class="band-n">2</span><span class="si-name">Design</span><span class="si-c">8<span class="vh"> sources</span></span></a></li>
+      <li><a href="#design"><span class="band-n">2</span><span class="si-name">Design</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
       <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
       <li><a href="#scale"><span class="band-n">4</span><span class="si-name">Scale</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
       <li><a href="#operate"><span class="band-n">5</span><span class="si-name">Operate</span><span class="si-c">7<span class="vh"> sources</span></span></a></li>
@@ -184,7 +184,11 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
       <h2 id="design-h"><span class="band-n">2</span>Design</h2>
       <p class="q">Does it work on real data, measured honestly?</p>
       <p class="test"><b>Move on when</b> results on real data beat a simple baseline, and the failures are written down, not only the average.</p>
-      
+      <div class="lib-notes"><a class="note-pin" href="../notes/test-triangulation/">
+            <span class="n-id">GN-0002 · Draft</span>
+            <span class="n-t">Test triangulation</span>
+            <span class="vh">, original note</span>
+          </a></div>
       <img class="art ridge" src="../assets/art/stage-design.svg?v=ab2fbc17" alt="" aria-hidden="true" width="300" height="84" decoding="async" loading="lazy">
     </div>
     <div class="ls-body">
@@ -291,6 +295,19 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>Shows how a system's structure of stocks, flows, feedback loops and delays drives its behaviour. AI systems that learn from their own outputs, or agents that call other agents, create exactly such loops.</dd></div>
           <div class="check"><dt>What to check</dt><dd>Draw the feedback loops the system creates, including outputs that return as inputs, and name the delay and the limit on each.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-effective-software-testing">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.manning.com/books/effective-software-testing">Effective Software Testing: A developer's guide</a></h3>
+          <p class="e-m">Maurício Aniche, Manning · 2022</p>
+          <p class="e-k">Book · Stable · also <a href="#launch">Launch</a></p>
+          
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>A systematic method for developer testing: examples from the specification, then the code's structure, contracts and property-based tests. When coding agents write code faster than people can review it, tests must find what nobody tried.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>For each rule that money, permissions or limits depend on, write a property stating what must never happen and let a generator search for counterexamples.</dd></div>
         </dl>
       </li>
     </ol>
@@ -426,7 +443,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="launch-also"><b>Also read here:</b> <a href="#src-underspecification">Underspecification Presents Challenges for Credibility in Modern…</a> <span class="ah-at">(Design)</span>, <a href="#src-inspect-evals">Inspect</a> <span class="ah-at">(Design)</span>, <a href="#src-mcp-specification">Model Context Protocol Specification</a> <span class="ah-at">(Scale)</span>, <a href="#src-prompt-injection-design-patterns">Design Patterns for Securing LLM Agents against Prompt Injections</a> <span class="ah-at">(Scale)</span>, <a href="#src-oauth-security-bcp">Best Current Practice for OAuth 2.0 Security</a> <span class="ah-at">(Scale)</span>, <a href="#src-sre-service-level-objectives">Service Level Objectives</a> <span class="ah-at">(Operate)</span>, <a href="#src-eu-ai-act">EU Artificial Intelligence Act</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-genai-profile">AI RMF Generative AI Profile</a> <span class="ah-at">(Govern)</span>, <a href="#src-model-cards">Model Cards for Model Reporting</a> <span class="ah-at">(Govern)</span>, <a href="#src-moffatt-v-air-canada">Moffatt v. Air Canada, 2024 BCCRT 149</a> <span class="ah-at">(Govern)</span></p>
+    <p class="also-here" id="launch-also"><b>Also read here:</b> <a href="#src-underspecification">Underspecification Presents Challenges for Credibility in Modern…</a> <span class="ah-at">(Design)</span>, <a href="#src-inspect-evals">Inspect</a> <span class="ah-at">(Design)</span>, <a href="#src-effective-software-testing">Effective Software Testing</a> <span class="ah-at">(Design)</span>, <a href="#src-mcp-specification">Model Context Protocol Specification</a> <span class="ah-at">(Scale)</span>, <a href="#src-prompt-injection-design-patterns">Design Patterns for Securing LLM Agents against Prompt Injections</a> <span class="ah-at">(Scale)</span>, <a href="#src-oauth-security-bcp">Best Current Practice for OAuth 2.0 Security</a> <span class="ah-at">(Scale)</span>, <a href="#src-sre-service-level-objectives">Service Level Objectives</a> <span class="ah-at">(Operate)</span>, <a href="#src-eu-ai-act">EU Artificial Intelligence Act</a> <span class="ah-at">(Govern)</span>, <a href="#src-nist-genai-profile">AI RMF Generative AI Profile</a> <span class="ah-at">(Govern)</span>, <a href="#src-model-cards">Model Cards for Model Reporting</a> <span class="ah-at">(Govern)</span>, <a href="#src-moffatt-v-air-canada">Moffatt v. Air Canada, 2024 BCCRT 149</a> <span class="ah-at">(Govern)</span></p>
     <p class="also-here on-radar" id="launch-radar"><b>On the radar:</b> <a href="../radar/#blip-canary-model-releases">Canary releases for model and prompt changes</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-injection-resistant-agent-patterns">Injection-resistant agent design patterns</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-oauth-security-bcp">OAuth to the current security BCP</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-model-context-protocol">Model Context Protocol</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-versioned-evaluation-harness">Versioned open evaluation harness</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-answer-quality-slos">Answer-quality SLOs</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-repeated-trial-reliability">Repeated-trial reliability (pass^k)</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-benchmark-scores-as-launch-evidence">Benchmark scores as launch evidence</a> <span class="ah-at">(Hold)</span>, <a href="../radar/#blip-eu-ai-act-classification">EU AI Act risk classification</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-model-cards-and-datasheets">Model cards and datasheets</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-owasp-launch-review">OWASP Top 10 launch review</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-shifting-accountability-to-ai">Shifting accountability to the model or provider</a> <span class="ah-at">(Hold)</span></p>
     </div>
   </section>

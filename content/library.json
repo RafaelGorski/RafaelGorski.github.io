@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-12",
+  "updated": "2026-10-14",
   "entries": [
     {
       "id": "problem-based-srs",
@@ -182,6 +182,19 @@
       "check": "Draw the feedback loops the system creates, including outputs that return as inputs, and name the delay and the limit on each.",
       "maturity": "stable",
       "verified": "2026-10-12"
+    },
+    {
+      "id": "effective-software-testing",
+      "title": "Effective Software Testing: A developer's guide",
+      "publisher": "Maurício Aniche, Manning",
+      "year": 2022,
+      "url": "https://www.manning.com/books/effective-software-testing",
+      "kind": "book",
+      "stages": ["design", "launch"],
+      "why": "A systematic method for developer testing: examples from the specification, then the code's structure, contracts and property-based tests. When coding agents write code faster than people can review it, tests must find what nobody tried.",
+      "check": "For each rule that money, permissions or limits depend on, write a property stating what must never happen and let a generator search for counterexamples.",
+      "maturity": "stable",
+      "verified": "2026-10-14"
     },
     {
       "id": "sre-reliable-launches",

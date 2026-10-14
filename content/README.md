@@ -120,8 +120,8 @@ Placement rules applied in this draft:
 3. **Vendor writing only as evidence.** Engineering write-ups and postmortems from AI vendors are
    included for what they disclose about practice or failure, never for product claims.
 4. **Free where possible.** Free canonical versions are linked where they exist (arXiv, the
-   publisher's research page, sre.google). ISO/IEC standards, Bainbridge (1983) and the Hubbard
-   and Meadows books are paid; no free canonical version exists.
+   publisher's research page, sre.google).    ISO/IEC standards, Bainbridge (1983) and the Hubbard,
+      Meadows and Aniche books are paid; no free canonical version exists.
 5. **Honest about maturity.** Drafts, revisions in progress and phased obligations are flagged in
    `maturity` and, where it matters, in `why`.
 6. **Voice.** Plain English, British spelling, no hype words, no exclamation marks.

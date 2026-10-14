@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test triangulation: properties that say what must never happen — Rafael Gorski</title>
+<meta name="description" content="Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/site.css?v=804c3913">
+<!--
+THESIS: A note is a plate in the atlas: it says where on the route it sits
+  (Design), then draws its argument as exhibits and adoptable requirements.
+  Refuses the blog-post template and the testing-tutorial template.
+OWN-WORLD: Same plate paper as GN-0001; the locator marks Design in vermilion;
+  the exhibit is a property and its failure report, set in monospace on
+  ultramarine tint, because here the code is the data.
+STORY: The reader learns why examples alone leave gaps, sees four angles on one
+  behaviour, learns to state properties (especially what must never happen)
+  instead of choosing examples, watches a framework break a refund rule, and
+  leaves with six adoptable requirements and three first steps.
+FIRST VIEWPORT: Locator band; the title, with the note chip and date in the
+  margin rail; then the lede and abstract as a standfirst under a rule.
+FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
+-->
+</head>
+<body class="is-note">
+<a class="skip" href="#content">Skip to content</a>
+<header class="margin">
+  <a class="name" href="../../">Rafael Gorski</a>
+  <nav class="site-nav" aria-label="Site">
+    <ul>
+      <li><a href="../../map/">Route</a></li>
+      <li><a href="../../radar/">Radar</a></li>
+      <li><a href="../../library/">Field guide</a></li>
+      <li><a href="../../log/">Trail log</a></li>
+      <li><a href="../../about/">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="content">
+  <article class="note">
+    <div class="note-head">
+      <nav class="locator" aria-label="Where this note sits on the route">
+        <ol>
+          <li><a href="../../library/#purpose">Purpose</a></li>
+          <li><a href="../../library/#design" aria-current="location">Design</a></li>
+          <li><a href="../../library/#launch">Launch</a></li>
+          <li><a href="../../library/#scale">Scale</a></li>
+          <li><a href="../../library/#operate">Operate</a></li>
+          <li><a href="../../library/#govern">Govern</a></li>
+        </ol>
+      </nav>
+      <div class="nh-grid has-art">
+        <img class="art art-sheet" src="../../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
+        <h1>Test triangulation: properties that say what must never happen</h1>
+        <p class="note-meta"><span class="n-chip">GN-0002</span> Draft · <time datetime="2026-10">October 2026</time> · <a href="../../log/#gn-0002">Trail log</a> · Source: <a href="#ref-est">Effective Software Testing</a></p>
+        <div class="standfirst">
+          <p class="lede">An example-based test checks a case an engineer thought of. When coding agents write code faster than anyone can read it, the defects that matter sit in the cases nobody thought of.</p>
+          <p class="abstract">Test triangulation checks one behaviour from several independent angles: examples from the specification, the structure of the code, contracts and properties. Property-based testing separates the tests from engineers' concrete examples. The team states the properties that constrain the behaviour, including what must never happen, and a framework generates thousands of inputs trying to break them. This note draws on Maurício Aniche's <em>Effective Software Testing</em>. It explains the method, shows a property finding a gap in a refund rule, and sets out six requirements a program can adopt.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-body">
+      <nav class="toc" aria-labelledby="toc-h">
+        <h2 id="toc-h">In this note</h2>
+        <ol>
+          <li><a href="#s1"><span class="secno">1</span>One angle is not enough</a></li>
+          <li><a href="#s2"><span class="secno">2</span>Four angles on one behaviour</a></li>
+          <li><a href="#s3"><span class="secno">3</span>Properties, not examples</a></li>
+          <li><a href="#s4"><span class="secno">4</span>What must never happen</a></li>
+          <li><a href="#s5"><span class="secno">5</span>Thousands of cases</a></li>
+          <li><a href="#s6"><span class="secno">6</span>Triage the counterexample</a></li>
+          <li><a href="#s7"><span class="secno">7</span>Requirements R1–R6</a></li>
+          <li><a href="#s8"><span class="secno">8</span>Where to start</a></li>
+          <li><a href="#s9"><span class="secno">9</span>What is still open</a></li>
+          <li><a href="#refs"><span class="secno">10</span>References</a></li>
+        </ol>
+      </nav>
+
+      <div class="prose">
+
+        <h2 id="s1"><a class="self" href="#s1"><span class="secno">1</span>One angle is not enough</a></h2>
+        <p>Most test suites are a list of examples. An engineer picks an input, works out the expected output and asserts it. That is useful, and it has a ceiling: the suite checks the cases somebody thought of. Aniche starts from the same limit. Exhaustive testing is impossible, so testing is a matter of choosing inputs well and knowing when to stop. In his words, “No matter what testing you do, it will never be perfect or enough” <a href="#ref-est">[EST, ch.&nbsp;1]</a>.</p>
+        <p>Coding agents make the ceiling lower. An agent can write a feature and its tests in the same minute. If both come from the same reading of the requirement, they share its blind spots: a misread rule produces code and tests that agree with each other and are both wrong. Reviewers cannot read every line any more, so the suite has to find the cases nobody looked for.</p>
+        <p>Triangulation is borrowed from surveying, where a point is fixed by taking bearings from more than one place. In testing it means checking one behaviour from several independent angles, so that a gap one angle misses is caught by another.</p>
+
+        <h2 id="s2"><a class="self" href="#s2"><span class="secno">2</span>Four angles on one behaviour</a></h2>
+        <p><em>Effective Software Testing</em> builds a developer's suite in layers. It starts from the specification, adds tests the source code reveals, designs contracts into the code, and then states properties for a framework to check <a href="#ref-est">[EST, chs.&nbsp;2–5]</a>. Each layer finds something the others miss.</p>
+
+        <table class="signals">
+          <thead>
+            <tr><th scope="col">The angle</th><th scope="col">What it finds, and what it misses</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Examples from the specification</th>
+              <td><p><strong>Finds</strong> wrong outputs for the partitions and boundaries read from the requirement.</p><p><strong>Misses</strong> partitions nobody noticed when reading it.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Structural coverage of the code</th>
+              <td><p><strong>Finds</strong> branches and conditions no test exercises. In Aniche's words, “you may have forgotten a partition or two when analyzing the requirements” <a href="#ref-est">[EST, ch.&nbsp;3]</a>.</p><p><strong>Misses</strong> behaviour the code does not implement at all. Coverage shows which lines ran, not that they were right.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Contracts in the code</th>
+              <td><p><strong>Finds</strong> broken pre-conditions, post-conditions and invariants at the moment they break, in tests and in production <a href="#ref-est">[EST, ch.&nbsp;4]</a>.</p><p><strong>Misses</strong> inputs that never reach the contract.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Properties checked by a framework</th>
+              <td><p><strong>Finds</strong> counterexamples to a stated rule across thousands of generated inputs, including combinations nobody would write by hand <a href="#ref-est">[EST, ch.&nbsp;5]</a>.</p><p><strong>Misses</strong> rules nobody wrote down, and inputs the generator cannot produce.</p></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>No single angle is enough. The useful signal is disagreement: a branch that no specification test reaches, or a property that fails on an input the examples skipped, marks a gap in the code or in the understanding of the requirement. Of the four, properties change the most about how tests are written, so the rest of this note concentrates on them.</p>
+
+        <h2 id="s3"><a class="self" href="#s3"><span class="secno">3</span>Properties, not examples</a></h2>
+        <p>An example-based test encodes one engineer's idea of a case: charge 120, refund 30, expect 90 left. The engineer chooses the input, so the test inherits the engineer's assumptions about which inputs matter. Property-based testing takes that choice away. Aniche describes the shift directly:</p>
+        <blockquote class="callout">
+          <p>“We do not pick a concrete example; rather, we define a property (or a set of properties) that the program should adhere to, and the test framework tries to find a counterexample.” <a href="#ref-est">[EST, ch.&nbsp;5]</a></p>
+        </blockquote>
+        <p>The engineer's job changes from choosing inputs to stating constraints. A property is a rule that must hold for every valid input. The output of a sort is in order and contains the same elements as the input. A discount never takes a price below zero. Serialising a message and parsing it again returns the original. Together, the properties form the <em>constraint set</em>: the team's written claim about what the behaviour is, independent of any particular example.</p>
+        <p>The framework then plays the adversary. It generates inputs, mixes in edge cases such as zero, empty lists and the largest allowed values, and tries to break each property <a href="#ref-jqwik">[JQWIK]</a>. The test passes only when the framework fails to find a counterexample. When it succeeds, the failing input is evidence that the code, the property or the constraint set is wrong.</p>
+        <p>Examples do not disappear. They remain the clearest way to document a specific case, and every counterexample the framework finds should become one (<a href="#r5">R5</a>). Aniche compares the two styles and uses both <a href="#ref-est">[EST, ch.&nbsp;5]</a>. What changes is that examples are no longer the only description of what the system must do.</p>
+
+        <h2 id="s4"><a class="self" href="#s4"><span class="secno">4</span>Write down what must never happen</a></h2>
+        <p>The most valuable properties are often negative. A system that moves money, grants access or spends a budget is defined as much by what it must never do as by what it does. Writing those rules down is design work, not a testing chore, which is why this note sits at Design on the route. In an AI system, the never-rules usually live in the ordinary code around the model:</p>
+        <ul>
+          <li>A refund never exceeds the amount charged.</li>
+          <li>An agent never calls a tool outside the permissions of the user it acts for.</li>
+          <li>Retries for one request never exceed their budget, however the failures are arranged. Retries without a budget are on Hold on the radar as <a href="../../radar/#blip-unbudgeted-retries">unbudgeted automatic retries</a>.</li>
+          <li>A parser never passes on model output that fails its schema.</li>
+        </ul>
+        <p>Rules like these are what the radar calls <a href="../../radar/#blip-controls-outside-the-model">controls enforced outside the model</a>. That code is deterministic, so a generated input either breaks the rule or it does not, and properties are the most direct way to test it. Many never-rules are also invariants in Aniche's sense, so the same rule can be enforced as a contract in the code and checked as a property in the tests <a href="#ref-est">[EST, chs.&nbsp;4–5]</a>.</p>
+
+        <h2 id="s5"><a class="self" href="#s5"><span class="secno">5</span>Thousands of cases, one counterexample</a></h2>
+        <p>Exhibit 1 is a property for the first rule above, written for jqwik, the Java property-based testing library used in the book <a href="#ref-est">[EST, ch.&nbsp;5]</a> <a href="#ref-jqwik">[JQWIK]</a>. The guard under test checks each refund request against the amount charged. The property does not list cases. It says that, for any charge and any short sequence of requests, the total refunded never exceeds the charge.</p>
+
+        <figure class="exhibit" aria-labelledby="exhibit-cap">
+          <p class="code-h" id="code-property">The property</p>
+          <pre tabindex="0" role="region" aria-labelledby="code-property"><code>@Property(tries = 10_000)
+void refundsNeverExceedTheCharge(
+    @ForAll @IntRange(min = 1, max = 100_000) int chargedCents,
+    @ForAll @Size(max = 5)
+    List&lt;@IntRange(min = 1, max = 100_000) Integer&gt; requestsCents) {
+
+  RefundGuard guard = new RefundGuard(chargedCents);
+  int refundedCents = 0;
+  for (int request : requestsCents) {
+    if (guard.allow(request)) {
+      refundedCents += request;
+    }
+  }
+  assertThat(refundedCents).isLessThanOrEqualTo(chargedCents);
+}</code></pre>
+          <p class="code-h" id="code-report">The failure report, abridged</p>
+          <pre tabindex="0" role="region" aria-labelledby="code-report"><code>tries = 4                     | # of calls to property
+checks = 4                    | # of not rejected calls
+seed = -1428803127462810357   | random seed to reproduce generated values
+
+Shrunk Sample (9 steps)
+-----------------------
+  chargedCents: 1
+  requestsCents: [1, 1]
+
+Original Sample
+---------------
+  chargedCents: 61428
+  requestsCents: [48310, 27795, 1]</code></pre>
+          <figcaption id="exhibit-cap"><b>Exhibit 1.</b> Illustrative property and failure report. The refund guard, its rule and every number in the report are invented. The report layout follows jqwik's failure reporting, shortened to the lines discussed here <a href="#ref-jqwik">[JQWIK]</a>.</figcaption>
+        </figure>
+
+        <p>Three things in that report matter to a leader, not only to an engineer:</p>
+        <ul>
+          <li><strong>Nobody chose the inputs.</strong> jqwik tries each property 1,000 times by default, and the team can raise that, as here, to 10,000 <a href="#ref-jqwik">[JQWIK]</a>. Across a suite of properties, every push runs thousands of test cases that nobody had to write.</li>
+          <li><strong>The counterexample is minimal.</strong> After a failure, the framework shrinks the input to the smallest one that still fails: a one-cent charge and two one-cent requests. Nobody has to debug the original 61,428-cent case.</li>
+          <li><strong>The failure is reproducible.</strong> The report records the seed, and by default the next run tries the failing sample first, so the failure cannot quietly disappear on the next build <a href="#ref-jqwik">[JQWIK]</a>.</li>
+        </ul>
+
+        <h2 id="s6"><a class="self" href="#s6"><span class="secno">6</span>A counterexample is a question about the constraint set</a></h2>
+        <p>The guard in Exhibit 1 does exactly what its rule says: it rejects any single refund larger than the charge. The property still fails, because two refunds of one cent add up to more than a one-cent charge. In an agent system that input is not exotic. An agent that times out and retries the same refund produces it. Asking why the property failed has three possible answers, and each has a different owner:</p>
+        <ul>
+          <li><strong>The code is wrong.</strong> The rule meant a limit on the total, and the guard checks each refund on its own. Engineering fixes the guard.</li>
+          <li><strong>The property is wrong.</strong> The business allows refunds above the charge, for example as goodwill credits. Engineering corrects the property and records why.</li>
+          <li><strong>The constraint set has a gap.</strong> The requirement never said whether the limit applies to each refund or to the total, or whether a retried request counts as a new refund. Neither the engineer nor the agent should guess. The question goes to the owner of the requirement.</li>
+        </ul>
+        <p>The third answer is the main reason to do this. A set of properties is a precise statement of what the team believes the rules are. When the framework breaks one, it often shows that the rules were incomplete or contradicted each other. Finding that in a test run costs a conversation; finding it in production costs a dispute with a customer. Tracing each property to the need it protects, in the way <a href="../../library/#src-problem-based-srs">Problem-Based SRS</a> traces requirements to customer problems, makes it clear who owns the answer.</p>
+
+        <h2 id="s7"><a class="self" href="#s7"><span class="secno">7</span>Requirements for leadership</a></h2>
+        <p>These are written so that they can be copied into an engineering standard or a definition of done. Each one links to the section above that motivates it.</p>
+        <p class="reqs-key">The key words <span class="kw">MUST</span>, <span class="kw">MUST NOT</span> and <span class="kw">SHOULD</span> are to be read as described in <a href="#ref-rfc2119">RFC&nbsp;2119 and RFC&nbsp;8174</a> when, and only when, they appear in capitals.</p>
+
+        <ol class="reqs">
+          <li id="r1">
+            <span class="rid"><a href="#r1">R1</a></span>
+            <div>
+              <p>Every component that enforces a business rule, a permission or a limit <span class="kw">MUST</span> have a written list of what must never happen, owned by the person accountable for the rule.</p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-est">[EST]</a></p>
+            </div>
+          </li>
+          <li id="r2">
+            <span class="rid"><a href="#r2">R2</a></span>
+            <div>
+              <p>Each item on that list <span class="kw">SHOULD</span> be expressed as a property and run on every push, with the number of tries and the seed recorded in the test report.</p>
+              <p class="rtrace">§<a href="#s3">3</a> · §<a href="#s5">5</a> · <a href="#ref-jqwik">[JQWIK]</a></p>
+            </div>
+          </li>
+          <li id="r3">
+            <span class="rid"><a href="#r3">R3</a></span>
+            <div>
+              <p>Test suites for such components <span class="kw">MUST</span> combine more than one angle from section&nbsp;2. Code coverage alone <span class="kw">MUST NOT</span> be accepted as evidence that a component is tested.</p>
+              <p class="rtrace">§<a href="#s2">2</a> · <a href="#ref-est">[EST]</a></p>
+            </div>
+          </li>
+          <li id="r4">
+            <span class="rid"><a href="#r4">R4</a></span>
+            <div>
+              <p>Every counterexample <span class="kw">MUST</span> be triaged as a code defect, a wrong property or a gap in the constraint set. Gaps <span class="kw">MUST</span> go to the owner of the requirement and <span class="kw">MUST NOT</span> be settled by the engineer or agent that found them.</p>
+              <p class="rtrace">§<a href="#s6">6</a></p>
+            </div>
+          </li>
+          <li id="r5">
+            <span class="rid"><a href="#r5">R5</a></span>
+            <div>
+              <p>Each shrunk counterexample <span class="kw">SHOULD</span> be kept as a named example test, so that the case stays covered when generators or seeds change.</p>
+              <p class="rtrace">§<a href="#s3">3</a> · §<a href="#s5">5</a></p>
+            </div>
+          </li>
+          <li id="r6">
+            <span class="rid"><a href="#r6">R6</a></span>
+            <div>
+              <p>Where a coding agent writes the code, properties <span class="kw">SHOULD</span> be derived from the requirement separately from that code, by a person or by an agent that has not seen the implementation.</p>
+              <p class="rtrace">§<a href="#s1">1</a> · §<a href="#s3">3</a></p>
+            </div>
+          </li>
+        </ol>
+
+        <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>Where to start</a></h2>
+        <ol class="phases">
+          <li><p><strong>Pick one rule that costs money when it breaks.</strong> Refunds, credits, permission checks and retry budgets are good candidates. Write its never-list with the business owner of the rule (<a href="#r1">R1</a>).</p></li>
+          <li><p><strong>Turn the list into properties.</strong> Add a property-based testing library for the team's language; the book's examples use jqwik for Java. Run the properties on every push and keep every shrunk counterexample as an example test (<a href="#r2">R2</a>, <a href="#r5">R5</a>).</p></li>
+          <li><p><strong>Triage the first counterexamples together.</strong> Review the first failures with the business owner and sort each into the three answers from section&nbsp;6. Then write <a href="#r1">R1</a> to <a href="#r6">R6</a> into the definition of done for components that enforce rules (<a href="#r3">R3</a>, <a href="#r4">R4</a>, <a href="#r6">R6</a>).</p></li>
+        </ol>
+
+        <h2 id="s9"><a class="self" href="#s9"><span class="secno">9</span>What is still open</a></h2>
+        <p>Being specific about the limits is part of the guidance:</p>
+        <ul>
+          <li>Good properties take creativity and practice. Aniche gives a section of the chapter to exactly that, and another to common issues <a href="#ref-est">[EST, ch.&nbsp;5]</a>.</li>
+          <li>A property that repeats the implementation proves nothing. If the test computes the expected answer the same way the code does, both carry the same mistake.</li>
+          <li>Generators can be biased. A generator that never produces an empty list, or only produces values in a narrow range, cannot find defects outside it.</li>
+          <li>Passing is not proof. A property that survives 10,000 tries has not found a counterexample in those tries. It has not shown that none exists.</li>
+          <li>Model outputs are not deterministic. Properties test the code around the model. Judging the model's own answers needs repeated trials and evaluation, such as <a href="../../radar/#blip-repeated-trial-reliability">repeated-trial reliability</a> on the radar.</li>
+        </ul>
+        <p>None of this argues for fewer example tests. It argues against letting examples be the only statement of what the system must do.</p>
+
+        <h2 id="refs"><a class="self" href="#refs"><span class="secno">10</span>References</a></h2>
+        <ul class="refs">
+          <li id="ref-est"><span class="rk">[EST]</span><span>Aniche, M. <a href="https://www.manning.com/books/effective-software-testing"><cite>Effective Software Testing: A developer's guide</cite></a>. Manning, 2022. Chapters cited: <a href="https://livebook.manning.com/book/effective-software-testing/chapter-1/">1, Effective and systematic software testing</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-2/">2, Specification-based testing</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-3/">3, Structural testing and code coverage</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-4/">4, Designing contracts</a>; <a href="https://livebook.manning.com/book/effective-software-testing/chapter-5/">5, Property-based testing</a>. Listed in this site's <a href="../../library/#src-effective-software-testing">field guide</a>.</span></li>
+          <li id="ref-jqwik"><span class="rk">[JQWIK]</span><span>jqwik. <a href="https://jqwik.net/docs/current/user-guide.html">jqwik user guide</a>, current version.</span></li>
+          <li id="ref-rfc2119"><span class="rk">[RFC2119]</span><span>Bradner, S. <a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>, and <a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>.</span></li>
+        </ul>
+
+        <aside class="charted" aria-labelledby="charted-h">
+          <p id="charted-h" class="c-stage">Charted at Design</p>
+          <p class="c-q">Does it work on real data, measured honestly?</p>
+          <p><a href="../../library/#design">Sources for this stretch in the field guide</a> · <a href="../../map/#stage-design">Design on the route</a></p>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="foot">
+  <p>GN-0002 · Draft · © 2026 Rafael Gorski. Views are my own, not my employer's.</p>
+  <p><a href="../../log/">Back to the trail log</a> · <a href="../../map/">the route</a></p>
+</footer>
+</body>
+</html>

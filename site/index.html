@@ -9,7 +9,7 @@
 <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="./assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/site.css?v=c24acea8">
+<link rel="stylesheet" href="./assets/site.css?v=804c3913">
 <script src="./assets/climb.js?v=ca3849d4" defer></script>
 <script>(function(h){if(/^#stage-[a-z]+$/.test(h))location.replace("map/"+h);else if(/^#(lab|testing|using|watch|take-[a-z0-9-]+)$/.test(h))location.replace("log/"+h);})(location.hash);</script>
 <!--
@@ -98,7 +98,7 @@ MOTION: One authored moment. As the title scrolls away, the route draws up
         <li><a href="#camps"><span class="it-n">The route</span><span class="it-m">6 camps, Purpose to Govern</span></a></li>
         <li><a href="#valleys"><span class="it-n">The valleys</span><span class="it-m">7 failure modes</span></a></li>
         <li><a href="#gear"><span class="it-n">Gear check</span><span class="it-m">40 items on the radar</span></a></li>
-        <li><a href="#log"><span class="it-n">Trail log</span><span class="it-m">16 entries, 1 note</span></a></li>
+        <li><a href="#log"><span class="it-n">Trail log</span><span class="it-m">17 entries, 2 notes</span></a></li>
         <li><a href="#guide"><span class="it-n">The guide</span><span class="it-m">How I lead a climb</span></a></li>
       </ol>
     </nav>
@@ -125,7 +125,7 @@ MOTION: One authored moment. As the title scrolls away, the route draws up
           <p class="camp-n" aria-hidden="true"><span class="band-n">2</span>Design</p>
           <p class="camp-q">Does it work on real data, measured honestly?</p>
           <p class="camp-say">Most routes change here, once real data arrives. Turning back at this camp is cheap. Turning back after launch is not.</p>
-          <p class="camp-go"><a href="./map/#stage-design">This stretch on the route</a><span aria-hidden="true"> · </span><a href="./library/#design">8 sources in the field guide</a></p>
+          <p class="camp-go"><a href="./map/#stage-design">This stretch on the route</a><span aria-hidden="true"> · </span><a href="./library/#design">9 sources in the field guide</a></p>
         </div>
       </li>
       <li class="camp" id="camp-launch" data-f="0.4367" style="--x:0.4252;--y:0.4995">
@@ -277,14 +277,14 @@ MOTION: One authored moment. As the title scrolls away, the route draws up
     </div>
     <div class="lab-plate">
       <section class="lab-g" aria-labelledby="x-testing-h">
-        <h3 class="lab-band" id="x-testing-h"><a href="./log/#testing"><span>Testing now</span><span class="lb-c">4<span class="vh"> entries</span></span></a></h3>
+        <h3 class="lab-band" id="x-testing-h"><a href="./log/#testing"><span>Testing now</span><span class="lb-c">5<span class="vh"> entries</span></span></a></h3>
         <p class="lab-q">Trying it, not settled on it.</p>
         <ol class="takes">
           <li class="take">
-            <h4 class="tk-t"><a href="./log/#take-skill-traces-features">A skill that makes the agent trace every feature to a problem</a></h4>
-            <p class="tk-m"><time datetime="2026-10-13">13 October 2026</time> · <span class="tk-draft">Draft</span></p>
-            <p class="tk-b">I'm testing whether an agent skill can keep a coding agent honest about why it builds something. Problem-Based SRS walks it from customer problems to needs to requirements and checks that nothing is left without a parent. It's open source under MIT, for GitHub Copilot and Claude Code.</p>
-            <ul class="xref"><li><a class="x-ext" href="https://github.com/RafaelGorski/Problem-Based-SRS"><span class="x-arrow" aria-hidden="true">↗</span><span class="x-t">Problem-Based SRS on GitHub</span></a></li><li><a class="x-blip" href="./radar/#blip-problem-based-requirements"><span class="x-n" aria-hidden="true">5</span><span class="x-t"><span class="vh">On the radar: </span>Problem-based requirements <span class="x-m">· Trial</span></span></a></li><li><a class="x-src" href="./library/#src-problem-based-srs"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span class="x-t"><span class="vh">In the field guide: </span>Problem-Based Software Requirements Specification <span class="x-m">· 2016</span></span></a></li></ul>
+            <h4 class="tk-t"><a href="./log/#take-never-properties">Tests that state what must never happen</a></h4>
+            <p class="tk-m"><time datetime="2026-10-14">14 October 2026</time> · <span class="tk-draft">Draft</span></p>
+            <p class="tk-b">I'm trying property-based tests on the code around agents: refund limits, permissions, retry budgets. Instead of picking examples, I state what must never happen and let the framework try thousands of inputs to break it. What I'm watching for are failures that point to a rule nobody pinned down.</p>
+            <ul class="xref"><li><a class="x-note" href="./notes/test-triangulation/"><span class="x-sq" aria-hidden="true"></span><span class="x-t"><span class="x-id">GN-0002</span> Test triangulation<span class="vh">, original note</span></span></a></li><li><a class="x-src" href="./library/#src-effective-software-testing"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span class="x-t"><span class="vh">In the field guide: </span>Effective Software Testing <span class="x-m">· 2022</span></span></a></li><li><a class="x-blip" href="./radar/#blip-controls-outside-the-model"><span class="x-n" aria-hidden="true">36</span><span class="x-t"><span class="vh">On the radar: </span>Controls enforced outside the model <span class="x-m">· Trial</span></span></a></li></ul>
           </li>
         </ol>
       </section>
@@ -301,7 +301,7 @@ MOTION: One authored moment. As the title scrolls away, the route draws up
         </ol>
       </section>
       <section class="lab-g" aria-labelledby="x-notes-h">
-        <h3 class="lab-band" id="x-notes-h"><a href="./log/#notes"><span>Notes</span><span class="lb-c">1<span class="vh"> notes</span></span></a></h3>
+        <h3 class="lab-band" id="x-notes-h"><a href="./log/#notes"><span>Notes</span><span class="lb-c">2<span class="vh"> notes</span></span></a></h3>
         <p class="lab-q">Longer notes, each pinned to the camp on the route where it matters.</p>
         <ol class="takes">
           <li class="take">
@@ -313,10 +313,19 @@ MOTION: One authored moment. As the title scrolls away, the route draws up
             <p class="tk-m">October 2026 · Charted at Operate</p>
             <p class="tk-b">Agents turn one request into a tree of decisions, model calls and tool calls. The OpenTelemetry GenAI conventions give that tree a shared vocabulary. Eight requirements to adopt.</p>
           </li>
+          <li class="take">
+            <a class="note-pin" href="./notes/test-triangulation/">
+            <span class="n-id">GN-0002 · Draft</span>
+            <span class="n-t">Test triangulation</span>
+            <span class="vh">, original note</span>
+          </a>
+            <p class="tk-m">October 2026 · Charted at Design</p>
+            <p class="tk-b">Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample.</p>
+          </li>
         </ol>
       </section>
     </div>
-    <p class="sec-go"><a href="./log/">Read the whole trail log</a> <span class="sec-go-m">· 16 entries and 1 note</span></p>
+    <p class="sec-go"><a href="./log/">Read the whole trail log</a> <span class="sec-go-m">· 17 entries and 2 notes</span></p>
   </section>
 
   <section class="sec guide" id="guide" aria-labelledby="guide-h">

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trail log — Rafael Gorski</title>
-<meta name="description" content="Rafael Gorski's trail log: 16 short, dated notes on what he is testing, using more effectively and would stop before production, and his long notes, each linked to its evidence.">
+<meta name="description" content="Rafael Gorski's trail log: 17 short, dated notes on what he is testing, using more effectively and would stop before production, and his long notes, each linked to its evidence.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/site.css?v=c24acea8">
+<link rel="stylesheet" href="../assets/site.css?v=804c3913">
 <!--
 THESIS: The trail log is the author's notes from the climb: short dated lab
   notes in three vermilion columns, then the long notes, each pinned to its
@@ -59,15 +59,21 @@ FORM: The home page's former lab plate, moved to its own page (v3).
     <img class="art art-sheet" src="../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
     <h1>Trail log</h1>
     <p class="caption">Short and dated: what I'm testing, what I'm getting better at, and what I'd stop before it reaches production. These change more often than the rest of the site.</p>
-    <p class="edition">16 entries, the latest 13 October 2026, shown as Draft until confirmed · <a href="#notes">1 long note</a></p>
+    <p class="edition">17 entries, the latest 14 October 2026, shown as Draft until confirmed · <a href="#notes">2 long notes</a></p>
   </div>
   <section class="sec log-lab" id="lab" aria-labelledby="lab-h">
     <h2 id="lab-h" class="vh">Lab notes</h2>
     <div class="lab-plate">
       <section class="lab-g" id="testing" aria-labelledby="testing-h">
-        <h3 class="lab-band" id="testing-h"><span>Testing now</span><span class="lb-c">4<span class="vh"> entries</span></span></h3>
+        <h3 class="lab-band" id="testing-h"><span>Testing now</span><span class="lb-c">5<span class="vh"> entries</span></span></h3>
         <p class="lab-q">Trying it, not settled on it.</p>
         <ol class="takes">
+          <li class="take" id="take-never-properties">
+            <h4 class="tk-t">Tests that state what must never happen</h4>
+            <p class="tk-m"><time datetime="2026-10-14">14 October 2026</time> · <span class="tk-draft">Draft</span></p>
+            <p class="tk-b">I'm trying property-based tests on the code around agents: refund limits, permissions, retry budgets. Instead of picking examples, I state what must never happen and let the framework try thousands of inputs to break it. What I'm watching for are failures that point to a rule nobody pinned down.</p>
+            <ul class="xref"><li><a class="x-note" href="../notes/test-triangulation/"><span class="x-sq" aria-hidden="true"></span><span class="x-t"><span class="x-id">GN-0002</span> Test triangulation<span class="vh">, original note</span></span></a></li><li><a class="x-src" href="../library/#src-effective-software-testing"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span class="x-t"><span class="vh">In the field guide: </span>Effective Software Testing <span class="x-m">· 2022</span></span></a></li><li><a class="x-blip" href="../radar/#blip-controls-outside-the-model"><span class="x-n" aria-hidden="true">36</span><span class="x-t"><span class="vh">On the radar: </span>Controls enforced outside the model <span class="x-m">· Trial</span></span></a></li></ul>
+          </li>
           <li class="take" id="take-skill-traces-features">
             <h4 class="tk-t">A skill that makes the agent trace every feature to a problem</h4>
             <p class="tk-m"><time datetime="2026-10-13">13 October 2026</time> · <span class="tk-draft">Draft</span></p>
@@ -197,6 +203,18 @@ FORM: The home page's former lab plate, moved to its own page (v3).
             <span class="n-t">Agentic observability</span>
             <span class="vh">, original note</span>
           </a><ul class="xref"><li><a class="x-stage" href="../map/#stage-operate"><span class="x-sn" aria-hidden="true">5</span><span class="x-t"><span class="vh">On the route: </span>Operate <span class="x-m">· Can we see, fix and improve it in production?</span></span></a></li></ul></aside>
+      </li>
+      <li class="log-n hm" id="gn-0002">
+        <div class="pos-main">
+          <p class="tk-m"><span class="x-id">GN-0002</span> · Draft · <time datetime="2026-10">October 2026</time></p>
+          <h3 class="pos-t"><a href="../notes/test-triangulation/">Test triangulation: properties that say what must never happen</a></h3>
+          <p>Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample.</p>
+        </div>
+        <aside class="mn" aria-label="Where GN-0002 sits"><a class="note-pin" href="../notes/test-triangulation/">
+            <span class="n-id">GN-0002 · Draft</span>
+            <span class="n-t">Test triangulation</span>
+            <span class="vh">, original note</span>
+          </a><ul class="xref"><li><a class="x-stage" href="../map/#stage-design"><span class="x-sn" aria-hidden="true">2</span><span class="x-t"><span class="vh">On the route: </span>Design <span class="x-m">· Does it work on real data, measured honestly?</span></span></a></li></ul></aside>
       </li>
     </ol>
   </section>
