@@ -66,48 +66,48 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
         <h1>Eval-driven development: from production traces to the release gate</h1>
         <p class="note-meta"><span class="n-chip">GN-0003</span> Draft · <time datetime="2026-10">October 2026</time> · <a href="../../log/#gn-0003">Trail log</a> · Sources: <a href="#ref-evals">Evals for AI Engineers</a> (forthcoming), <a href="#ref-otel-genai">OpenTelemetry GenAI semantic conventions</a></p>
         <div class="standfirst">
-          <p class="lede">An LLM system has no specification it can be proven against. Until its behaviour is measured, its limits are known only from demos and complaints.</p>
-          <p class="abstract">Eval-driven development applies the cycle of test-driven development to LLM systems. A failure seen in production telemetry becomes a failing eval; the system changes until the eval passes; the eval then joins a suite that guards every later change. This note sets the practice out in two waves. In the first, online evals score sampled production traces to catch degradations and regressions. In the second, the same evals run in CI/CD as a guardrail for each module, against a recorded baseline, and decide whether a change passes, holds or rolls back. A feedback loop joins the two: eval results become events for engineers, who curate both the system and the eval set. The two waves are this note's own framing. For the method in depth it points to Shreya Shankar and Hamel Husain's forthcoming <em>Evals for AI Engineers</em>. It ends with eight requirements a team can adopt.</p>
+          <p class="lede">An LLM system has no specification to test against, so its limits stay hidden until someone measures them.</p>
+          <p class="abstract">Eval-driven development is test-driven development for LLM systems: each failure found in production becomes an eval that every later change must pass. This note splits the practice into two waves, with engineers between them: evals that watch production, and the same evals as a gate on every change. The two waves are this note's own framing. For the method in depth, see Shreya Shankar and Hamel Husain's forthcoming <em>Evals for AI Engineers</em>. The note ends with eight requirements a team can adopt.</p>
         </div>
-                 <figure class="exhibit flow" aria-labelledby="exhibit-1-cap">
-                   <div class="flow-map">
-                     <ol class="flow-list">
-                       <li class="flow-box is-auto">
-                         <p class="flow-h"><a href="#s3">Wave 1: watch production</a></p>
-                         <ol class="flow-steps">
-                           <li>Telemetry records every production trace</li>
-                           <li>Online evals score a sample of the traces</li>
-                           <li>Degradations and regressions show up as failures</li>
-                         </ol>
-                       </li>
-                       <li class="flow-pass"><span>Results reach engineers as events</span></li>
-                       <li class="flow-box">
-                         <p class="flow-h"><a href="#s5">Close the loop</a></p>
-                         <ol class="flow-steps">
-                           <li>Each failure becomes a failing eval</li>
-                           <li>The system changes until the eval passes</li>
-                           <li>Engineers curate the system and the eval set</li>
-                         </ol>
-                       </li>
-                       <li class="flow-pass"><span>The eval joins the suite</span></li>
-                       <li class="flow-box is-auto">
-                         <p class="flow-h"><a href="#s4">Wave 2: gate every change</a></p>
-                         <ol class="flow-steps">
-                           <li>Every change runs the suite in CI/CD, module by module</li>
-                           <li>Scores are read against a recorded baseline</li>
-                         </ol>
-                         <dl class="flow-dec">
-                           <dt>Pass</dt><dd>the change goes ahead</dd>
-                           <dt>Hold</dt><dd>a named person decides</dd>
-                           <dt>Roll back</dt><dd>the module returns to its baseline</dd>
-                         </dl>
-                       </li>
-                     </ol>
-                     <p class="flow-rail"><span>A passing change reaches production</span></p>
-                   </div>
-                   <figcaption id="exhibit-1-cap"><b>Exhibit 1.</b> The practice as one loop. A failure seen in production becomes a failing eval, the system changes until the eval passes, and the eval joins the suite that gates every later change. A change that passes reaches production, where the first wave watches it. The middle box and the hand-off after it are the cycle of test-driven development. Tinted boxes are the automated waves; the open box is work for engineers. Each box title links to its section.</figcaption>
-                 </figure>
-               </div>
+        <figure class="exhibit flow" aria-labelledby="exhibit-1-cap">
+          <div class="flow-map">
+            <ol class="flow-list">
+              <li class="flow-box is-auto">
+                <p class="flow-h"><a href="#s3">Wave 1: watch production</a></p>
+                <ol class="flow-steps">
+                  <li>Telemetry captures production traces</li>
+                  <li>Online evals score a sample</li>
+                  <li>Drops and regressions show as failures</li>
+                </ol>
+              </li>
+              <li class="flow-pass"><span>Events go to engineers</span></li>
+              <li class="flow-box">
+                <p class="flow-h"><a href="#s5">Close the loop</a></p>
+                <ol class="flow-steps">
+                  <li>Each failure becomes a failing eval</li>
+                  <li>Engineers fix the system until it passes</li>
+                  <li>Engineers curate the eval set</li>
+                </ol>
+              </li>
+              <li class="flow-pass"><span>The eval joins the suite</span></li>
+              <li class="flow-box is-auto">
+                <p class="flow-h"><a href="#s4">Wave 2: gate every change</a></p>
+                <ol class="flow-steps">
+                  <li>CI/CD runs the suite on every change</li>
+                  <li>Each module is scored against its baseline</li>
+                </ol>
+                <dl class="flow-dec">
+                  <dt>Pass</dt><dd>the change ships</dd>
+                  <dt>Hold</dt><dd>a person decides</dd>
+                  <dt>Roll back</dt><dd>the module reverts</dd>
+                </dl>
+              </li>
+            </ol>
+            <p class="flow-rail"><span>Passing changes go to production</span></p>
+          </div>
+          <figcaption id="exhibit-1-cap"><b>Exhibit 1.</b> Tinted boxes run automatically; the open box is work for engineers. The middle box is the test-driven cycle.</figcaption>
+        </figure>
+      </div>
     </div>
 
     <div class="note-body">
