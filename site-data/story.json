@@ -1,6 +1,6 @@
 {
   "description": "The v3 story: the site as one expedition. Launching and scaling an AI system is a climb; the six stages are camps on the route, the valleys are the failure modes, the radar is the gear check, the field guide is the guidebook, the trail log is his notes from the climb, and he is the guide. Narrative copy for the home page and the page intros lives here. {blips}, {sources}, {entries} and {notes} are filled in by the build.",
-  "nav": { "map": "Route", "radar": "Radar", "library": "Field guide", "log": "Trail log", "about": "About" },
+  "nav": { "map": "Route", "radar": "Radar", "library": "Field guide", "log": "Trail log", "about": "About", "search": "Search" },
   "home": {
     "route": {
       "heading": "The route",
@@ -54,6 +54,15 @@
       "title": "Trail log",
       "notesHeading": "Notes",
       "notesIntro": "Longer notes, each pinned to the camp on the route where it matters."
+    },
+    "search": {
+      "title": "Search",
+      "caption": "Search the notes, the trail log, the radar and the field guide. A theme reads as its whole family of words: evals also finds evaluation, benchmark and judge.",
+      "label": "Search the site",
+      "placeholder": "evals, telemetry, rollback",
+      "nojs": "Search needs JavaScript. The theme index below works without it.",
+      "themesHeading": "Themes",
+      "themesIntro": "The site indexed by theme, as at the back of an atlas. Each line is filed where it is written; a note lists the sections that carry the theme."
     }
   }
 }

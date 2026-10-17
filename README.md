@@ -6,9 +6,9 @@ Govern, the valleys where climbs stall, a gear check, an excerpt of his trail lo
 Behind it sit the reference pages: the route (`/map/`), with original notes and curated sources
 pinned to the stage where each matters; the radar, the gear check that places techniques,
 platforms, measures and governance practices from Adopt to Hold; and the field guide
-(`/library/`). The trail log (`/log/`) keeps his dated notes. The site is static HTML served by
-GitHub Pages. A zero-dependency Node script generates the home page, the route, the radar, the
-field guide and the trail log from JSON.
+(`/library/`). The trail log (`/log/`) keeps his dated notes, and search (`/search/`) is the index
+at the back. The site is static HTML served by GitHub Pages. A zero-dependency Node script
+generates the home page, the route, the radar, the field guide, the trail log and search from JSON.
 
 ## Layout
 
@@ -25,9 +25,11 @@ site-data/                     site copy
                                in the trail log and drawn on by the home page
   plate.json                   route title, caption, per-stage tests, short titles
   notes.json                   notes registry: id, stage, title, status
+  search.json                  search themes: each a name and the family of words it finds
   art.json                     seeds and settings for the mountain art
 scripts/
-  build.mjs                    renders site/index.html, site/map/, site/radar/, site/library/ and site/log/
+  build.mjs                    renders site/index.html, site/map/, site/radar/, site/library/, site/log/
+                               and site/search/ (page and index.json)
   art.mjs                      draws the mountain art (Contour Lineage) as SVG; build.mjs runs it
   check-links.mjs              fails if any internal link or #fragment does not resolve
 art/                           design tools for the mountain art (not published)
@@ -39,11 +41,13 @@ site/                          published root
   radar/index.html             the radar, the gear check (generated)
   library/index.html           the field guide (generated; menu label "Field guide")
   log/index.html               the trail log (generated)
+  search/index.html            search, the atlas index (generated, with search/index.json)
   notes/<slug>/index.html      one folder per note (hand-written)
   about/index.html             about this site: method and colophon (hand-written)
   assets/site.css              the whole design system
   assets/radar.js              radar hover and focus linking (progressive enhancement only)
   assets/climb.js              the home page's route where scroll-driven CSS is unsupported (progressive enhancement only)
+  assets/search.js             search in the page (progressive enhancement; the theme index works without it)
   assets/art/                  the mountain art, one SVG per area and stage (generated)
   assets/fonts/                self-hosted fonts (OFL): Barlow Condensed Light for titles, Jost for lettering
   404.html
@@ -165,6 +169,11 @@ The home page at `/` is generated from `site-data/home.json`, `site-data/story.j
 `site-data/takes.json`; the trail log at `/log/` from `site-data/takes.json` and
 `site-data/notes.json`. Run `node scripts/build.mjs` after editing any of them, then
 `node scripts/check-links.mjs`.
+
+Search at `/search/` is rebuilt from everything above. Its themes live in `site-data/search.json`:
+each has an `id`, a `name`, `also` (other words that name it) and `terms` (lowercase; four letters
+or more match word starts, shorter ones whole words). The build warns if a theme files nothing.
+A new hand-written page needs `<li class="aux"><a href="…/search/">Search</a></li>` last in its nav.
 
 ### Lab notes: `site-data/takes.json`
 

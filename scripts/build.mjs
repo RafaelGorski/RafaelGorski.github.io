@@ -2,7 +2,9 @@
 // Zero-dependency build: renders the home page (site/index.html) from site-data/home.json,
 // site-data/story.json and site-data/takes.json; the trail log (site/log/index.html) from
 // site-data/takes.json and site-data/notes.json; and the route (site/map/index.html), the radar
-// (site/radar/index.html) and the field guide (site/library/index.html) from content/*.json.
+// (site/radar/index.html) and the field guide (site/library/index.html) from content/*.json; and
+// search (site/search/index.html, with its index site/search/index.json) from all of them, the
+// long notes' own pages and the themes in site-data/search.json.
 // Run: node scripts/build.mjs
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -52,7 +54,7 @@ for (const f of FONTS) {
   }
   if (next !== css) await writeFile(site("assets/site.css"), next);
 }
-const ASSETS = ["site.css", "radar.js", "climb.js", ...art.map((a) => a.file)];
+const ASSETS = ["site.css", "radar.js", "climb.js", "search.js", ...art.map((a) => a.file)];
 for (const f of ASSETS) {
   const text = (await readFile(site(`assets/${f}`), "utf8")).replace(/\r\n/g, "\n");
   assetVersion[f] = createHash("sha256").update(text).digest("hex").slice(0, 8);
@@ -159,6 +161,7 @@ const radarSrc = await loadJson(process.env.RADAR_FILE || content("radar.json"))
 const homeSrc = await loadJson(siteData("home.json"));
 const takesSrc = await loadJson(siteData("takes.json"));
 const storySrc = await loadJson(siteData("story.json"));
+const searchSrc = await loadJson(siteData("search.json"));
 
 const rawStages = Array.isArray(stagesSrc.data) ? stagesSrc.data : stagesSrc.data.stages;
 const stages = rawStages.map((s, i) => ({
@@ -308,11 +311,29 @@ function checkLinks(at, links, err) {
   for (const w of home.work?.items || []) checkLinks(`work ${w.id}`, w.links, hErr);
 
   const sErr = (m) => errors.push(`${storySrc.file}: ${m}`);
-  for (const k of ["map", "radar", "library", "log", "about"]) if (!story.nav?.[k]) sErr(`nav.${k} is missing`);
+  for (const k of ["map", "radar", "library", "log", "about", "search"]) if (!story.nav?.[k]) sErr(`nav.${k} is missing`);
   for (const k of ["route", "valleys", "gear", "log", "guide"]) if (!story.home?.[k]?.heading) sErr(`home.${k}.heading is missing`);
   for (const k of Object.keys(story.home?.route?.camps || {})) if (!stageById[k]) sErr(`home.route.camps: unknown stage "${k}"`);
   for (const k of RADAR_RINGS) if (!story.rings?.[k]) sErr(`rings.${k} is missing`);
-  for (const k of ["radar", "library", "log"]) if (!story.pages?.[k]?.title) sErr(`pages.${k}.title is missing`);
+  for (const k of ["radar", "library", "log", "search"]) if (!story.pages?.[k]?.title) sErr(`pages.${k}.title is missing`);
+  for (const k of ["label", "themesHeading"]) if (!story.pages?.search?.[k]) sErr(`pages.search.${k} is missing`);
+}
+// Search themes: a name and the word starts that file an item under it (see site-data/search.json).
+const themes = searchSrc.data.themes || [];
+{
+  const qErr = (m) => errors.push(`${searchSrc.file}: ${m}`);
+  const ids = new Set();
+  for (const t of themes) {
+    const at = `theme ${t.id || t.name || "?"}`;
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(t.id || "")) qErr(`${at}: id must be kebab-case`);
+    if (ids.has(t.id)) qErr(`${at}: duplicate id`);
+    ids.add(t.id);
+    if (!t.name) qErr(`${at}: name is missing`);
+    if (!Array.isArray(t.terms) || !t.terms.length) qErr(`${at}: terms must be a non-empty list`);
+    else for (const w of t.terms) if (typeof w !== "string" || w !== w.toLowerCase() || !w.trim()) qErr(`${at}: term "${w}" must be lower case`);
+    if (t.also != null && !Array.isArray(t.also)) qErr(`${at}: also must be a list`);
+  }
+  if (!themes.length) qErr("themes must be a non-empty list");
 }
 
 if (errors.length) {
@@ -623,6 +644,7 @@ ${SPRITE}
       <li><a href="${rel}library/"${cur("library")}>${esc(story.nav.library)}</a></li>
       <li><a href="${rel}log/"${cur("log")}>${esc(story.nav.log)}</a></li>
       <li><a href="${rel}about/"${cur("about")}>${esc(story.nav.about)}</a></li>
+      <li class="aux"><a href="${rel}search/"${cur("search")}>${esc(story.nav.search)}</a></li>
     </ul>
   </nav>
 </header>
@@ -1464,15 +1486,216 @@ ${noteList}
   });
 }
 
+// ---------- Search ----------
+const SEARCH_CONTRACT = `<!--
+THESIS: Search is the atlas's index, kept at the back: one quiet field and
+  the site's themes, each filed with every place it is written. Auxiliary,
+  never a destination; refuses the search modal and the result-card grid.
+OWN-WORLD: The plate's own marks lead every line: numbered discs for blips,
+  isotype glyphs for sources, red squares for the author's notes, section
+  numerals in ultramarine as in a note. Matched words take the ultramarine
+  tint that marks a target everywhere else.
+STORY: A reader types a theme (evals) or picks one, sees every note section,
+  lab note, blip and source filed under it, grouped by kind, and follows one
+  to its place on the site.
+FIRST VIEWPORT: Margin line with Search last and quiet; the light title; the
+  field on a ruled line; the themes as one line of links; then the results,
+  or the theme index when the field is empty.
+FORM: The index of the atlas plate (v3); no new roll.
+-->`;
+
+// Search reads the same words as the build: lower case, accents folded; a term of four letters or
+// more matches the start of a word, a shorter one only a whole word (with an optional plural s).
+// site/assets/search.js repeats these two rules, so the index and live results agree.
+const fold = (s) => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+const termRe = (t) => {
+  const e = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return t.length >= 4 ? new RegExp(`(^|[^a-z0-9])${e}`) : new RegExp(`(^|[^a-z0-9])${e}s?($|[^a-z0-9])`);
+};
+const plain = (html) =>
+  String(html ?? "")
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;|&#160;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&mdash;/g, "—")
+    .replace(/&ndash;/g, "–")
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .replace(/([(\[]) /g, "$1")
+    .replace(/ ([,.;:!?)\]])/g, "$1")
+    .trim();
+const unlink = (s) => String(s ?? "").replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1");
+// Citation keys ([METRICS]) point at the References list; they are not words to search or show.
+const uncite = (html) => html.replace(/\s*<a href="#ref-[^"]*">\[[^\]]*\]<\/a>/g, "");
+
+// A long note is searched section by section, from its own page; References are left out.
+async function noteSections(n) {
+  const file = site(`notes/${n.slug}/index.html`);
+  if (!existsSync(file)) {
+    warnings.push(`search: ${n.id} has no page at site/notes/${n.slug}/, so only its summary is searchable`);
+    return [];
+  }
+  const html = await readFile(file, "utf8");
+  const start = html.indexOf('<div class="prose">');
+  if (start < 0) return [];
+  const end = html.indexOf("</article>", start);
+  const body = uncite(html.slice(start, end < 0 ? undefined : end));
+  const heads = [...body.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)];
+  return heads
+    .map((m, i) => ({
+      id: m[1],
+      n: (m[2].match(/<span class="secno">([^<]*)<\/span>/) || [])[1] || "",
+      t: plain(m[2].replace(/<span class="secno">[^<]*<\/span>/, "")),
+      x: plain(body.slice(m.index + m[0].length, heads[i + 1]?.index ?? body.length)),
+    }))
+    .filter((s) => s.id !== "refs");
+}
+
+const FIND_KINDS = [
+  ["note", "Notes"],
+  ["pos", home.take?.heading || "Positions"],
+  ["take", home.lab?.heading || "Lab notes"],
+  ["blip", story.nav.radar],
+  ["src", story.nav.library],
+  ["stage", story.nav.map],
+];
+const FIND_COUNT = { note: ["note", "notes"], pos: ["position", "positions"], take: ["lab note", "lab notes"], blip: ["blip", "blips"], src: ["source", "sources"], stage: ["stage", "stages"] };
+const groupName = Object.fromEntries((takes.groups || []).map((g) => [g.id, g.name]));
+const findRecords = [];
+for (const n of notes) {
+  findRecords.push({ k: "note", id: n.id, u: `notes/${n.slug}/`, t: n.title, a: n.short || n.title, m: `${n.status} · ${n.dateLabel || formatDate(n.date)}`, x: n.summary, s: await noteSections(n) });
+}
+for (const p of home.take?.positions || []) findRecords.push({ k: "pos", id: p.id, u: `#p-${p.id}`, t: p.title, m: "", x: unlink(p.body) });
+for (const t of [...(takes.entries || [])].sort((a, b) => b.date.localeCompare(a.date))) {
+  findRecords.push({ k: "take", id: t.id, u: `log/#take-${t.id}`, t: t.title, m: `${groupName[t.group]} · ${formatDate(t.date)}`, x: unlink(t.body) });
+}
+for (const b of blips) findRecords.push({ k: "blip", id: b.id, n: b.n, u: `radar/#blip-${b.id}`, t: b.name, m: `${ringById[b.ring].name} · ${quadById[b.quadrant].name}`, x: b.summary });
+for (const e of entries) {
+  findRecords.push({ k: "src", id: e.id, g: `${KINDS[e.kind].family}-${e.maturity}`, u: `library/#src-${e.id}`, t: shortTitle(e), m: `${shortPublisher(e.publisher)} · ${yearLabel(e)}`, x: `${e.why} ${e.check}`, h: `${e.title} ${e.publisher} ${KINDS[e.kind].label}` });
+}
+for (const s of stages) findRecords.push({ k: "stage", id: s.id, n: s.n, u: `map/#stage-${s.id}`, t: s.name, m: "", x: s.question });
+
+// The words a record is found by: its title, short title, text and hidden extras (a source's full
+// title, publisher and kind), never its meta line, so a lab group named "Testing now" does not
+// file every entry in it under Testing.
+const hay = (r) => fold([r.t, r.a, r.x, r.h].filter(Boolean).join(" "));
+const themeHits = (th) => {
+  const res = th.terms.map(termRe);
+  const hit = (s) => res.some((re) => re.test(s));
+  return findRecords
+    .map((r) => {
+      const secs = (r.s || []).filter((s) => hit(fold(`${s.t} ${s.x}`)));
+      return hit(hay(r)) || secs.length ? { r, secs } : null;
+    })
+    .filter(Boolean);
+};
+const themeIndex = themes.map((th) => ({ th, hits: themeHits(th) }));
+for (const { th, hits } of themeIndex) if (!hits.length) warnings.push(`${searchSrc.file}: theme ${th.id} files nothing`);
+
+const findIndex = JSON.stringify({
+  kinds: Object.fromEntries(FIND_KINDS),
+  counts: FIND_COUNT,
+  themes: themes.map(({ id, name, also, terms }) => ({ id, name, also: also || [], terms })),
+  records: findRecords.map(({ id, ...r }) => (r.k === "note" ? { id, ...r } : r)),
+});
+const findVersion = createHash("sha256").update(findIndex).digest("hex").slice(0, 8);
+const themeQ = (th) => `?q=${encodeURIComponent(th.name.toLowerCase())}#t-${th.id}`;
+
+function findLine({ r, secs }, rel) {
+  if (r.k === "pos") {
+    return `<li><a class="x-take" href="${rel}${r.u}"><span class="x-sq" aria-hidden="true"></span><span class="x-t"><span class="vh">On the home page: </span>${esc(r.t)}</span></a></li>`;
+  }
+  if (r.k === "take") return xref({ take: takes.entries.find((t) => t.id === r.id) }, rel);
+  if (r.k === "blip") return xref({ radar: r.id }, rel);
+  if (r.k === "src") return xref({ library: r.id }, rel);
+  if (r.k === "stage") return xref({ stage: r.id }, rel);
+  const refs = secs?.length
+    ? `<p class="x-secs"><span class="x-ss" aria-hidden="true">§</span>${secs
+        .map((s) => `<a href="${rel}${r.u}#${esc(s.id)}" title="${esc(s.t)}"><span class="vh">Section </span>${esc(s.n)}<span class="vh">: ${esc(s.t)}</span></a>`)
+        .join("")}</p>`
+    : "";
+  return xref({ note: r.id }, rel).replace(/<\/li>$/, `${refs}</li>`);
+}
+
+function renderSearch() {
+  const rel = "../";
+  const copy = story.pages.search;
+  const tally = (hits) =>
+    FIND_KINDS.map(([k]) => [k, hits.filter((h) => h.r.k === k).length])
+      .filter(([, c]) => c)
+      .map(([k, c]) => `${c} ${FIND_COUNT[k][c === 1 ? 0 : 1]}`)
+      .join(" · ");
+  const index = themeIndex
+    .map(
+      ({ th, hits }) => `      <li class="fi theme" id="t-${esc(th.id)}">
+        <div class="fi-h">
+          <h3 class="th-t"><a href="${themeQ(th)}" data-q="${esc(th.name.toLowerCase())}">${esc(th.name)}</a></h3>
+          <p class="fi-c">${tally(hits)}</p>
+        </div>
+        ${hits.length ? `<ul class="xref th-l">${FIND_KINDS.flatMap(([k]) => hits.filter((h) => h.r.k === k).map((h) => findLine(h, rel))).join("")}</ul>` : `<p class="empty">Nothing filed here yet.</p>`}
+      </li>`
+    )
+    .join("\n");
+
+  const main = `<div class="find">
+  <div class="page-head find-head">
+    <h1>${esc(copy.title)}</h1>
+    <p class="caption">${inline(copy.caption || "")}</p>
+    <form class="find-form" role="search" action="./" method="get" data-index="index.json?v=${findVersion}">
+      <label for="q">${esc(copy.label)}</label>
+      <div class="find-row">
+        <input id="q" name="q" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search"${copy.placeholder ? ` placeholder="${esc(copy.placeholder)}"` : ""} aria-describedby="find-status">
+        <button type="submit">${esc(story.nav.search)}</button>
+      </div>
+      <ul class="find-try" aria-label="${esc(copy.themesHeading)}">
+${themes.map((th) => `        <li><a href="${themeQ(th)}" data-q="${esc(th.name.toLowerCase())}">${esc(th.name)}</a></li>`).join("\n")}
+      </ul>
+      <p class="find-status" id="find-status" role="status"></p>
+    </form>
+    ${copy.nojs ? `<noscript><p class="find-nojs">${esc(copy.nojs)}</p></noscript>` : ""}
+  </div>
+  <div class="find-res" id="results" hidden></div>
+  <section class="sec find-index" id="themes" aria-labelledby="themes-h">
+    <div class="sec-head hm">
+      <h2 id="themes-h">${esc(copy.themesHeading)}</h2>
+      ${copy.themesIntro ? `<p class="sec-cap">${inline(copy.themesIntro)}</p>` : ""}
+    </div>
+    <ol class="fi-l">
+${index}
+    </ol>
+  </section>
+</div>`;
+
+  return page({
+    rel,
+    current: "search",
+    title: `${copy.title} — Rafael Gorski`,
+    description: `Search Rafael Gorski's notes, trail log, radar and field guide, or browse ${themes.length} themes, from ${themes[0].name.toLowerCase()} to ${themes.at(-1).name.toLowerCase()}.`,
+    bodyClass: "is-search",
+    main,
+    contract: SEARCH_CONTRACT,
+    script: "search.js",
+  });
+}
+
 await mkdir(site("map"), { recursive: true });
 await mkdir(site("library"), { recursive: true });
 await mkdir(site("radar"), { recursive: true });
 await mkdir(site("log"), { recursive: true });
+await mkdir(site("search"), { recursive: true });
 await writeFile(site("index.html"), renderHome());
 await writeFile(site("map/index.html"), renderMap());
 await writeFile(site("radar/index.html"), renderRadar());
 await writeFile(site("library/index.html"), renderLibrary());
 await writeFile(site("log/index.html"), renderLog());
+await writeFile(site("search/index.html"), renderSearch());
+await writeFile(site("search/index.json"), findIndex + "\n");
 
 // Hand-written pages (about, notes, 404) link the same assets; keep their versions in step.
 async function htmlFiles(dir) {
@@ -1499,8 +1722,9 @@ for (const file of await htmlFiles(site(""))) {
 }
 
 console.log(
-  `Built home, route (map), radar, field guide (library) and trail log: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
+  `Built home, route (map), radar, field guide (library), trail log and search: ${(takes.entries || []).length} lab notes (${takesSrc.file}), ${stages.length} stages, ${entries.length} sources (${librarySrc.file}), ${blips.length} blips (${radarSrc.file}, edition ${radar.edition}, ${radar.status}), ${notes.length} notes, stages from ${stagesSrc.file}.`
 );
-console.log(`Asset versions: ${["site.css", "radar.js", "climb.js", ...FONTS].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
+console.log(`Search: ${findRecords.length} records, ${(Buffer.byteLength(findIndex) / 1024).toFixed(1)} KB index; themes ${themeIndex.map(({ th, hits }) => `${th.id} ${hits.length}`).join(", ")}.`);
+console.log(`Asset versions: ${["site.css", "radar.js", "climb.js", "search.js", ...FONTS].map((f) => `${f}?v=${assetVersion[f]}`).join(", ")}${versioned.length ? ` (updated ${versioned.join(", ")})` : ""}.`);
 console.log(`Art: ${art.length} SVGs in site/assets/art/, ${(art.reduce((s, a) => s + a.bytes, 0) / 1024).toFixed(1)} KB in all, largest ${art.reduce((m, a) => (a.bytes > m.bytes ? a : m)).name} at ${(Math.max(...art.map((a) => a.bytes)) / 1024).toFixed(1)} KB${art.some((a) => a.changed) ? ` (redrawn: ${art.filter((a) => a.changed).map((a) => a.name).join(", ")})` : ""}.`);
 if (warnings.length) console.warn("Warnings:\n  " + warnings.join("\n  "));
