@@ -9,7 +9,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../assets/site.css?v=414ef6f1">
+<link rel="stylesheet" href="../../assets/site.css?v=a8d3e706">
 <!--
 THESIS: A note is a plate in the atlas: it says where on the route it sits
   (Launch), then draws its argument as exhibits and adoptable requirements.
@@ -69,7 +69,45 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
           <p class="lede">An LLM system has no specification it can be proven against. Until its behaviour is measured, its limits are known only from demos and complaints.</p>
           <p class="abstract">Eval-driven development applies the cycle of test-driven development to LLM systems. A failure seen in production telemetry becomes a failing eval; the system changes until the eval passes; the eval then joins a suite that guards every later change. This note sets the practice out in two waves. In the first, online evals score sampled production traces to catch degradations and regressions. In the second, the same evals run in CI/CD as a guardrail for each module, against a recorded baseline, and decide whether a change passes, holds or rolls back. A feedback loop joins the two: eval results become events for engineers, who curate both the system and the eval set. The two waves are this note's own framing. For the method in depth it points to Shreya Shankar and Hamel Husain's forthcoming <em>Evals for AI Engineers</em>. It ends with eight requirements a team can adopt.</p>
         </div>
-      </div>
+                 <figure class="exhibit flow" aria-labelledby="exhibit-1-cap">
+                   <div class="flow-map">
+                     <ol class="flow-list">
+                       <li class="flow-box is-auto">
+                         <p class="flow-h"><a href="#s3">Wave 1: watch production</a></p>
+                         <ol class="flow-steps">
+                           <li>Telemetry records every production trace</li>
+                           <li>Online evals score a sample of the traces</li>
+                           <li>Degradations and regressions show up as failures</li>
+                         </ol>
+                       </li>
+                       <li class="flow-pass"><span>Results reach engineers as events</span></li>
+                       <li class="flow-box">
+                         <p class="flow-h"><a href="#s5">Close the loop</a></p>
+                         <ol class="flow-steps">
+                           <li>Each failure becomes a failing eval</li>
+                           <li>The system changes until the eval passes</li>
+                           <li>Engineers curate the system and the eval set</li>
+                         </ol>
+                       </li>
+                       <li class="flow-pass"><span>The eval joins the suite</span></li>
+                       <li class="flow-box is-auto">
+                         <p class="flow-h"><a href="#s4">Wave 2: gate every change</a></p>
+                         <ol class="flow-steps">
+                           <li>Every change runs the suite in CI/CD, module by module</li>
+                           <li>Scores are read against a recorded baseline</li>
+                         </ol>
+                         <dl class="flow-dec">
+                           <dt>Pass</dt><dd>the change goes ahead</dd>
+                           <dt>Hold</dt><dd>a named person decides</dd>
+                           <dt>Roll back</dt><dd>the module returns to its baseline</dd>
+                         </dl>
+                       </li>
+                     </ol>
+                     <p class="flow-rail"><span>A passing change reaches production</span></p>
+                   </div>
+                   <figcaption id="exhibit-1-cap"><b>Exhibit 1.</b> The practice as one loop. A failure seen in production becomes a failing eval, the system changes until the eval passes, and the eval joins the suite that gates every later change. A change that passes reaches production, where the first wave watches it. The middle box and the hand-off after it are the cycle of test-driven development. Tinted boxes are the automated waves; the open box is work for engineers. Each box title links to its section.</figcaption>
+                 </figure>
+               </div>
     </div>
 
     <div class="note-body">
@@ -149,7 +187,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
           <li><strong>Roll back:</strong> a result falls beyond its allowed drop, or a never-rule is broken. The module returns to its baseline version, automatically where possible, and an event goes to its owner. Before a merge, rolling back simply means the change does not merge.</li>
         </ul>
 
-        <figure class="exhibit" aria-labelledby="exhibit-cap">
+        <figure class="exhibit" aria-labelledby="exhibit-2-cap">
           <table class="signals">
             <thead>
               <tr><th scope="col">Module and eval</th><th scope="col">Baseline, candidate and decision</th></tr>
@@ -177,10 +215,10 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
               </tr>
             </tbody>
           </table>
-          <figcaption id="exhibit-cap"><b>Exhibit 1.</b> Illustrative guardrail run for one release candidate in canary, module by module. Synthetic data: the system, its modules, the eval sets and every number are invented. Each decision follows the rules above and is written as a word.</figcaption>
+          <figcaption id="exhibit-2-cap"><b>Exhibit 2.</b> Illustrative guardrail run for one release candidate in canary, module by module. Synthetic data: the system, its modules, the eval sets and every number are invented. Each decision follows the rules above and is written as a word.</figcaption>
         </figure>
 
-        <p>The run in Exhibit 1 stops the release from widening. Retrieval returns to its baseline version, the answer writer waits for a person to review it, and the router and the refund tool keep the candidate. Three practices make a run like this trustworthy:</p>
+        <p>The run in Exhibit 2 stops the release from widening. Retrieval returns to its baseline version, the answer writer waits for a person to review it, and the router and the refund tool keep the candidate. Three practices make a run like this trustworthy:</p>
         <ul>
           <li><strong>Tolerances come from the baseline's own noise.</strong> Run the baseline against itself several times before setting an allowed drop. If its scores vary by a point and a half between runs, a one-point drop says nothing.</li>
           <li><strong>Tasks run more than once.</strong> τ-bench reports pass^k, the chance that an agent succeeds on every one of k attempts at the same task, because a single run overstates the consistency users will see <a href="#ref-tau">[TAU]</a>. The radar has <a href="../../radar/#blip-repeated-trial-reliability">repeated-trial reliability</a> in Trial.</li>
@@ -199,9 +237,9 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
         </ul>
         <p>Shreya Shankar and Hamel Husain's <em>Evals for AI Engineers</em> is announced to cover this ground in depth: finding and prioritising failures through error analysis and representative test sets, building evaluations from code-based checks, LLM judges, human feedback and synthetic data, and monitoring production for regressions <a href="#ref-evals">[EVALS]</a>. Shankar is also the first author of the study on drifting criteria cited above <a href="#ref-validators">[VALIDATORS]</a>.</p>
         <p class="callout">The book is forthcoming from O'Reilly in November 2026. This note does not quote it or attribute claims to it beyond the publisher's description. The two waves and the loop between them are this note's framing.</p>
-        <p>Exhibit 2 follows one regression once round the loop, from the release that caused it to the eval that now guards against it.</p>
+        <p>Exhibit 3 follows one regression once round the loop, from the release that caused it to the eval that now guards against it.</p>
 
-        <figure class="exhibit vsm" aria-labelledby="exhibit-2-cap">
+        <figure class="exhibit vsm" aria-labelledby="exhibit-3-cap">
           <div class="trace-head" aria-hidden="true">
             <span class="name-h">step</span>
             <span class="scale"><span>day 0</span><span>day 5</span><span>day 10</span></span>
@@ -225,7 +263,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
             <span class="is-wait" style="--c:var(--paper)">waiting in a queue</span>
             <span style="--c:var(--red)">regression and failing eval</span>
           </div>
-          <figcaption id="exhibit-2-cap"><b>Exhibit 2.</b> Illustrative turn of the eval loop for one regression, from the release that caused it to the eval that now guards against it, over nine working days. Synthetic data: the system, the failure, the counts and every duration are invented. A filled bar is work, an outlined bar is time spent waiting in a queue, and red marks the regression and the failing eval written from it.</figcaption>
+          <figcaption id="exhibit-3-cap"><b>Exhibit 3.</b> Illustrative turn of the eval loop for one regression, from the release that caused it to the eval that now guards against it, over nine working days. Synthetic data: the system, the failure, the counts and every duration are invented. A filled bar is work, an outlined bar is time spent waiting in a queue, and red marks the regression and the failing eval written from it.</figcaption>
         </figure>
 
         <p>Three points stand out:</p>
@@ -308,7 +346,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
         <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>What is still open</a></h2>
         <p>Being specific about the limits is part of the guidance:</p>
         <ul>
-          <li>A suite catches only failures someone has already seen. The gate in Exhibit 2 passed for exactly that reason. Online evals shorten the time it takes to see a new failure; they do not remove it.</li>
+          <li>A suite catches only failures someone has already seen. The gate in Exhibit 3 passed for exactly that reason. Online evals shorten the time it takes to see a new failure; they do not remove it.</li>
           <li>Model judges are models. They carry documented biases, and checking them against people costs human time every time the criteria change <a href="#ref-judge">[JUDGE]</a> <a href="#ref-validators">[VALIDATORS]</a>.</li>
           <li>On small eval sets, small differences are noise. Tolerances set from repeated baseline runs reduce false alarms, but choosing them is still a judgement.</li>
           <li>Passing is not proof. Models with equally strong scores can behave differently in deployment <a href="#ref-underspec">[UNDERSPEC]</a>, and a model update that passed its offline evaluations has already been rolled back <a href="#ref-sycophancy">[SYCOPHANCY]</a>.</li>

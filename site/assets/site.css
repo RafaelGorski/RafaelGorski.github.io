@@ -1032,6 +1032,90 @@ code {
   .trace-row .lane { grid-column: 1 / -1; grid-row: 2; margin-top: 0.3rem; }
 }
 
+/* Exhibit: flow, a box diagram of a loop, as in GN-0003. Boxes run in reading order, hand-offs
+   between them are labelled arrows, and a rail closes the loop: under the row on wide screens,
+   up the right edge once the boxes stack. Tinted boxes are automated; open boxes are work for
+   people. Arrowheads are bordered chevrons, so they survive forced colours. */
+.nh-grid > .exhibit { margin: 2.75rem 0 0; max-width: none; }
+@media (min-width: 75rem) { .nh-grid > .exhibit { grid-column: 2; } }
+.flow-map { --pass: 6.5rem; position: relative; }
+.flow-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--pass) minmax(0, 1fr) var(--pass) minmax(0, 1fr);
+}
+.flow-box {
+  --flow-rule: var(--rule);
+  margin: 0; padding: 0.95rem 1.1rem 1rem;
+  border: 1px solid var(--ink); background: var(--paper);
+}
+.flow-box.is-auto { --flow-rule: var(--ultra-pale); border-color: var(--ultra); background: var(--ultra-tint); }
+.flow-h {
+  margin: 0 0 0.7rem;
+  font-family: var(--title); font-weight: 300; font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.85rem); line-height: 1.05;
+  text-wrap: balance;
+}
+.flow-h a { color: var(--ink); text-decoration: none; }
+.flow-h a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+.flow-steps { list-style: none; margin: 0; padding: 0; font-size: 0.92rem; line-height: 1.4; }
+.flow-steps li { margin: 0; padding: 0.45rem 0; border-top: 1px solid var(--flow-rule); }
+.flow-dec {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.3rem 0.75rem; align-items: baseline;
+  margin: 0.35rem 0 0; padding-top: 0.6rem; border-top: 2px solid var(--ink);
+  font-size: 0.9rem; line-height: 1.35;
+}
+.flow-dec dt { font-family: var(--letter); font-weight: 600; }
+.flow-dec dd { margin: 0; }
+.flow-pass { display: grid; align-content: center; margin: 0; }
+.flow-pass span {
+  position: relative; display: block;
+  padding: 0 0.6rem 0.45rem;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--letter); font-size: 0.8rem; line-height: 1.25; text-align: center; color: var(--ink-2);
+}
+.flow-pass span::after, .flow-rail::before {
+  content: ""; position: absolute;
+  width: 0.55rem; height: 0.55rem;
+  border-top: 1.5px solid var(--ink); border-right: 1.5px solid var(--ink);
+}
+.flow-pass span::after { right: 0.1rem; bottom: calc(-0.275rem - 0.75px); transform: rotate(45deg); }
+.flow-rail {
+  position: relative; height: 1.9rem;
+  margin: 0 calc((100% - 2 * var(--pass)) / 6);
+  border: 1.5px solid var(--ink); border-top: 0;
+}
+.flow-rail::before { left: calc(-0.275rem - 0.75px); top: 0.05rem; transform: rotate(-45deg); }
+.flow-rail span {
+  position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 50%);
+  padding: 0 0.75rem; background: var(--paper);
+  font-family: var(--letter); font-size: 0.8rem; line-height: 1.25; color: var(--ink-2); white-space: nowrap;
+}
+.flow figcaption { margin-top: 1.6rem; }
+@media (max-width: 64rem) {
+  .flow-map { padding-right: 2.6rem; }
+  .flow-list { grid-template-columns: minmax(0, 1fr); }
+  .flow-pass { justify-items: start; }
+  .flow-pass span {
+    margin-left: 1.6rem; padding: 0.65rem 0 0.85rem 0.9rem;
+    border-bottom: 0; border-left: 1.5px solid var(--ink);
+    text-align: left;
+  }
+  .flow-pass span::after { right: auto; left: calc(-0.275rem - 0.75px); bottom: 0.05rem; transform: rotate(135deg); }
+  .flow-rail {
+    position: absolute; top: 2.25rem; bottom: 2.25rem; right: 0.8rem;
+    width: 1.8rem; height: auto; margin: 0;
+    border: 1.5px solid var(--ink); border-left: 0;
+  }
+  .flow-rail::before { left: 0.05rem; top: calc(-0.275rem - 0.75px); transform: rotate(-135deg); }
+  .flow-rail span {
+    left: auto; right: -0.75px; top: 50%; bottom: auto;
+    padding: 0.6rem 0.15rem;
+    writing-mode: vertical-rl;
+    transform: translate(50%, -50%) rotate(180deg);
+  }
+  .flow figcaption { margin-top: 1rem; }
+}
+
 /* Signals table */
 .signals { width: 100%; margin: 1.5rem 0 2rem; border-collapse: collapse; font-size: 0.96rem; }
 .signals thead th {
@@ -1844,8 +1928,8 @@ code {
 @media print {
   .skip, .site-nav, .stage-index, .art, .climb-scene, .climb-points, .itin, .find-form { display: none; }
   .fi { break-inside: avoid-page; }
-  .band, .stage-index a, .note-pin, .lab-band, .camp-band a, .v-loc i { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  .camp { break-inside: avoid; }
+  .band, .stage-index a, .note-pin, .lab-band, .camp-band a, .v-loc i, .flow-box.is-auto { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .camp, .flow-map { break-inside: avoid; }
   .summit { margin-bottom: 0; }
   /* Titles print plain: no leaders, no range lettering. */
   .leader, .radar-head h1::before { display: none; }

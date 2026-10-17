@@ -454,6 +454,15 @@ sprite in each page:
   signals table inside `figure.exhibit`: the row header names the module and its eval, the cell
   gives the baseline, the candidate and the allowed drop, then the decision as a bold word (Pass,
   Hold, Roll back) and its reason. The decision is never shown by colour alone. No new CSS.
+- **Exhibit (flow):** a box diagram of a loop, as under GN-0003's abstract (`.exhibit.flow`). An
+  ordered list in reading order: boxes (`flow-box`) alternate with labelled hand-off arrows
+  (`flow-pass`), and a rail (`flow-rail`) carries the last box back to the first. Automated steps
+  are ultramarine tint boxes with an ultramarine rule (`is-auto`); work for people is an open box
+  with an ink rule. Each box title is a Barlow Condensed Light link to its section; steps sit on
+  hairlines; decisions follow a 2px ink rule as bold Jost words. Wide screens run the boxes in a
+  row with the rail underneath; below 64rem they stack, the arrows point down and the rail climbs
+  the right edge with its label set vertically. Arrowheads are bordered chevrons, so forced colours
+  keep them. Placed in a note head, an exhibit spans the standfirst's column.
 - **Callout:** a tint block for a caveat or, as a `blockquote`, a quotation from a source.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.
