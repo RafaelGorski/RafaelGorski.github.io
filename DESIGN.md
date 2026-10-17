@@ -441,7 +441,8 @@ sprite in each page:
     secondary, error vermilion.
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
 - **Exhibit (value stream):** the trace grid reused for one change from request to release, as in
-  GN-0002 (`.exhibit.vsm`). Step names are set in the reading face, not the code face. Work
+  GN-0002, or for one turn of a feedback loop, as in GN-0003 (`.exhibit.vsm`). Step names are set
+  in the reading face, not the code face. Work
   (`k-work`) is an ultramarine bar; waiting (`k-wait`) is a paper bar with a 1px ink-secondary
   outline, matched by an outlined legend swatch (`is-wait`); the defect and its rework are
   vermilion (`is-error`). Step names say which steps are waits, so colour is never the only cue.
@@ -449,6 +450,10 @@ sprite in each page:
   uppercase Jost label over a 2px ink rule, then a `pre` on ultramarine tint in the code face,
   scrolling sideways rather than wrapping. A scrolling block is a focusable, labelled region
   (`tabindex="0"`, `role="region"`, `aria-labelledby` the label).
+- **Exhibit (gate):** a release decision per module, as in GN-0003. It reuses the two-column
+  signals table inside `figure.exhibit`: the row header names the module and its eval, the cell
+  gives the baseline, the candidate and the allowed drop, then the decision as a bold word (Pass,
+  Hold, Roll back) and its reason. The decision is never shown by colour alone. No new CSS.
 - **Callout:** a tint block for a caveat or, as a `blockquote`, a quotation from a source.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.

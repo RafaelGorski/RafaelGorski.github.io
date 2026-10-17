@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-17",
   "entries": [
     {
       "id": "problem-based-srs",
@@ -312,6 +312,19 @@
       "check": "Use its attack categories as the headings of your AI threat model so findings map to a public reference.",
       "maturity": "stable",
       "verified": "2026-10-12"
+    },
+    {
+      "id": "evals-for-ai-engineers",
+      "title": "Evals for AI Engineers: Systematically Measuring and Improving AI Applications",
+      "publisher": "Shreya Shankar and Hamel Husain, O'Reilly",
+      "year": 2026,
+      "url": "https://www.oreilly.com/library/view/evals-for-ai/9798341660717/",
+      "kind": "book",
+      "stages": ["launch", "operate"],
+      "why": "Evals turn an LLM system's limits into measured, rerunnable claims a release can be gated on. Announced to cover error analysis, LLM judges and production monitoring; forthcoming November 2026, so cited for scope only.",
+      "check": "Begin with error analysis: find and rank failures in real outputs, build evaluations for the largest, then monitor production for regressions.",
+      "maturity": "draft",
+      "verified": "2026-10-17"
     },
     {
       "id": "mcp-specification",

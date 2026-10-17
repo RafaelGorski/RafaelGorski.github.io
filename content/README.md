@@ -42,8 +42,8 @@ not edit them. Nothing in this folder is published HTML.
 - `check`: the one concrete thing an engineer should verify or adopt from it.
 - `maturity`: `stable` for published, final texts; `evolving` for documents in active revision,
   versioned protocols, texts whose obligations or guidance are still being phased in, and
-  proposals for practices that are not yet standardised; `draft` for unfinished texts (none are
-  currently included).
+  proposals for practices that are not yet standardised; `draft` for unfinished or not yet
+  published texts (one is included: `evals-for-ai-engineers`, announced for November 2026).
 - `verified`: the date the URL was fetched and the title, publisher and year were checked
   against the source.
 
@@ -120,8 +120,9 @@ Placement rules applied in this draft:
 3. **Vendor writing only as evidence.** Engineering write-ups and postmortems from AI vendors are
    included for what they disclose about practice or failure, never for product claims.
 4. **Free where possible.** Free canonical versions are linked where they exist (arXiv, the
-   publisher's research page, sre.google). ISO/IEC standards, Bainbridge (1983) and the Hubbard,
-   Meadows, Aniche and Poppendieck books are paid; no free canonical version exists.
+   publisher's research page, sre.google). ISO/IEC standards, Bainbridge (1983) and the books by
+   Hubbard, Meadows, Aniche, the Poppendiecks, and Shankar and Husain are paid; no free canonical
+   version exists.
 5. **Honest about maturity.** Drafts, revisions in progress and phased obligations are flagged in
    `maturity` and, where it matters, in `why`.
 6. **Voice.** Plain English, British spelling, no hype words, no exclamation marks.
@@ -143,6 +144,10 @@ Placement rules applied in this draft:
   `models-as-insider-risks`).
 - **Books** link to the publisher's page for the edition cited. The Google SRE chapters are the
   exception: they link to Google's free online text.
+- **O'Reilly pages** block automated fetching. The link for *Evals for AI Engineers* is the
+  O'Reilly page that the authors' own site (ai-evals.com) links to; its title, authors, ISBN and
+  publication date were checked against a retailer listing. It is forthcoming, so it is cited for
+  its announced scope only and never quoted.
 - **Publisher** names the organisation, or the first author with "et al." and the venue where one
   was verified.
 
@@ -160,5 +165,7 @@ entry references an unknown stage.
 ## Maintenance
 
 Re-verify every entry when `updated` changes. Watch especially: the NIST AI RMF (under revision),
-the EU AI Act (obligations phasing in), MCP and A2A (new revisions), and the OpenTelemetry GenAI
-conventions (still in Development status).
+the EU AI Act (obligations phasing in), MCP and A2A (new revisions), the OpenTelemetry GenAI
+conventions (still in Development status), and *Evals for AI Engineers* (forthcoming: on
+publication, re-check the date and URL, set `maturity` to `stable`, and check GN-0003 against the
+published text).

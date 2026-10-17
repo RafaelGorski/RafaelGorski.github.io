@@ -63,14 +63,14 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   <img class="art art-sheet" src="../assets/art/library.svg?v=1d212605" alt="" aria-hidden="true" width="1600" height="360" decoding="async">
   <h1 class="range range-short" style="--tw:4.111;--tn:11">Field guide</h1>
   <div class="legend">
-    <p class="caption">The guidebook for the route: 51 sources, each pinned to the stretch where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
+    <p class="caption">The guidebook for the route: 52 sources, each pinned to the stretch where it matters most. The first line is for the person who decides; the second is for the person who builds.</p>
     <div class="legend-key">
       <dl class="key">
       <div><dt>Shape</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Rule</b> <span class="k-sub">standard, specification, regulation</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-stable"/></svg><span><b>Practice</b> <span class="k-sub">framework, guide, book</span></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-evidence-stable"/></svg><span><b>Evidence</b> <span class="k-sub">paper, postmortem</span></span></li></ul></dd></div>
       <div><dt>Fill</dt><dd><ul><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-stable"/></svg><span><b>Stable</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-evolving"/></svg><span><b>Evolving</b></span></li><li><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-rule-draft"/></svg><span><b>Draft</b></span></li></ul></dd></div>
       
     </dl>
-      <p class="edition">Updated 14 October 2026. Every link, title, publisher and year checked against its source.</p>
+      <p class="edition">Updated 17 October 2026. Every link, title, publisher and year checked against its source.</p>
       
     </div>
   </div>
@@ -80,7 +80,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
   <ol>
       <li><a href="#purpose"><span class="band-n">1</span><span class="si-name">Purpose</span><span class="si-c">6<span class="vh"> sources</span></span></a></li>
       <li><a href="#design"><span class="band-n">2</span><span class="si-name">Design</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
-      <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
+      <li><a href="#launch"><span class="band-n">3</span><span class="si-name">Launch</span><span class="si-c">10<span class="vh"> sources</span></span></a></li>
       <li><a href="#scale"><span class="band-n">4</span><span class="si-name">Scale</span><span class="si-c">9<span class="vh"> sources</span></span></a></li>
       <li><a href="#operate"><span class="band-n">5</span><span class="si-name">Operate</span><span class="si-c">8<span class="vh"> sources</span></span></a></li>
       <li class="is-govern"><a href="#govern"><span class="band-n">6</span><span class="si-name">Govern</span><span class="si-c">10<span class="vh"> sources</span></span></a></li>
@@ -321,7 +321,11 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
       <h2 id="launch-h"><span class="band-n">3</span>Launch</h2>
       <p class="q">Can we ship it safely to real users?</p>
       <p class="test"><b>Move on when</b> a staged rollout, a tested rollback and a human escalation path are live before the first user.</p>
-      
+      <div class="lib-notes"><a class="note-pin" href="../notes/eval-driven-development/">
+            <span class="n-id">GN-0003 · Draft</span>
+            <span class="n-t">Eval-driven development</span>
+            <span class="vh">, original note</span>
+          </a></div>
       <img class="art ridge" src="../assets/art/stage-launch.svg?v=396538bb" alt="" aria-hidden="true" width="300" height="84" decoding="async" loading="lazy">
     </div>
     <div class="ls-body">
@@ -441,6 +445,19 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         <dl class="e-read">
           <div class="why"><dt>Why it matters</dt><dd>NIST's reference taxonomy of attacks on predictive and generative AI, including direct and indirect prompt injection and the security of agents. One vocabulary for security, engineering and risk teams.</dd></div>
           <div class="check"><dt>What to check</dt><dd>Use its attack categories as the headings of your AI threat model so findings map to a public reference.</dd></div>
+        </dl>
+      </li>
+      <li class="entry" id="src-evals-for-ai-engineers">
+        <svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-draft"/></svg>
+        <div class="e-id">
+          <h3 class="e-t"><a href="https://www.oreilly.com/library/view/evals-for-ai/9798341660717/">Evals for AI Engineers: Systematically Measuring and Improving AI Applications</a></h3>
+          <p class="e-m">Shreya Shankar and Hamel Husain, O'Reilly · 2026</p>
+          <p class="e-k">Book · Draft · also <a href="#operate">Operate</a></p>
+          
+        </div>
+        <dl class="e-read">
+          <div class="why"><dt>Why it matters</dt><dd>Evals turn an LLM system's limits into measured, rerunnable claims a release can be gated on. Announced to cover error analysis, LLM judges and production monitoring; forthcoming November 2026, so cited for scope only.</dd></div>
+          <div class="check"><dt>What to check</dt><dd>Begin with error analysis: find and rank failures in real outputs, build evaluations for the largest, then monitor production for regressions.</dd></div>
         </dl>
       </li>
     </ol>
@@ -699,7 +716,7 @@ FORM: Grounded direction 7 of 7 (statistical atlas plate, Isotype unit
         </dl>
       </li>
     </ol>
-    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-hidden-technical-debt">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Purpose)</span>, <a href="#src-who-validates-the-validators">Who Validates the Validators?</a> <span class="ah-at">(Design)</span>, <a href="#src-sre-canarying-releases">Canarying Releases</a> <span class="ah-at">(Launch)</span>, <a href="#src-sre-cascading-failures">Addressing Cascading Failures</a> <span class="ah-at">(Scale)</span>, <a href="#src-models-as-insider-risks">Models as Insider Risks in the Super Intelligence Era</a> <span class="ah-at">(Govern)</span>, <a href="#src-ironies-of-automation">Ironies of automation</a> <span class="ah-at">(Govern)</span></p>
+    <p class="also-here" id="operate-also"><b>Also read here:</b> <a href="#src-hidden-technical-debt">Hidden Technical Debt in Machine Learning Systems</a> <span class="ah-at">(Purpose)</span>, <a href="#src-who-validates-the-validators">Who Validates the Validators?</a> <span class="ah-at">(Design)</span>, <a href="#src-sre-canarying-releases">Canarying Releases</a> <span class="ah-at">(Launch)</span>, <a href="#src-evals-for-ai-engineers">Evals for AI Engineers</a> <span class="ah-at">(Launch)</span>, <a href="#src-sre-cascading-failures">Addressing Cascading Failures</a> <span class="ah-at">(Scale)</span>, <a href="#src-models-as-insider-risks">Models as Insider Risks in the Super Intelligence Era</a> <span class="ah-at">(Govern)</span>, <a href="#src-ironies-of-automation">Ironies of automation</a> <span class="ah-at">(Govern)</span></p>
     <p class="also-here on-radar" id="operate-radar"><b>On the radar:</b> <a href="../radar/#blip-canary-model-releases">Canary releases for model and prompt changes</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-blameless-ai-postmortems">Blameless postmortems for AI incidents</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-unbudgeted-retries">Unbudgeted automatic retries</a> <span class="ah-at">(Hold)</span>, <a href="../radar/#blip-w3c-trace-context-propagation">W3C Trace Context across agent hops</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-otel-genai-conventions">OpenTelemetry GenAI semantic conventions</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-vendor-console-only-telemetry">Telemetry only in a vendor's console</a> <span class="ah-at">(Hold)</span>, <a href="../radar/#blip-continuous-production-evals">Continuous quality evaluation in production</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-tail-latency-per-step">Tail latency per agent step</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-value-of-information-measurement">Value-of-information measurement</a> <span class="ah-at">(Adopt)</span>, <a href="../radar/#blip-answer-quality-slos">Answer-quality SLOs</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-calibrated-llm-judges">LLM judges calibrated to human grades</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-cost-and-calls-per-task">Cost and calls per completed task</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-uncalibrated-llm-judges">LLM judges without human calibration</a> <span class="ah-at">(Hold)</span>, <a href="../radar/#blip-controls-outside-the-model">Controls enforced outside the model</a> <span class="ah-at">(Trial)</span>, <a href="../radar/#blip-shared-incident-disclosure">Shared AI incident disclosure</a> <span class="ah-at">(Assess)</span>, <a href="../radar/#blip-human-approval-as-only-safeguard">Human approval as the only safeguard</a> <span class="ah-at">(Hold)</span>, <a href="../radar/#blip-default-content-capture">Capturing prompts and outputs by default</a> <span class="ah-at">(Hold)</span></p>
     </div>
   </section>

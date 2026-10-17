@@ -69,6 +69,19 @@
       "confirmed": false
     },
     {
+      "id": "evals-from-traces",
+      "group": "testing",
+      "title": "Evals that start from production traces",
+      "body": "I'm treating evals the way test-driven development treats tests. Every failure I find in a production trace becomes a failing eval before anyone fixes it, and the suite gates each release module by module against a baseline. GN-0003 sets out the two waves and the loop between them.",
+      "date": "2026-10-17",
+      "links": [
+        { "note": "GN-0003" },
+        { "library": "evals-for-ai-engineers" },
+        { "radar": "continuous-production-evals" }
+      ],
+      "confirmed": false
+    },
+    {
       "id": "problem-before-prompt",
       "group": "using",
       "title": "The problem before the prompt",

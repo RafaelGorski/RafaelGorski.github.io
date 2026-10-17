@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trail log — Rafael Gorski</title>
-<meta name="description" content="Rafael Gorski's trail log: 17 short, dated notes on what he is testing, using more effectively and would stop before production, and his long notes, each linked to its evidence.">
+<meta name="description" content="Rafael Gorski's trail log: 18 short, dated notes on what he is testing, using more effectively and would stop before production, and his long notes, each linked to its evidence.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
@@ -60,15 +60,21 @@ FORM: The home page's former lab plate, moved to its own page (v3).
     <img class="art art-sheet" src="../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
     <h1>Trail log</h1>
     <p class="caption">Short and dated: what I'm testing, what I'm getting better at, and what I'd stop before it reaches production. These change more often than the rest of the site.</p>
-    <p class="edition">17 entries, the latest 14 October 2026, shown as Draft until confirmed · <a href="#notes">2 long notes</a></p>
+    <p class="edition">18 entries, the latest 17 October 2026, shown as Draft until confirmed · <a href="#notes">3 long notes</a></p>
   </div>
   <section class="sec log-lab" id="lab" aria-labelledby="lab-h">
     <h2 id="lab-h" class="vh">Lab notes</h2>
     <div class="lab-plate">
       <section class="lab-g" id="testing" aria-labelledby="testing-h">
-        <h3 class="lab-band" id="testing-h"><span>Testing now</span><span class="lb-c">5<span class="vh"> entries</span></span></h3>
+        <h3 class="lab-band" id="testing-h"><span>Testing now</span><span class="lb-c">6<span class="vh"> entries</span></span></h3>
         <p class="lab-q">Trying it, not settled on it.</p>
         <ol class="takes">
+          <li class="take" id="take-evals-from-traces">
+            <h4 class="tk-t">Evals that start from production traces</h4>
+            <p class="tk-m"><time datetime="2026-10-17">17 October 2026</time> · <span class="tk-draft">Draft</span></p>
+            <p class="tk-b">I'm treating evals the way test-driven development treats tests. Every failure I find in a production trace becomes a failing eval before anyone fixes it, and the suite gates each release module by module against a baseline. GN-0003 sets out the two waves and the loop between them.</p>
+            <ul class="xref"><li><a class="x-note" href="../notes/eval-driven-development/"><span class="x-sq" aria-hidden="true"></span><span class="x-t"><span class="x-id">GN-0003</span> Eval-driven development<span class="vh">, original note</span></span></a></li><li><a class="x-src" href="../library/#src-evals-for-ai-engineers"><svg class="g" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#g-practice-draft"/></svg><span class="x-t"><span class="vh">In the field guide: </span>Evals for AI Engineers <span class="x-m">· 2026</span></span></a></li><li><a class="x-blip" href="../radar/#blip-continuous-production-evals"><span class="x-n" aria-hidden="true">18</span><span class="x-t"><span class="vh">On the radar: </span>Continuous quality evaluation in production <span class="x-m">· Adopt</span></span></a></li></ul>
+          </li>
           <li class="take" id="take-never-properties">
             <h4 class="tk-t">Tests that state what must never happen</h4>
             <p class="tk-m"><time datetime="2026-10-14">14 October 2026</time> · <span class="tk-draft">Draft</span></p>
@@ -216,6 +222,18 @@ FORM: The home page's former lab plate, moved to its own page (v3).
             <span class="n-t">Test triangulation</span>
             <span class="vh">, original note</span>
           </a><ul class="xref"><li><a class="x-stage" href="../map/#stage-design"><span class="x-sn" aria-hidden="true">2</span><span class="x-t"><span class="vh">On the route: </span>Design <span class="x-m">· Does it work on real data, measured honestly?</span></span></a></li></ul></aside>
+      </li>
+      <li class="log-n hm" id="gn-0003">
+        <div class="pos-main">
+          <p class="tk-m"><span class="x-id">GN-0003</span> · Draft · <time datetime="2026-10">October 2026</time></p>
+          <h3 class="pos-t"><a href="../notes/eval-driven-development/">Eval-driven development: from production traces to the release gate</a></h3>
+          <p>Evals make an LLM system's limits explicit. Eval-driven development treats them as test-driven development treats tests: watch behaviour through telemetry, turn each failure into a failing eval, gate every change module by module against a baseline, and send what fails back to engineers.</p>
+        </div>
+        <aside class="mn" aria-label="Where GN-0003 sits"><a class="note-pin" href="../notes/eval-driven-development/">
+            <span class="n-id">GN-0003 · Draft</span>
+            <span class="n-t">Eval-driven development</span>
+            <span class="vh">, original note</span>
+          </a><ul class="xref"><li><a class="x-stage" href="../map/#stage-launch"><span class="x-sn" aria-hidden="true">3</span><span class="x-t"><span class="vh">On the route: </span>Launch <span class="x-m">· Can we ship it safely to real users?</span></span></a></li></ul></aside>
       </li>
     </ol>
   </section>
