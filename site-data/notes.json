@@ -10,6 +10,28 @@
       "date": "2026-10",
       "dateLabel": "October 2026",
       "summary": "Agents turn one request into a tree of decisions, model calls and tool calls. The OpenTelemetry GenAI conventions give that tree a shared vocabulary. Eight requirements to adopt."
+    },
+    {
+      "id": "GN-0002",
+      "slug": "test-triangulation",
+      "title": "Test triangulation: properties that say what must never happen",
+      "short": "Test triangulation",
+      "stage": "design",
+      "status": "Draft",
+      "date": "2026-10",
+      "dateLabel": "October 2026",
+      "summary": "Example tests check only the cases an engineer thought of. Triangulate: state the properties that constrain the behaviour, including what must never happen, and let a framework try thousands of inputs to find a counterexample. Then map the value stream to see where late defects cost time."
+    },
+    {
+      "id": "GN-0003",
+      "slug": "eval-driven-development",
+      "title": "Eval-driven development: from production traces to the release gate",
+      "short": "Eval-driven development",
+      "stage": "launch",
+      "status": "Draft",
+      "date": "2026-10",
+      "dateLabel": "October 2026",
+      "summary": "Evals make an LLM system's limits explicit. Eval-driven development treats them as test-driven development treats tests: watch behaviour through telemetry, turn each failure into a failing eval, gate every change module by module against a baseline, and send what fails back to engineers."
     }
   ]
 }

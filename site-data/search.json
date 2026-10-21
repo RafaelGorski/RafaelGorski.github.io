@@ -1,0 +1,16 @@
+{
+  "description": "Themes for the search page (site/search/), in route order. A theme gathers every long-note section, position, lab note, radar blip, field-guide source and route stage whose text has a word starting with one of its terms; terms of three letters or fewer match whole words only. Typing a theme's name, its id or one of its 'also' words on the search page searches for all of its terms, so the results and the theme index below them always agree.",
+  "themes": [
+    { "id": "requirements", "name": "Requirements", "also": ["requirement", "specification", "specs"], "terms": ["requirement", "specification", "acceptance criteri", "problem statement", "customer problem", "customer need"] },
+    { "id": "testing", "name": "Testing", "also": ["tests", "test", "property-based testing"], "terms": ["test", "property-based", "invariant", "counterexample", "fuzz", "mutation"] },
+    { "id": "evals", "name": "Evals", "also": ["eval", "evaluation", "evaluations", "benchmarks", "eval-driven development"], "terms": ["eval", "benchmark", "judge", "grader", "harness", "golden set", "test set"] },
+    { "id": "rollout", "name": "Rollout", "also": ["launch", "release", "rollback", "canary", "deployment"], "terms": ["rollout", "roll out", "rollback", "roll back", "canary", "staged", "feature flag", "release", "deploy"] },
+    { "id": "protocols", "name": "Tools and protocols", "also": ["tools", "protocols", "tool use", "tool calling", "mcp", "a2a"], "terms": ["tool call", "tool use", "tool-use", "function call", "mcp", "a2a", "agent2agent", "agent-to-agent", "protocol"] },
+    { "id": "cost", "name": "Cost", "also": ["costs", "spend", "budget", "finops"], "terms": ["cost", "spend", "budget", "pricing", "finops", "frugal"] },
+    { "id": "security", "name": "Security", "also": ["prompt injection", "attacks", "threats", "red teaming"], "terms": ["security", "secure", "injection", "attack", "threat", "adversar", "red team", "red-team", "jailbreak", "exfiltrat", "least privilege", "sandbox", "owasp"] },
+    { "id": "observability", "name": "Observability", "also": ["telemetry", "tracing", "traces", "monitoring"], "terms": ["observab", "telemetry", "opentelemetry", "trace", "tracing", "monitor", "logging", "dashboard"] },
+    { "id": "reliability", "name": "Reliability", "also": ["incidents", "postmortems", "outages", "slos", "sre"], "terms": ["reliab", "incident", "postmortem", "post-mortem", "outage", "slo", "error budget", "on-call", "sre"] },
+    { "id": "oversight", "name": "Human oversight", "also": ["oversight", "human in the loop", "human review", "approval"], "terms": ["oversight", "human review", "human-in-the-loop", "human in the loop", "approval", "approve", "escalat"] },
+    { "id": "governance", "name": "Governance", "also": ["compliance", "regulation", "audit", "policy", "eu ai act"], "terms": ["govern", "regulat", "compliance", "audit", "accountab", "polic", "ai act", "iso", "nist"] }
+  ]
+}

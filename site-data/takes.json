@@ -56,6 +56,32 @@
       "confirmed": false
     },
     {
+      "id": "never-properties",
+      "group": "testing",
+      "title": "Tests that state what must never happen",
+      "body": "I'm trying property-based tests on the code around agents: refund limits, permissions, retry budgets. Instead of picking examples, I state what must never happen and let the framework try thousands of inputs to break it. What I'm watching for are failures that point to a rule nobody pinned down.",
+      "date": "2026-10-14",
+      "links": [
+        { "note": "GN-0002" },
+        { "library": "effective-software-testing" },
+        { "radar": "controls-outside-the-model" }
+      ],
+      "confirmed": false
+    },
+    {
+      "id": "evals-from-traces",
+      "group": "testing",
+      "title": "Evals that start from production traces",
+      "body": "I'm treating evals the way test-driven development treats tests. Every failure I find in a production trace becomes a failing eval before anyone fixes it, and the suite gates each release module by module against a baseline. GN-0003 sets out the two waves and the loop between them.",
+      "date": "2026-10-17",
+      "links": [
+        { "note": "GN-0003" },
+        { "library": "evals-for-ai-engineers" },
+        { "radar": "continuous-production-evals" }
+      ],
+      "confirmed": false
+    },
+    {
       "id": "problem-before-prompt",
       "group": "using",
       "title": "The problem before the prompt",

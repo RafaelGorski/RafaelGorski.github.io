@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-12",
+  "updated": "2026-10-17",
   "entries": [
     {
       "id": "problem-based-srs",
@@ -184,6 +184,19 @@
       "verified": "2026-10-12"
     },
     {
+      "id": "effective-software-testing",
+      "title": "Effective Software Testing: A developer's guide",
+      "publisher": "Maurício Aniche, Manning",
+      "year": 2022,
+      "url": "https://www.manning.com/books/effective-software-testing",
+      "kind": "book",
+      "stages": ["design", "launch"],
+      "why": "A systematic method for developer testing: examples from the specification, then the code's structure, contracts and property-based tests. When coding agents write code faster than people can review it, tests must find what nobody tried.",
+      "check": "For each rule that money, permissions or limits depend on, write a property stating what must never happen and let a generator search for counterexamples.",
+      "maturity": "stable",
+      "verified": "2026-10-14"
+    },
+    {
       "id": "sre-reliable-launches",
       "title": "Reliable Product Launches at Scale",
       "publisher": "Google, Site Reliability Engineering (O'Reilly)",
@@ -299,6 +312,19 @@
       "check": "Use its attack categories as the headings of your AI threat model so findings map to a public reference.",
       "maturity": "stable",
       "verified": "2026-10-12"
+    },
+    {
+      "id": "evals-for-ai-engineers",
+      "title": "Evals for AI Engineers: Systematically Measuring and Improving AI Applications",
+      "publisher": "Shreya Shankar and Hamel Husain, O'Reilly",
+      "year": 2026,
+      "url": "https://www.oreilly.com/library/view/evals-for-ai/9798341660717/",
+      "kind": "book",
+      "stages": ["launch", "operate"],
+      "why": "Evals turn an LLM system's limits into measured, rerunnable claims a release can be gated on. Announced to cover error analysis, LLM judges and production monitoring; forthcoming November 2026, so cited for scope only.",
+      "check": "Begin with error analysis: find and rank failures in real outputs, build evaluations for the largest, then monitor production for regressions.",
+      "maturity": "draft",
+      "verified": "2026-10-17"
     },
     {
       "id": "mcp-specification",
@@ -507,6 +533,19 @@
       "check": "For each production metric, name the decision it informs and estimate what better information is worth; retire metrics that inform no decision.",
       "maturity": "stable",
       "verified": "2026-10-12"
+    },
+    {
+      "id": "lean-software-development",
+      "title": "Lean Software Development: An Agile Toolkit",
+      "publisher": "Mary Poppendieck and Tom Poppendieck, Addison-Wesley",
+      "year": 2003,
+      "url": "https://www.informit.com/store/lean-software-development-an-agile-toolkit-9780321150783",
+      "kind": "book",
+      "stages": ["operate", "design"],
+      "why": "Lean thinking for software. Its value stream map follows one request to delivery and shows where work waits, is handed off or is redone. When agents make coding faster, that waste is what remains.",
+      "check": "Map one change from request to release. Record working time, waiting time and where each defect was found, then remove the largest waste first.",
+      "maturity": "stable",
+      "verified": "2026-10-14"
     },
     {
       "id": "eu-ai-act",

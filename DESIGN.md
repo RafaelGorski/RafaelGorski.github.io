@@ -415,10 +415,12 @@ sprite in each page:
 
 ## Components
 
-- **Margin line:** name at left, nav at right (Route, Radar, Field guide, Trail log, About; labels in
-  `site-data/story.json`). On phones the items wrap whole, never mid-label. The name is the link
-  home and carries `aria-current="page"` there. The current page carries a 3px ultramarine
-  underline. A 1px ink rule spans the gutters.
+- **Margin line:** name at left, nav at right (Route, Radar, Field guide, Trail log, About, then
+  Search; labels in `site-data/story.json`). On phones the items wrap whole, never mid-label. The
+  name is the link home and carries `aria-current="page"` there. The current page carries a 3px
+  ultramarine underline. A 1px ink rule spans the gutters. Search is auxiliary (`li.aux`): last,
+  Jost 400 in ink-2 after a 1px rule hairline, which is dropped on phones where it may wrap alone.
+  Hand-written pages (About, the notes) carry the item by hand.
 - **Key:** a `dl` of Shape, Fill and Red, using the same glyphs as the plate. It appears on the
   map, the library and About.
 - **Stage band:** an `h3` link to the library section, with a pale numeral and an uppercase name.
@@ -438,6 +440,30 @@ sprite in each page:
   - Bar colours: workflow ink, agent and plan ultramarine, model ultramarine mid, tool ink
     secondary, error vermilion.
   - Bars scale in with `animation-timeline: view()` behind `@supports` and reduced motion.
+- **Exhibit (value stream):** the trace grid reused for one change from request to release, as in
+  GN-0002, or for one turn of a feedback loop, as in GN-0003 (`.exhibit.vsm`). Step names are set
+  in the reading face, not the code face. Work
+  (`k-work`) is an ultramarine bar; waiting (`k-wait`) is a paper bar with a 1px ink-secondary
+  outline, matched by an outlined legend swatch (`is-wait`); the defect and its rework are
+  vermilion (`is-error`). Step names say which steps are waits, so colour is never the only cue.
+- **Exhibit (code):** used when the code itself is the evidence, as in GN-0002. Each block has an
+  uppercase Jost label over a 2px ink rule, then a `pre` on ultramarine tint in the code face,
+  scrolling sideways rather than wrapping. A scrolling block is a focusable, labelled region
+  (`tabindex="0"`, `role="region"`, `aria-labelledby` the label).
+- **Exhibit (gate):** a release decision per module, as in GN-0003. It reuses the two-column
+  signals table inside `figure.exhibit`: the row header names the module and its eval, the cell
+  gives the baseline, the candidate and the allowed drop, then the decision as a bold word (Pass,
+  Hold, Roll back) and its reason. The decision is never shown by colour alone. No new CSS.
+- **Exhibit (flow):** a box diagram of a loop, as under GN-0003's abstract (`.exhibit.flow`). An
+  ordered list in reading order: boxes (`flow-box`) alternate with labelled hand-off arrows
+  (`flow-pass`), and a rail (`flow-rail`) carries the last box back to the first. Automated steps
+  are ultramarine tint boxes with an ultramarine rule (`is-auto`); work for people is an open box
+  with an ink rule. Each box title is a Barlow Condensed Light link to its section; steps sit on
+  hairlines; decisions follow a 2px ink rule as bold Jost words. Wide screens run the boxes in a
+  row with the rail underneath; below 64rem they stack, the arrows point down and the rail climbs
+  the right edge with its label set vertically. Arrowheads are bordered chevrons, so forced colours
+  keep them. Placed in a note head, an exhibit spans the standfirst's column.
+- **Callout:** a tint block for a caveat or, as a `blockquote`, a quotation from a source.
 - **Requirements:** the RID in Jost ultramarine, the text, then a trace line of § and references.
   RFC 2119 keywords are bold, with slight tracking.
 - **Placeholder:** a dashed border with an ink tag. It marks copy the owner must replace. No page
@@ -578,6 +604,36 @@ long notes.
 - **Notes** (`#notes`): each long note as a `.hm` row (`#gn-0001`): id, status and date, the title
   linking to the note, its summary, and in the margin its note pin and the stage it is charted at.
   The note itself stays at `/notes/<slug>/`; its meta line links back to its trail-log entry.
+
+### Search
+
+Rendered by `scripts/build.mjs` from every source above plus `site-data/search.json` (the themes)
+into `site/search/index.html` and its index `site/search/index.json`; `site/assets/search.js`
+searches it in the page. The index at the back of the atlas: auxiliary, so quiet. It has no art.
+
+- **Head:** the light title and a caption, then one form (`role="search"`): a Jost label, the field
+  set on a 2px ink rule with no box (Jost 400 at the position step; the focus ring goes round the
+  whole ruled field), a text Search button in ultramarine, the themes as a line of quiet links
+  (ink-2; the active theme takes ink and a 2px ultramarine underline, like the margin line), and a
+  status line (Jost 0.84rem ink-2, `role="status"`) that says how the query was read.
+- **Themes:** each theme names a family of words (`terms`, with `also` for the names it answers
+  to). A query that is a theme searches its family, so the page and the index always agree; any
+  other word that is a theme expands the same way, and words combine with AND. Terms of four or
+  more letters match word starts; shorter ones match whole words. Folding (case, accents) and the
+  matching rules are the same in the build and in `search.js`; change both together.
+- **What is searched:** each note by section from its own page (citation keys and References left
+  out), the positions, the lab notes, the blips, the field guide and the route's stages. Display
+  meta (dates, rings, group names) is never matched.
+- **Results:** grouped by kind as `.fi` rows: the kind in the title face with its tally beside, its
+  lines as `.xref` lines with a snippet under each and matches in `mark` (ultramarine tint).
+  A note lists up to four matching sections by numeral, then how many more.
+- **Theme index** (`#themes`, no query): the same rows, one per theme (`#t-<id>`, tinted when
+  targeted), its lines read down three short columns from 64rem; a note's matching sections follow
+  as § numerals with 24px targets. It is the page without JavaScript, and its theme links
+  (`?q=<theme>#t-<id>`) work either way.
+- **States:** while the index loads the status says so; nothing found names the query and points to
+  the themes; if the index fails the theme index stays. Escape clears the field and `/` focuses it.
+  Print drops the form and keeps what is on screen.
 
 ### Radar
 

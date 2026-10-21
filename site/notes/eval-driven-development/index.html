@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eval-driven development: from production traces to the release gate — Rafael Gorski</title>
+<meta name="description" content="Evals make an LLM system's limits explicit. Eval-driven development treats them as test-driven development treats tests: watch behaviour through telemetry, turn each failure into a failing eval, gate every change module by module against a baseline, and send what fails back to engineers.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../assets/fonts/jost-var.woff2?v=3a27ff1e" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/barlow-condensed-light.woff2?v=bfca2719" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/site.css?v=a8d3e706">
+<!--
+THESIS: A note is a plate in the atlas: it says where on the route it sits
+  (Launch), then draws its argument as exhibits and adoptable requirements.
+  Refuses the blog-post template and the vendor pipeline diagram.
+OWN-WORLD: Same plate paper as GN-0001 and GN-0002; the locator marks Launch in
+  vermilion; exhibit 1 is a guardrail run set in the signals table, one row
+  per module, with each decision written as a word, never a colour; exhibit 2
+  is one turn of the eval loop drawn on the value-stream trace grid, with the
+  regression and the failing eval in vermilion and waiting as an empty
+  outlined bar.
+STORY: The reader learns why evals make an LLM system's limits explicit, sees
+  eval-driven development step by step beside test-driven development, learns
+  the first wave (online evals over telemetry) and the second (a CI/CD
+  guardrail per module against a baseline), reads one guardrail run that
+  passes, holds and rolls back, follows one regression round the loop and back
+  into the suite, and leaves with eight adoptable requirements and three first
+  steps.
+FIRST VIEWPORT: Locator band; the title, with the note chip and date in the
+  margin rail; then the lede and abstract as a standfirst under a rule.
+FORM: Grounded direction 7 of 7 (statistical atlas plate), as GN-0001.
+-->
+</head>
+<body class="is-note">
+<a class="skip" href="#content">Skip to content</a>
+<header class="margin">
+  <a class="name" href="../../">Rafael Gorski</a>
+  <nav class="site-nav" aria-label="Site">
+    <ul>
+      <li><a href="../../map/">Route</a></li>
+      <li><a href="../../radar/">Radar</a></li>
+      <li><a href="../../library/">Field guide</a></li>
+      <li><a href="../../log/">Trail log</a></li>
+      <li><a href="../../about/">About</a></li>
+      <li class="aux"><a href="../../search/">Search</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="content">
+  <article class="note">
+    <div class="note-head">
+      <nav class="locator" aria-label="Where this note sits on the route">
+        <ol>
+          <li><a href="../../library/#purpose">Purpose</a></li>
+          <li><a href="../../library/#design">Design</a></li>
+          <li><a href="../../library/#launch" aria-current="location">Launch</a></li>
+          <li><a href="../../library/#scale">Scale</a></li>
+          <li><a href="../../library/#operate">Operate</a></li>
+          <li><a href="../../library/#govern">Govern</a></li>
+        </ol>
+      </nav>
+      <div class="nh-grid has-art">
+        <img class="art art-sheet" src="../../assets/art/notes.svg?v=71b8c0a7" alt="" aria-hidden="true" width="1600" height="560" decoding="async">
+        <h1>Eval-driven development: from production traces to the release gate</h1>
+        <p class="note-meta"><span class="n-chip">GN-0003</span> Draft · <time datetime="2026-10">October 2026</time> · <a href="../../log/#gn-0003">Trail log</a> · Sources: <a href="#ref-evals">Evals for AI Engineers</a> (forthcoming), <a href="#ref-otel-genai">OpenTelemetry GenAI semantic conventions</a></p>
+        <div class="standfirst">
+          <p class="lede">An LLM system has no specification to test against, so its limits stay hidden until someone measures them.</p>
+          <p class="abstract">Eval-driven development is test-driven development for LLM systems: each failure found in production becomes an eval that every later change must pass. This note splits the practice into two waves, with engineers between them: evals that watch production, and the same evals as a gate on every change. The two waves are this note's own framing. For the method in depth, see Shreya Shankar and Hamel Husain's forthcoming <em>Evals for AI Engineers</em>. The note ends with eight requirements a team can adopt.</p>
+        </div>
+        <figure class="exhibit flow" aria-labelledby="exhibit-1-cap">
+          <div class="flow-map">
+            <ol class="flow-list">
+              <li class="flow-box is-auto">
+                <p class="flow-h"><a href="#s3">Wave 1: watch production</a></p>
+                <ol class="flow-steps">
+                  <li>Telemetry captures production traces</li>
+                  <li>Online evals score a sample</li>
+                  <li>Drops and regressions show as failures</li>
+                </ol>
+              </li>
+              <li class="flow-pass"><span>Events go to engineers</span></li>
+              <li class="flow-box">
+                <p class="flow-h"><a href="#s5">Close the loop</a></p>
+                <ol class="flow-steps">
+                  <li>Each failure becomes a failing eval</li>
+                  <li>Engineers fix the system until it passes</li>
+                  <li>Engineers curate the eval set</li>
+                </ol>
+              </li>
+              <li class="flow-pass"><span>The eval joins the suite</span></li>
+              <li class="flow-box is-auto">
+                <p class="flow-h"><a href="#s4">Wave 2: gate every change</a></p>
+                <ol class="flow-steps">
+                  <li>CI/CD runs the suite on every change</li>
+                  <li>Each module is scored against its baseline</li>
+                </ol>
+                <dl class="flow-dec">
+                  <dt>Pass</dt><dd>the change ships</dd>
+                  <dt>Hold</dt><dd>a person decides</dd>
+                  <dt>Roll back</dt><dd>the module reverts</dd>
+                </dl>
+              </li>
+            </ol>
+            <p class="flow-rail"><span>Passing changes go to production</span></p>
+          </div>
+          <figcaption id="exhibit-1-cap"><b>Exhibit 1.</b> Tinted boxes run automatically; the open box is work for engineers. The middle box is the test-driven cycle.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="note-body">
+      <nav class="toc" aria-labelledby="toc-h">
+        <h2 id="toc-h">In this note</h2>
+        <ol>
+          <li><a href="#s1"><span class="secno">1</span>Evals make limits explicit</a></li>
+          <li><a href="#s2"><span class="secno">2</span>Eval-driven development</a></li>
+          <li><a href="#s3"><span class="secno">3</span>Wave 1: watch production</a></li>
+          <li><a href="#s4"><span class="secno">4</span>Wave 2: gate every change</a></li>
+          <li><a href="#s5"><span class="secno">5</span>Close the loop</a></li>
+          <li><a href="#s6"><span class="secno">6</span>Requirements R1–R8</a></li>
+          <li><a href="#s7"><span class="secno">7</span>Where to start</a></li>
+          <li><a href="#s8"><span class="secno">8</span>What is still open</a></li>
+          <li><a href="#refs"><span class="secno">9</span>References</a></li>
+        </ol>
+      </nav>
+
+      <div class="prose">
+
+        <h2 id="s1"><a class="self" href="#s1"><span class="secno">1</span>Evals make the limits explicit</a></h2>
+        <p>A conventional service can be checked against its specification. An LLM system mostly cannot. Its behaviour emerges from a prompt, a model, retrieved documents, tools and the code that joins them, and any of those can change without a line of the team's own code changing. Until that behaviour is measured, its limits are known only from demos, which show the best case, and from complaints, which arrive late.</p>
+        <p>An eval is a written, rerunnable claim about behaviour: on this set of cases, graded this way, the system succeeds this often. Each eval that fails states a limit explicitly. “The assistant is sometimes wrong about policy” becomes, for example, “retrieval answers from a superseded policy in 7% of policy questions, and the rate rose after the last index rebuild”. A limit stated that way has an owner, a size and a trend, and it can be compared before and after a change.</p>
+        <p>Public benchmarks do not do this job. They measure someone else's tasks, usually once, which is why the radar puts <a href="../../radar/#blip-benchmark-scores-as-launch-evidence">benchmark scores as launch evidence</a> on Hold. Strong test scores are not enough on their own either: models with equally strong scores can behave very differently once deployed <a href="#ref-underspec">[UNDERSPEC]</a>. The evals that make a system's limits explicit are built from that system's own behaviour.</p>
+
+        <h2 id="s2"><a class="self" href="#s2"><span class="secno">2</span>Eval-driven development, step by step</a></h2>
+        <p>Test-driven development works in a short cycle: write a test that fails because the behaviour is missing, change the code until it passes, then keep the test so that every later change has to pass it too. Eval-driven development (EDD) applies the same cycle to an LLM system. A failure seen in a real trace becomes a failing eval. The system changes until the eval passes without lowering any other result. The eval then joins the suite that guards every later change.</p>
+
+        <table class="signals">
+          <thead>
+            <tr><th scope="col">The step</th><th scope="col">In test-driven and in eval-driven development</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Write a check that fails</th>
+              <td><p><strong>TDD</strong> writes a test, from the specification, for behaviour the code does not have yet.</p><p><strong>EDD</strong> builds an eval from real traces in which the system failed, found through telemetry.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Make it pass</th>
+              <td><p><strong>TDD</strong> changes the code until the test passes.</p><p><strong>EDD</strong> changes the prompt, the retrieval, the model, a tool or the code until the eval meets its target, with every other eval still within its tolerance.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Decide what passing means</th>
+              <td><p><strong>TDD</strong> asks that an assertion holds, on every run.</p><p><strong>EDD</strong> asks for a pass rate over a set of cases, across repeated runs, compared with a recorded baseline.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Grade the result</th>
+              <td><p><strong>TDD</strong> grades with the test code.</p><p><strong>EDD</strong> grades with code checks where the answer can be checked mechanically, and elsewhere with a model judge whose agreement with human grades has been measured.</p></td>
+            </tr>
+            <tr>
+              <th scope="row">Keep it</th>
+              <td><p><strong>TDD</strong> adds the test to the suite that runs on every change.</p><p><strong>EDD</strong> adds the eval to the suite that gates every change in CI and scores a sample of production traffic.</p></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>The analogy holds for the cycle and breaks in two places, and both matter. A passing eval is a rate, not a certainty: the same input can produce different outputs, so results are compared across repeated runs and against a baseline. And the grader can be wrong, so a failing eval has three possible causes, much as a failing property did in <a href="../test-triangulation/#s6">GN-0002</a>: the system, the eval's cases or the grader.</p>
+        <p>The two practices fit together. <a href="../test-triangulation/">GN-0002</a> argues for properties that state what must never happen in the deterministic code around the model, and leaves the model's own answers to evaluation (<a href="../test-triangulation/#s10">section&nbsp;10 of GN-0002</a>). EDD covers that part. Never-rules stay properties; answer quality, grounding and task success become evals.</p>
+
+        <h2 id="s3"><a class="self" href="#s3"><span class="secno">3</span>Wave 1: watch behaviour through telemetry</a></h2>
+        <p>The first wave changes no release process. It measures what the system already does in production, so it starts from the traces described in <a href="../agentic-observability/">GN-0001</a>: one connected tree per request, with every model call, tool call and agent step named in the OpenTelemetry GenAI conventions <a href="#ref-otel-genai">[OTEL-GENAI]</a>.</p>
+        <p>Online evals score a sample of those traces as they arrive. Some are code checks: the output parses, a citation is present, a tool call succeeded. Others need judgement, such as whether an answer is supported by the documents retrieved, and use a model judge checked against human grades (section&nbsp;<a href="#s5">5</a>). The conventions define an event for the result, <code>gen_ai.evaluation.result</code>, which carries the evaluation's name, a score and a label, and should be parented to the span it judges <a href="#ref-events">[EVENTS]</a>. Recorded that way, every score can be followed back to the trace, the module and the version that produced it.</p>
+        <p>Scored traffic is then treated like any other service indicator: tracked per module and per version, with an objective and a baseline <a href="#ref-slo">[SLO]</a>. The radar has <a href="../../radar/#blip-answer-quality-slos">answer-quality SLOs</a> in Trial and <a href="../../radar/#blip-continuous-production-evals">continuous quality evaluation in production</a> in Adopt. Two kinds of change show up:</p>
+        <ul>
+          <li><strong>Degradation</strong> is a slow drift with no release behind it: the mix of questions shifts, new topics arrive, or a provider changes something on its side. It shows as a trend against the objective.</li>
+          <li><strong>Regression</strong> is a step change after a release: a new prompt, model, index or tool. Version attributes on the spans, such as <code>gen_ai.agent.version</code> and <code>gen_ai.response.model</code>, tie the step to the release that caused it <a href="#ref-otel-genai">[OTEL-GENAI]</a>.</li>
+        </ul>
+        <p>Some failures appear only in production. In 2025 Anthropic described three infrastructure bugs that intermittently degraded responses, and the evaluations in place did not capture what users were reporting <a href="#ref-quality">[QUALITY]</a>. An offline suite cannot find a fault that exists only on the serving path. Evals that score live traffic can.</p>
+        <p class="callout">Online evals read prompts and outputs, which often carry personal data. Whether they may is the content-capture decision in <a href="../agentic-observability/#s5">section&nbsp;5 of GN-0001</a>, and the radar puts <a href="../../radar/#blip-default-content-capture">capturing prompts and outputs by default</a> on Hold. Decide in writing which environments may be sampled, by whom, and how long the samples are kept.</p>
+
+        <h2 id="s4"><a class="self" href="#s4"><span class="secno">4</span>Wave 2: a guardrail for every module in CI/CD</a></h2>
+        <p>The second wave moves the same evals into the delivery pipeline, where they act as a guardrail. Any change to a prompt, a model or its version, a retrieval index, a tool or the code is a release, and it runs the suite before it merges. The suite then runs again, on a schedule, against what is deployed: the canary first, then production. Google's SRE practice already gives launches a checklist, and compares a release with a control on a small share of traffic before it widens <a href="#ref-launch">[LAUNCH]</a> <a href="#ref-canary">[CANARY]</a>. For an LLM system, evals supply the comparison.</p>
+        <p>The guardrail works module by module. One overall score hides which part moved. A separate eval set and baseline for the router, the retrieval, the answer writer and each tool says which part to fix or roll back. Each result is read against a rule agreed before the run:</p>
+        <ul>
+          <li><strong>Pass:</strong> every eval for the module is within its allowed drop from the baseline, and no never-rule is broken.</li>
+          <li><strong>Hold:</strong> a result sits at the edge of its tolerance, the evidence is too thin to decide, or a judge has not been re-checked since its criteria or the module changed. The change stops widening until a named person decides.</li>
+          <li><strong>Roll back:</strong> a result falls beyond its allowed drop, or a never-rule is broken. The module returns to its baseline version, automatically where possible, and an event goes to its owner. Before a merge, rolling back simply means the change does not merge.</li>
+        </ul>
+
+        <figure class="exhibit" aria-labelledby="exhibit-2-cap">
+          <table class="signals">
+            <thead>
+              <tr><th scope="col">Module and eval</th><th scope="col">Baseline, candidate and decision</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Intent router: routing accuracy</th>
+                <td><p>400 labelled conversations. Baseline 96.0%, candidate 95.7%, allowed drop 1 point.</p><p><strong>Pass.</strong> Within tolerance.</p></td>
+              </tr>
+              <tr>
+                <th scope="row">Retrieval: grounded answers</th>
+                <td><p>250 policy questions, three runs each, graded by a judge checked against human grades. Baseline 91%, candidate 84%, allowed drop 2 points.</p><p><strong>Roll back.</strong> Seven points below the baseline. The index returns to its baseline version, and an event goes to the retrieval owner.</p></td>
+              </tr>
+              <tr>
+                <th scope="row">Answer writer: complete, on-policy answers</th>
+                <td><p>300 conversations, graded by a judge. Baseline 88%, candidate 86%, allowed drop 2 points.</p><p><strong>Hold.</strong> At the edge of tolerance, and the judge has not been re-checked since the prompt changed. A reviewer grades 30 samples by hand before the change widens.</p></td>
+              </tr>
+              <tr>
+                <th scope="row">Refund tool: never-rules</th>
+                <td><p>10,000 generated cases for properties of the kind in <a href="../test-triangulation/#s4">GN-0002</a>: refunds within the charge, actions within the user's permissions. Baseline 0 violations, candidate 0, allowed 0.</p><p><strong>Pass.</strong></p></td>
+              </tr>
+              <tr>
+                <th scope="row">Whole task: resolved conversations and cost</th>
+                <td><p>50 end-to-end conversations, three attempts each. Baseline pass^3 of 72% at 4.2 cents per resolved conversation; candidate 71% at 4.4 cents. Allowed: a drop of 3 points and a cost rise of 10%.</p><p><strong>Pass.</strong></p></td>
+              </tr>
+            </tbody>
+          </table>
+          <figcaption id="exhibit-2-cap"><b>Exhibit 2.</b> Illustrative guardrail run for one release candidate in canary, module by module. Synthetic data: the system, its modules, the eval sets and every number are invented. Each decision follows the rules above and is written as a word.</figcaption>
+        </figure>
+
+        <p>The run in Exhibit 2 stops the release from widening. Retrieval returns to its baseline version, the answer writer waits for a person to review it, and the router and the refund tool keep the candidate. Three practices make a run like this trustworthy:</p>
+        <ul>
+          <li><strong>Tolerances come from the baseline's own noise.</strong> Run the baseline against itself several times before setting an allowed drop. If its scores vary by a point and a half between runs, a one-point drop says nothing.</li>
+          <li><strong>Tasks run more than once.</strong> τ-bench reports pass^k, the chance that an agent succeeds on every one of k attempts at the same task, because a single run overstates the consistency users will see <a href="#ref-tau">[TAU]</a>. The radar has <a href="../../radar/#blip-repeated-trial-reliability">repeated-trial reliability</a> in Trial.</li>
+          <li><strong>The suite is versioned code.</strong> Keep evals as versioned tasks in an open harness such as Inspect, so the same suite reruns unchanged on every change and results stay comparable <a href="#ref-inspect">[INSPECT]</a>. The radar has a <a href="../../radar/#blip-versioned-evaluation-harness">versioned open evaluation harness</a> in Trial and <a href="../../radar/#blip-canary-model-releases">canary releases for model and prompt changes</a> in Adopt.</li>
+        </ul>
+        <p>Passing evals are evidence for the gate, not its only key. In 2025 OpenAI rolled back a model update that had shipped on positive offline evaluations and A/B results, although expert testers had said it felt off, and committed to treating such behaviour issues as launch-blocking <a href="#ref-sycophancy">[SYCOPHANCY]</a>. The people who read the outputs need the authority to hold a release, not only the numbers.</p>
+
+        <h2 id="s5"><a class="self" href="#s5"><span class="secno">5</span>Close the loop: from eval results back to engineers</a></h2>
+        <p>The two waves improve the system only if their results reach someone who can act on them. Each degradation flagged in production and each failed gate raises an event to the module's owner, carrying the eval's name, the scores against the baseline, the versions involved and links to the traces. The owner then curates two things, the system and the eval set, and the change goes back through the gate.</p>
+        <p>Curation starts with error analysis: reading the flagged traces, naming the ways the system failed, counting each one and fixing the largest first. Each named failure becomes an eval written from the real traces, which is the failing step of section&nbsp;<a href="#s2">2</a>. Curating the eval set also means:</p>
+        <ul>
+          <li><strong>Re-baselining on purpose.</strong> When a change is meant to move a score, the owner records a new baseline and the reason for it, so that a deliberate change is not later read as drift.</li>
+          <li><strong>Refreshing the cases.</strong> Production traffic changes. Sample new traces into the eval set so that it keeps resembling what users ask, and keep the old failures as regression checks.</li>
+          <li><strong>Keeping the graders honest.</strong> People refine their criteria as they grade outputs, so a judge written last quarter may encode criteria the team no longer holds <a href="#ref-validators">[VALIDATORS]</a>. Model judges also show position, verbosity and self-enhancement biases <a href="#ref-judge">[JUDGE]</a>. The radar puts <a href="../../radar/#blip-uncalibrated-llm-judges">LLM judges without human calibration</a> on Hold for these reasons.</li>
+          <li><strong>Writing up incidents.</strong> A regression that reached users gets a blameless review that ends in owned fixes and new evals, as the radar's <a href="../../radar/#blip-blameless-ai-postmortems">blameless postmortems for AI incidents</a> recommends.</li>
+        </ul>
+        <p>Shreya Shankar and Hamel Husain's <em>Evals for AI Engineers</em> is announced to cover this ground in depth: finding and prioritising failures through error analysis and representative test sets, building evaluations from code-based checks, LLM judges, human feedback and synthetic data, and monitoring production for regressions <a href="#ref-evals">[EVALS]</a>. Shankar is also the first author of the study on drifting criteria cited above <a href="#ref-validators">[VALIDATORS]</a>.</p>
+        <p class="callout">The book is forthcoming from O'Reilly in November 2026. This note does not quote it or attribute claims to it beyond the publisher's description. The two waves and the loop between them are this note's framing.</p>
+        <p>Exhibit 3 follows one regression once round the loop, from the release that caused it to the eval that now guards against it.</p>
+
+        <figure class="exhibit vsm" aria-labelledby="exhibit-3-cap">
+          <div class="trace-head" aria-hidden="true">
+            <span class="name-h">step</span>
+            <span class="scale"><span>day 0</span><span>day 5</span><span>day 10</span></span>
+            <span class="dur">duration</span>
+          </div>
+          <ol class="trace">
+            <li class="trace-row k-work" style="--depth:0;--s:0;--w:5"><span class="name">Index rebuild passes the CI gate and ships</span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+            <li class="trace-row k-work is-error" style="--depth:0;--s:5;--w:10"><span class="name">Online evals flag fewer grounded answers<span class="err">event raised to the retrieval owner</span></span><span class="lane"><span class="bar"></span></span><span class="dur">1 day</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:15;--w:2.5"><span class="name">Guardrail rolls the index back to its baseline</span><span class="lane"><span class="bar"></span></span><span class="dur">0.25 days</span></li>
+            <li class="trace-row k-wait" style="--depth:0;--s:17.5;--w:7.5"><span class="name">Wait for triage</span><span class="lane"><span class="bar"></span></span><span class="dur">0.75 days</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:25;--w:10"><span class="name">Error analysis on 60 flagged traces</span><span class="lane"><span class="bar"></span></span><span class="dur">1 day</span></li>
+            <li class="trace-row k-work is-error" style="--depth:0;--s:35;--w:5"><span class="name">Write a failing eval from 12 real traces<span class="err">fails on the shipped index</span></span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:40;--w:5"><span class="name">Check the judge against 50 human grades</span><span class="lane"><span class="bar"></span></span><span class="dur">0.5 days</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:45;--w:10"><span class="name">Fix: drop superseded policies when indexing</span><span class="lane"><span class="bar"></span></span><span class="dur">1 day</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:55;--w:2.5"><span class="name">Eval passes and joins the CI suite</span><span class="lane"><span class="bar"></span></span><span class="dur">0.25 days</span></li>
+            <li class="trace-row k-wait" style="--depth:0;--s:57.5;--w:20"><span class="name">Wait for the release window</span><span class="lane"><span class="bar"></span></span><span class="dur">2 days</span></li>
+            <li class="trace-row k-work" style="--depth:0;--s:77.5;--w:12.5"><span class="name">Canary, then full rollout</span><span class="lane"><span class="bar"></span></span><span class="dur">1.25 days</span></li>
+          </ol>
+          <div class="trace-legend" aria-hidden="true">
+            <span style="--c:var(--ultra)">work</span>
+            <span class="is-wait" style="--c:var(--paper)">waiting in a queue</span>
+            <span style="--c:var(--red)">regression and failing eval</span>
+          </div>
+          <figcaption id="exhibit-3-cap"><b>Exhibit 3.</b> Illustrative turn of the eval loop for one regression, from the release that caused it to the eval that now guards against it, over nine working days. Synthetic data: the system, the failure, the counts and every duration are invented. A filled bar is work, an outlined bar is time spent waiting in a queue, and red marks the regression and the failing eval written from it.</figcaption>
+        </figure>
+
+        <p>Three points stand out:</p>
+        <ul>
+          <li><strong>The gate passed because the suite had never seen the failure.</strong> No question in the eval set had an answer that changed between policy versions. The limit was in the evals as much as in the system, and only production traffic revealed it.</li>
+          <li><strong>Wave 1 caught it within a day, and wave 2 contained it to one module.</strong> Because the index is versioned on its own, the guardrail rolled back the index alone. The router, the prompt and the model stayed on the release.</li>
+          <li><strong>The failure now lives in the suite.</strong> Twelve real traces became a failing eval before the fix. Once it passed, it joined the suite, so the same regression fails the gate if it returns. As on the <a href="../test-triangulation/#s7">value stream map in GN-0002</a>, much of the elapsed time is waiting rather than work.</li>
+        </ul>
+
+        <h2 id="s6"><a class="self" href="#s6"><span class="secno">6</span>Requirements for leadership</a></h2>
+        <p>These are written so that they can be copied into an engineering standard or a release policy. Each one links to the section above that motivates it.</p>
+        <p class="reqs-key">The key words <span class="kw">MUST</span>, <span class="kw">MUST NOT</span> and <span class="kw">SHOULD</span> are to be read as described in <a href="#ref-rfc2119">RFC&nbsp;2119 and RFC&nbsp;8174</a> when, and only when, they appear in capitals.</p>
+
+        <ol class="reqs">
+          <li id="r1">
+            <span class="rid"><a href="#r1">R1</a></span>
+            <div>
+              <p>Every module of an LLM system, including each prompt, model, retrieval index and tool, <span class="kw">MUST</span> have a named owner, its own eval set and a recorded baseline, versioned with the module.</p>
+              <p class="rtrace">§<a href="#s4">4</a></p>
+            </div>
+          </li>
+          <li id="r2">
+            <span class="rid"><a href="#r2">R2</a></span>
+            <div>
+              <p>Online evals <span class="kw">MUST</span> score a sample of production traces continuously. Each result <span class="kw">SHOULD</span> be recorded as an evaluation event on the span it judges, and a degradation or regression against the baseline <span class="kw">MUST</span> raise an event to the module's owner with links to the traces.</p>
+              <p class="rtrace">§<a href="#s3">3</a> · §<a href="#s5">5</a> · <a href="#ref-events">[EVENTS]</a></p>
+            </div>
+          </li>
+          <li id="r3">
+            <span class="rid"><a href="#r3">R3</a></span>
+            <div>
+              <p>Every change to a prompt, model, retrieval index, tool or code <span class="kw">MUST</span> run the eval suite in CI against the baseline before it merges, and the suite <span class="kw">MUST</span> run again on a schedule against the canary and production. The rules for pass, hold and roll back <span class="kw">MUST</span> be agreed before the run.</p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-canary">[CANARY]</a></p>
+            </div>
+          </li>
+          <li id="r4">
+            <span class="rid"><a href="#r4">R4</a></span>
+            <div>
+              <p>Allowed drops <span class="kw">SHOULD</span> be set from repeated runs of the baseline against itself, and end-to-end tasks <span class="kw">SHOULD</span> be run several times, with pass^k reported beside single-run success.</p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-tau">[TAU]</a></p>
+            </div>
+          </li>
+          <li id="r5">
+            <span class="rid"><a href="#r5">R5</a></span>
+            <div>
+              <p>Modules <span class="kw">MUST</span> be versioned and deployable separately, so that a failed eval can roll back one module without reverting the whole release. That rollback path <span class="kw">MUST</span> be tested before launch.</p>
+              <p class="rtrace">§<a href="#s4">4</a> · §<a href="#s5">5</a> · <a href="#ref-launch">[LAUNCH]</a></p>
+            </div>
+          </li>
+          <li id="r6">
+            <span class="rid"><a href="#r6">R6</a></span>
+            <div>
+              <p>Every regression found in production <span class="kw">MUST</span> become a failing eval, built from the real traces, before its fix merges. Once the eval passes, it <span class="kw">MUST</span> join the suite.</p>
+              <p class="rtrace">§<a href="#s2">2</a> · §<a href="#s5">5</a> · <a href="#ref-quality">[QUALITY]</a></p>
+            </div>
+          </li>
+          <li id="r7">
+            <span class="rid"><a href="#r7">R7</a></span>
+            <div>
+              <p>A model judge <span class="kw">MUST NOT</span> gate a release until its agreement with human grades on a sample has been measured. That agreement <span class="kw">MUST</span> be measured again whenever the judge's criteria, prompt or model changes.</p>
+              <p class="rtrace">§<a href="#s5">5</a> · <a href="#ref-judge">[JUDGE]</a> · <a href="#ref-validators">[VALIDATORS]</a></p>
+            </div>
+          </li>
+          <li id="r8">
+            <span class="rid"><a href="#r8">R8</a></span>
+            <div>
+              <p>Named reviewers <span class="kw">SHOULD</span> have the authority to hold a release on qualitative findings, even when every eval passes.</p>
+              <p class="rtrace">§<a href="#s4">4</a> · <a href="#ref-sycophancy">[SYCOPHANCY]</a></p>
+            </div>
+          </li>
+        </ol>
+
+        <h2 id="s7"><a class="self" href="#s7"><span class="secno">7</span>Where to start</a></h2>
+        <ol class="phases">
+          <li><p><strong>Read the traces, then write the first evals.</strong> Pick one workflow that already has traces and a business owner. Read a hundred or so production traces with that owner, name and count the failures, write evals for the largest few, and record a baseline for each module they touch (<a href="#r1">R1</a>, <a href="#r6">R6</a>).</p></li>
+          <li><p><strong>Gate the next change.</strong> Run the suite in CI on every change to that workflow. Run the baseline against itself several times to set the allowed drops, write down the rules for pass, hold and roll back, and check that each module can be rolled back on its own (<a href="#r3">R3</a>, <a href="#r4">R4</a>, <a href="#r5">R5</a>).</p></li>
+          <li><p><strong>Close the loop in production.</strong> Score a sample of live traces with the same evals, under a written content-capture policy. Send degradations to the module's owner as events, check every judge against human grades, and add each new failure to the suite. Then write <a href="#r1">R1</a> to <a href="#r8">R8</a> into the release policy (<a href="#r2">R2</a>, <a href="#r7">R7</a>, <a href="#r8">R8</a>).</p></li>
+        </ol>
+
+        <h2 id="s8"><a class="self" href="#s8"><span class="secno">8</span>What is still open</a></h2>
+        <p>Being specific about the limits is part of the guidance:</p>
+        <ul>
+          <li>A suite catches only failures someone has already seen. The gate in Exhibit 3 passed for exactly that reason. Online evals shorten the time it takes to see a new failure; they do not remove it.</li>
+          <li>Model judges are models. They carry documented biases, and checking them against people costs human time every time the criteria change <a href="#ref-judge">[JUDGE]</a> <a href="#ref-validators">[VALIDATORS]</a>.</li>
+          <li>On small eval sets, small differences are noise. Tolerances set from repeated baseline runs reduce false alarms, but choosing them is still a judgement.</li>
+          <li>Passing is not proof. Models with equally strong scores can behave differently in deployment <a href="#ref-underspec">[UNDERSPEC]</a>, and a model update that passed its offline evaluations has already been rolled back <a href="#ref-sycophancy">[SYCOPHANCY]</a>.</li>
+          <li>Evals cost money. Running the suite on every change, several times over, and judging production samples with a model are workloads with a budget, like any other.</li>
+          <li>The OpenTelemetry evaluation event is in Development status, and events are not yet available in every language SDK <a href="#ref-events">[EVENTS]</a>.</li>
+          <li>The book this note points to is not yet published. The note will be checked against it once it is.</li>
+        </ul>
+        <p>None of this argues for fewer tests, canaries or human reviews. It argues for giving each of them a written, rerunnable record of what the system is known to get wrong.</p>
+
+        <h2 id="refs"><a class="self" href="#refs"><span class="secno">9</span>References</a></h2>
+        <ul class="refs">
+          <li id="ref-evals"><span class="rk">[EVALS]</span><span>Shankar, S. and Husain, H. <a href="https://www.oreilly.com/library/view/evals-for-ai/9798341660717/"><cite>Evals for AI Engineers: Systematically Measuring and Improving AI Applications</cite></a>. O'Reilly, forthcoming, announced for November 2026. Print ISBN 979-8341660724. Not quoted here; described from the publisher's listing. Listed in this site's <a href="../../library/#src-evals-for-ai-engineers">field guide</a>.</span></li>
+          <li id="ref-otel-genai"><span class="rk">[OTEL-GENAI]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai">Semantic conventions for generative AI systems</a>. Status: Development. Listed in this site's <a href="../../library/#src-otel-genai-semconv">field guide</a>.</span></li>
+          <li id="ref-events"><span class="rk">[EVENTS]</span><span>OpenTelemetry. <a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-events.md">Semantic conventions for GenAI events</a>, including the event <code>gen_ai.evaluation.result</code>.</span></li>
+          <li id="ref-slo"><span class="rk">[SLO]</span><span>Google. <a href="https://sre.google/sre-book/service-level-objectives/">Service Level Objectives</a>. In <cite>Site Reliability Engineering</cite>, O'Reilly, 2016. Listed in this site's <a href="../../library/#src-sre-service-level-objectives">field guide</a>.</span></li>
+          <li id="ref-launch"><span class="rk">[LAUNCH]</span><span>Google. <a href="https://sre.google/sre-book/reliable-product-launches/">Reliable Product Launches at Scale</a>. In <cite>Site Reliability Engineering</cite>, O'Reilly, 2016. Listed in this site's <a href="../../library/#src-sre-reliable-launches">field guide</a>.</span></li>
+          <li id="ref-canary"><span class="rk">[CANARY]</span><span>Google. <a href="https://sre.google/workbook/canarying-releases/">Canarying Releases</a>. In <cite>The Site Reliability Workbook</cite>, O'Reilly, 2018. Listed in this site's <a href="../../library/#src-sre-canarying-releases">field guide</a>.</span></li>
+          <li id="ref-tau"><span class="rk">[TAU]</span><span>Yao, S. et al. <a href="https://arxiv.org/abs/2406.12045">τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains</a>. 2024. Listed in this site's <a href="../../library/#src-tau-bench">field guide</a>.</span></li>
+          <li id="ref-inspect"><span class="rk">[INSPECT]</span><span>UK AI Security Institute and Meridian Labs. <a href="https://inspect.aisi.org.uk/">Inspect</a>. Living documentation. Listed in this site's <a href="../../library/#src-inspect-evals">field guide</a>.</span></li>
+          <li id="ref-judge"><span class="rk">[JUDGE]</span><span>Zheng, L. et al. <a href="https://arxiv.org/abs/2306.05685">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</a>. NeurIPS, 2023. Listed in this site's <a href="../../library/#src-llm-as-a-judge">field guide</a>.</span></li>
+          <li id="ref-validators"><span class="rk">[VALIDATORS]</span><span>Shankar, S. et al. <a href="https://arxiv.org/abs/2404.12272">Who Validates the Validators? Aligning LLM-Assisted Evaluation of LLM Outputs with Human Preferences</a>. 2024. Listed in this site's <a href="../../library/#src-who-validates-the-validators">field guide</a>.</span></li>
+          <li id="ref-underspec"><span class="rk">[UNDERSPEC]</span><span>D'Amour, A. et al. <a href="https://jmlr.org/papers/v23/20-1335.html">Underspecification Presents Challenges for Credibility in Modern Machine Learning</a>. JMLR, 2022. Listed in this site's <a href="../../library/#src-underspecification">field guide</a>.</span></li>
+          <li id="ref-quality"><span class="rk">[QUALITY]</span><span>Anthropic. <a href="https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues">A postmortem of three recent issues</a>. 2025. Listed in this site's <a href="../../library/#src-anthropic-quality-postmortem">field guide</a>.</span></li>
+          <li id="ref-sycophancy"><span class="rk">[SYCOPHANCY]</span><span>OpenAI. <a href="https://openai.com/index/expanding-on-sycophancy/">Expanding on what we missed with sycophancy</a>. 2025. Listed in this site's <a href="../../library/#src-openai-sycophancy-postmortem">field guide</a>.</span></li>
+          <li id="ref-rfc2119"><span class="rk">[RFC2119]</span><span>Bradner, S. <a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>, and <a href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a>.</span></li>
+        </ul>
+
+        <aside class="charted" aria-labelledby="charted-h">
+          <p id="charted-h" class="c-stage">Charted at Launch</p>
+          <p class="c-q">Can we ship it safely to real users?</p>
+          <p><a href="../../library/#launch">Sources for this stretch in the field guide</a> · <a href="../../map/#stage-launch">Launch on the route</a></p>
+        </aside>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="foot">
+  <p>GN-0003 · Draft · © 2026 Rafael Gorski. Views are my own, not my employer's.</p>
+  <p><a href="../../log/">Back to the trail log</a> · <a href="../../map/">the route</a></p>
+</footer>
+</body>
+</html>

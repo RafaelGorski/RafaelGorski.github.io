@@ -14,14 +14,18 @@ accessibility decisions. The root `README.md` is intentionally only the publishe
   `site-data/` holds page copy, story framing, lab notes, note metadata, route details and art seeds.
   Long-form notes, About and the 404 page are hand-authored under `site/`.
 - **Build:** `scripts/build.mjs` is a zero-dependency Node build. It validates cross-references and
-  renders the home, route (`map/`), radar, field guide (`library/`) and trail log (`log/`). The
-  generated HTML is committed alongside the authored pages.
+  renders the home, route (`map/`), radar, field guide (`library/`), trail log (`log/`) and search
+  (`search/`, with its `index.json`). The generated HTML is committed alongside the authored pages.
 - **Art and assets:** `scripts/art.mjs` generates seeded, deterministic SVG mountain art from
   `site-data/art.json`. The build runs it first, then applies content-hash query strings to CSS,
   scripts, fonts and generated art for cache invalidation. Edit sources, not generated output.
-- **Enhancement:** the pages are semantic HTML and remain usable without JavaScript. The two
-  first-party scripts enhance radar linking and the home-page climb; they are not required to read
-  the content. There is no tracking or third-party runtime request.
+- **Enhancement:** the pages are semantic HTML and remain usable without JavaScript. The three
+  first-party scripts enhance radar linking, the home-page climb and search; they are not required
+  to read the content. There is no tracking or third-party runtime request.
+- **Search:** the build indexes every page into `site/search/index.json`; `assets/search.js`
+  filters it as you type, and the page lists the themes in plain HTML without it. Themes live in
+  `site-data/search.json`, and the build warns if one finds nothing. Hand-written pages need
+  `<li class="aux"><a href="…/search/">Search</a></li>` last in their nav.
 
 The site is organized as one climb: the six-stage route provides the lifecycle structure; the radar
 records maturity judgments; the field guide connects stages to evidence; the trail log and notes

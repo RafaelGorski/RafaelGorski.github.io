@@ -7,7 +7,12 @@
 
 The published note, *Agentic observability* (stage: operate, built on `otel-genai-semconv`), is the
 model for the series: one decision, a small set of primary sources, and a clear statement of what
-is still in development.
+is still in development. The second note, *Test triangulation* (GN-0002, stage: design, built on
+`effective-software-testing`, with `lean-software-development` for its value stream map), follows
+the same form. The third, *Eval-driven development* (GN-0003, stage: launch, built on
+`evals-for-ai-engineers` with `sre-canarying-releases`, `who-validates-the-validators`,
+`tau-bench`, `inspect-evals` and the two postmortems), takes up parts of proposals 2, 3 and 7.
+Because its book is forthcoming, it is cited for its announced scope only.
 
 ## 1. What must the pilot beat?
 
@@ -95,8 +100,8 @@ is still in development.
 | Stage   | Proposed notes |
 |---------|----------------|
 | purpose | 1              |
-| design  | 2              |
-| launch  | 3, 4           |
+| design  | 2 (plus the test triangulation note) |
+| launch  | 3, 4 (plus the eval-driven development note) |
 | scale   | 5, 6           |
 | operate | 7 (plus the published observability note) |
 | govern  | 8              |
